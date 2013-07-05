@@ -30,7 +30,7 @@
 \departamento[a]{Departamento de Informática e Estatística}
 \curso[o]{Curso de Bacharelado em Ciências da Computação}
 %\documento[a]{TCC} % Opcional (Tese é o padrão)
-\titulo{Análise de \emph{Timing} Estática e o Impacto dos Atrasos das Interconexões em Cicuitos Digitais}
+\titulo{Análise de \emph{Timing} Estática e o Impacto do Atraso das Interconexões em Circuitos Digitais}
 %\subtitulo{Considerando Atraso de Interconexões} % Opcional
 \autor{Chrystian de Sousa Guth}
 \grau{Bacharel em Ciências da Computação}
@@ -53,14 +53,13 @@
 
 
 \textoResumo {
-Análise de \emph{Timing} Estática (\emph{Static Timing Analysis}) é uma das técnicas utilizadas para estimar as informações temporais em projetos de circuitos digitais. A medida em que o projeto se aproxima da fase de \emph{layout}, a Análise de \emph{Timing} se torna cada vez mais importante, sendo utilizada em diversas etapas do fluxo de projeto. Um dos problemas no fluxo de projeto de circuitos digitais é a informação precisa de \emph{timing} das células dos circuitos e das interconexões, sendo que muitas técnicas de análise de \emph{timing}, consideram apenas, modelos de atrasos muito simplificados, ou até, desconsideram a importância dos atrasos das interconexões. Este trabalho tem por objetivo o projeto, a implementação, a validação e a avaliação de uma técnica de análise de \emph{timing} que leva em consideração os atrasos das interconexões.
+Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técnica mais utilizada para estimar o atraso de circuitos digitais durante o fluxo de síntese física. Com o advento das tecnologias CMOS nanométricas, o atraso das interconexões passou a ser dominante em relação ao atraso das portas lógicas e, por este motivo, não pode mais ser desprezado. Além disso, modelos de atraso de interconexões simplificados, como o de Elmore, não são precisos o suficiente para modelar o atraso em circuitos contemporâneos. Este trabalho tem por objetivo pesquisar, implementar e validar uma técnica de STA a qual considera o atraso das interconexões.
 }
-\palavrasChave {automatização do projeto eletrônica, gate sizing, \emph{CMOS}, programação dinâmica, relaxação
-lagrangeana, fluxo de projeto \emph{standard cell}}
+\palavrasChave {Automação de Projeto Eletrônico (EDA), Biblioteca \emph{Standard Cell}, Análise de \emph{Timing} Estática \emph{(STA)}, \emph{Complementary Metal-Oxide Semiconductor}}
 
-\textAbstract {Here is written the abstract of the document}
+% \textAbstract {Here is written the abstract of the document}
 
-\keywords {key 1. key 2. ... key n.}
+% \keywords {key 1. key 2. ... key n.}
 
 %----------------------------------------------------------------------
 % Início do documento                                
@@ -88,11 +87,11 @@ lagrangeana, fluxo de projeto \emph{standard cell}}
 
 	\section{Motivação}
 
-		Nos dispositivos móveis alimentados por bateria (\emph{PMD: Personal Mobile Devices}, por exemplo: \emph{Smartphones, tablets e netbooks}), onde a energia disponível para operação é fixa, é a taxa de consumo de potência que determina o ciclo de vida das baterias. A potência dissipada por esses dispositivos, medida em \emph{Joules} por segundo ($J \times s^{-1}$), é a energia consumida, de suas baterias, por unidade de tempo, portanto, a taxa de consumo de potência reflete inversamente no tempo entre recargas.
+		Nos dispositivos móveis pessoais alimentados por bateria (\emph{PMD: Personal Mobile Devices}, por exemplo: \emph{Smartphones, tablets e netbooks}), onde a energia disponível para operação é fixa, é a taxa de consumo de potência que determina o ciclo de vida das baterias. A potência dissipada por esses dispositivos, medida em \emph{Joules} por segundo ($J \times s^{-1}$), é a energia consumida, de suas baterias, por unidade de tempo, portanto, a taxa de consumo de potência reflete inversamente no tempo entre recargas.
 
 		Do ponto de vista de um usuário, esses dispositivos são de grande importância, pois o ajuda a realizar, de forma prática, diversas tarefas relacionadas à sua vida pessoal ou profissional. Porém, essas aplicações demandam um alto consumo de potência, visto são aplicações multimídia, em sua maioria, que se conectam com a internet e que utilizam grande quantidade de memória. Portanto, deseja-se que o tempo entre recargas seja o maior possível, porém, sem limitar sua funcionalidade.
 
-		O objetivo, tanto dos usuários, quanto dos fabricantes, é maximizar o ciclo de vida das baterias, ainda que mais recursos, de \emph{software} ou \emph{hardware}, sejam integrados em um mesmo dispositivo. Entretanto, a capacidade de armazenamento de energia das baterias não tem evoluido ao mesmo passo em que essa integração acontece. Como pode ser visualizado na Figura \ref{fig:batteryTrends}, desde 2003, com o advento dos \emph{Smartphones} e aplicações multimídia móveis, há um \emph{gap} de $1W$ entre o consumo de potência dos circuitos digitais dessa natureza e a capacidade de suas baterias, demandando o emprego de técnicas de projeto de baixo consumo por parte dos projetistas.
+		O objetivo, tanto dos usuários, quanto dos fabricantes, é maximizar o ciclo de vida das baterias, ainda que mais recursos, de \emph{software} ou \emph{hardware}, sejam integrados em um mesmo dispositivo. Entretanto, a capacidade de armazenamento de energia, ou a densidade de potência, das baterias não tem evoluido ao mesmo passo em que essa integração acontece \cite{Sematech03}. Como pode ser visualizado na Figura \ref{fig:batteryTrends}, desde 2003, com o advento dos \emph{Smartphones} e aplicações multimídia móveis, há um \emph{gap} de $1W$ entre o consumo de potência dos circuitos digitais dessa natureza e a capacidade de suas baterias \cite{Neuvo04}, demandando o emprego de técnicas de projeto de baixo consumo por parte dos projetistas.
 
 		\begin{figure}[ht]
 		\begin{center}
@@ -128,14 +127,14 @@ lagrangeana, fluxo de projeto \emph{standard cell}}
 
 		A partir das otimizações em nível de Transferência entre Registradores (\emph{RTL: Register Transfer Level}), as informações de desempenho começam a ser levantadas utilizando modelos de atrasos simplificados e pessimistas. Exemplos dessas otimizações são: \emph{Transistor Sizing}\cite{Fishburn85}, \emph{Gate Sizing}\cite{Livramento13}\cite{Hu12}\cite{Mohammad12}, \emph{Placement} \cite{Shahookar91}, entre outras. Ao decorrer do projeto, após a execução de variados processos de otimização, além do mapeamento do circuito na Biblioteca \emph{Standard Cell}, informações de posicionamento, interconexões e seus parasitas são obtidas, tornando possível e necessária, uma análise minuciosa das informações temporais, ou então, a chamada Análise de \emph{Timing}.
 
-		\begin{figure}[ht]
-		\begin{center}
-		\includegraphics[width=\linewidth]{imagens/cmos_design_flow.png}
-		% \includegraphics{sta.png}
-		\caption{Fluxo de projeto CMOS \cite{BhaskerChadha09} \afazer{REFERENCIAR A IMAGEM E EXPLICAR}}
-		\label{fig:cmos_flow}
-		\end{center}
-		\end{figure}
+		% \begin{figure}[ht]
+		% \begin{center}
+		% \includegraphics[width=\linewidth]{imagens/cmos_design_flow.png}
+		% % \includegraphics{sta.png}
+		% \caption{Fluxo de projeto \emph{Standard Cell} \cite{BhaskerChadha09}}
+		% \label{fig:cmos_flow}
+		% \end{center}
+		% \end{figure}
 
 
 	\section{Justificativa}
@@ -294,7 +293,10 @@ lagrangeana, fluxo de projeto \emph{standard cell}}
 
 		\subsection{Desafios de Implementar o Modelo RC Distribuído}
 
-			\afazer{DESAFIOS}
+			\afazer{
+			Aqui é necessário apontar que não existe fórmula ``fechada'' para se estimar os atrasos no modelo RC Distribuído, e que uma estimativa boa requer um tempo de execução maior que uma estimativa utilizando o modelo \citeonline{Elmore48}, por exemplo.
+
+			}
 
 
 
@@ -336,19 +338,36 @@ lagrangeana, fluxo de projeto \emph{standard cell}}
 		\end{figure}
 
 \chapter{An\'alise de \emph{Timing} Estática}
-	\afazer{A FAZER}
+	\label{cap:sta}
+	Análise de \emph{Timing}, ou \emph{Timing Analysis} \cite{Guntzel00} \cite{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar atrasos das células e interconexões em circuitos digitais. A Análise de \emph{Timing} é chamada de estática (STA), quando não depende dos valores aplicados nas entradas primárias do circuito, ou seja, apenas considera o comportamento estático das portas lógicas e interconexões. É um processo completo e exaustivo \cite{BhaskerChadha09} que verifica as mais diversas informações de \emph{timing} em um circuito, como atrasos de propagação (\emph{delays}), tempos de transição (\emph{slews}), folgas (\emph{slacks}), tempos requeridos (\emph{required times}) e diversas violações de restrições de projeto.
 
-	% Análise de \emph{Timing}, ou \emph{Timing Analysis} \cite{Guntzel00} \cite{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar atrasos das células e interconexões em circuitos digitais. A Análise de \emph{Timing} é chamada de estática (STA), quando não depende dos valores aplicados nas entradas primárias do circuito, ou seja, apenas considera o comportamento estático das portas lógicas e interconexões. É um processo completo e exaustivo \cite{BhaskerChadha09} que verifica as mais diversas informações de \emph{timing} em um circuito, como por exemplo, atrasos e \emph{slew} (tempo de transição) pino-a-pino, atrasos em interconexões, folgas e \emph{required times}.
+	No fluxo \emph{Standard Cells}, as bibliotecas de célula restringem ao projetista, o uso de um número limitado de opções de implementação, para cada porta lógica do circuito. Também são impostos tempos máximos de transição e de capacitância que um pino de saída de uma porta pode carregar.
 
-	% Dado um design de entrada, restrições de projeto e uma biblioteca de células, o objetivo da Análise de \emph{Timing} é validar se o \emph{design} em análise (\emph{DUA}) pode operar no desempenho estipulado. Ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações de \emph{timing}.
+	Dado um design de entrada, restrições de projeto e uma biblioteca de células (Figura \ref{fig:STA}), o objetivo da Análise de \emph{Timing} é validar se o \emph{design} em análise (\emph{DUA: Design Under Analysis}) pode operar no desempenho estipulado, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
 
-	% \begin{figure}[ht]
-	% \begin{center}
-	% \includegraphics[scale=0.25]{imagens/sta.png}
-	% % \includegraphics{sta.png}
-	% \caption{Análise de \emph{Timing} Estática}
-	% \end{center}
-	% \end{figure}
+	\afazer{
+		Neste capitulo será apresentado também:
+		\begin{itemize}
+
+			\item Definições dos termos utilizados na Análise de \emph{Timing} Estática (slack, slew, required, ...);
+			
+			\item Representação dos circuitos digitais no processode Análise de \emph{Timing} Estática (definição do modelo de grafo);
+
+			\item Funcionamento da Análise de Timing Estática, descrita em pseudo código.
+
+			\item O atraso das portas lógicas é dependente do modelo de interconexão, então, certas informações ficaram a cargo do capítulo \ref{cap:}
+
+		\end{itemize}
+	}
+
+	\begin{figure}[ht]
+	\begin{center}
+	\includegraphics[width=0.8 \linewidth]{imagens/sta.pdf}
+	% \includegraphics{sta.png}
+	\caption{Análise de \emph{Timing} Estática. Adaptado de \cite{BhaskerChadha09}}
+	\label{fig:STA}
+	\end{center}
+	\end{figure}
 
 	% \section{Representação de Circuitos Digitais}
 
@@ -363,9 +382,6 @@ lagrangeana, fluxo de projeto \emph{standard cell}}
 	% \label{fig:circuit_graph}
 	% \end{center}
 	% \end{figure}
-
-
-	% \section {Análise de Timing Estática}
 
 	% Na Análise de Timing Estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Uma rotina $atualiza\_timing(v_i)$ é executada para cada $v_i \in V$. Ela consiste em calcular os tempos de chegada na saída de uma porta lógica, bem como os tempos de transição. O tempo de chegada e os tempos de transição no pino de saída $o$ de uma porta lógica $v_i \in V$ podem ser calculados como:
 
@@ -469,82 +485,85 @@ lagrangeana, fluxo de projeto \emph{standard cell}}
 	% \item Arquivos \emph{.sdc} que definem as restrições de projeto impostas, tais como atrasos de entrada, capacitância de saída, ou desempenho esperado.
 
 
-\chapter{Calculo do Atraso das Interconexões}
+\chapter{Implementação do Atraso das Interconexões}
+	\label{cap:atraso}
+	\afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
 
-	\section{Técnica de Elmore}
-	\afazer{A fazer}
+	\section{Técnica de Elmore} 
+	\afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
 
 	\section{Técnica de \citeonline{PURI02}}
-	\afazer{A fazer, conforme em \cite{PURI02}}
-	% Para simular a interdependência entre o \emph{slew} e a Capacitância Efetiva, o \emph{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
+	\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
 
-	% Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \emph{driver} uma porta combinacional \emph{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \emph{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \emph{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
+	Para simular a interdependência entre o \emph{slew} e a Capacitância Efetiva, o \emph{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
 
-	% O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \cite{PURI02}, se dá em 5 passos:
+	Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \emph{driver} uma porta combinacional \emph{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \emph{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \emph{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
 
-	% \begin{enumerate}
+	O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \citeonline{PURI02}, se dá em 5 passos:
 
-	% 	\item Inicialização
+	\begin{enumerate}
 
-	% 		\begin{enumerate}
+		\item Inicialização
 
-	% 			\item A Capacitância Efetiva $C_{eff_i}$ de cada nodo da Árvore RC com o somatório de todas as Capacitâncias \emph{Downstream} $C_{tot_i}$
+			\begin{enumerate}
 
-	% 			\item O \emph{slew} no nodo fonte da Árvore RC $S_0$ é calculado diretamente, utilizando a Capacitância Concentrada da Árvore RC: $S_0 = f(C_{tot_0})$
+				\item A Capacitância Efetiva $C_{eff_i}$ de cada nodo da Árvore RC com o somatório de todas as Capacitâncias \emph{Downstream} $C_{tot_i}$
 
-	% 		\end{enumerate}
+				\item O \emph{slew} no nodo fonte da Árvore RC $S_0$ é calculado diretamente, utilizando a Capacitância Concentrada da Árvore RC: $S_0 = f(C_{tot_0})$
 
-	% 	\item Em ordem topológica com origem no nodo fonte  \label{enum:algo_net_timing:1}
+			\end{enumerate}
 
-	% 		\begin{enumerate}
+		\item Em ordem topológica com origem no nodo fonte  \label{enum:algo_net_timing:1}
 
-	% 			\item Atraso $T_{0-i}$ do nodo fonte $0$ para cada nodo $i$ da árvore é calculado utilizando o Atraso de Elmore, com a Capacitância Igual a Capacitância Efetiva de $i$.
+			\begin{enumerate}
 
-	% 			\begin{equation}
-	% 				T_{0-i} = \sum_{\forall \  nodos \ k} R_{k,i} \ C_{eff_i}
-	% 			\end{equation}
+				\item Atraso $T_{0-i}$ do nodo fonte $0$ para cada nodo $i$ da árvore é calculado utilizando o Atraso de Elmore, com a Capacitância Igual a Capacitância Efetiva de $i$.
 
-
-	% 			\item A degradação do \emph{slew} em cada nodo $i$ é computada como
-	% 			\begin{equation}
-	% 				S_{i} = \frac{S_{i-1}}{1-\frac{R_i\ C_{eff_i}}{S_{i-1}} (1-e^{-\frac{S_{i-1}}{R_i\ C_{eff_i}}})}
-	% 			\end{equation}
-
-	% 		\end{enumerate}
-
-	% 	\item Em ordem topológica reversa com origem no nodo terminal
-	% 		\begin{enumerate}
-
-	% 			\item A Capacitância Efetiva ($C_{eff_i}$) de cada nodo é calculada como a soma da capacitância do nodo $C_i$ e todas as capacitâncias dos nodos filhos:
-
-	% 			\begin{equation}
-	% 				C_{eff_i}=C_i + \sum_{\forall\ filhos\ j}\ K_j \times C_{tot_j}
-	% 			\end{equation}
-
-	% 			Onde o fator de \emph{shielding} é definido por
-
-	% 			\begin{equation}
-	% 				K_j=1-\frac{2R_jC_{eff_j}}{S_i}(1-e^{-\frac{S_i}{2R_jC_{eff_j}}})
-	% 			\end{equation}
-
-	% 		\end{enumerate}
+				\begin{equation}
+					T_{0-i} = \sum_{\forall \  nodos \ k} R_{k,i} \ C_{eff_i}
+				\end{equation}
 
 
-	% 	\item O \emph{slew} no nodo fonte é calculado diretamente, utilizando o $C_{eff_0}$ atual  \label{enum:algo_net_timing:2}
+				\item A degradação do \emph{slew} em cada nodo $i$ é computada como
+				\begin{equation}
+					S_{i} = \frac{S_{i-1}}{1-\frac{R_i\ C_{eff_i}}{S_{i-1}} (1-e^{-\frac{S_{i-1}}{R_i\ C_{eff_i}}})}
+				\end{equation}
 
-	% 	\item Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $S_0$ convirja, dada uma precisão $\epsilon$
+			\end{enumerate}
 
-	% \end{enumerate}
+		\item Em ordem topológica reversa com origem no nodo terminal
+			\begin{enumerate}
 
-	% Após a execução do algoritmo, pode-se obter a degradação de \emph{slew} e de atraso do \emph{driver} em todos os \emph{fanouts} da interconexão em questão.
-\chapter{Experimentos}
-	\afazer{A FAZER}
+				\item A Capacitância Efetiva ($C_{eff_i}$) de cada nodo é calculada como a soma da capacitância do nodo $C_i$ e todas as capacitâncias dos nodos filhos:
+
+				\begin{equation}
+					C_{eff_i}=C_i + \sum_{\forall\ filhos\ j}\ K_j \times C_{tot_j}
+				\end{equation}
+
+				Onde o fator de \emph{shielding} é definido por
+
+				\begin{equation}
+					K_j=1-\frac{2R_jC_{eff_j}}{S_i}(1-e^{-\frac{S_i}{2R_jC_{eff_j}}})
+				\end{equation}
+
+			\end{enumerate}
+
+
+		\item O \emph{slew} no nodo fonte é calculado diretamente, utilizando o $C_{eff_0}$ atual  \label{enum:algo_net_timing:2}
+
+		\item Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $S_0$ convirja, dada uma precisão $\epsilon$
+
+	\end{enumerate}
+
+	Após a execução do algoritmo, pode-se obter a degradação de \emph{slew} e de atraso do \emph{driver} em todos os \emph{fanouts} da interconexão em questão.
+	\chapter{Experimentos}
+	\afazer{Este capítulo apresentará como foram realizados os experimentos, e como foram validados.}
 
 	\section{Validação da Ferramenta de STA Perante a uma Ferramenta Industrial}
-		\afazer{A FAZER}
+		\afazer{Nesta seção, os resultados obtidos pelas técnicas implementadas, descritas no Capítulo \ref{cap:atraso}, serão comparadas com uma ferramenta industrial. Os parâmetros utilizados para comparação serão: \emph{runtime} e precisão dos resultados.}
 
 	\section{Aplicação da Ferramenta de STA em uma Técnica de \emph{Gate Sizing}}
-		\afazer{A FAZER}
+		\afazer{As duas técnicas descritas no Capítulo \ref{cap:atraso} serão incorporadas à ferramenta de \emph{Gate Sizing} proposta por \citeauthor{Livramento13} em \citeyear{Livramento13}. \emph{Runtime} e precisão nos resultados serão comparados entre as técnicas implementadas neste trabalho.}
 
 
 \chapter{Conclusão}
