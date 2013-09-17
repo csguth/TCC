@@ -152,13 +152,13 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 			\begin{enumerate}
 
-				\item Implementar o modelo de atraso de interconexões de Capacitância Concentrada; \cite{Rabaey08}
+				\item Implementar o modelo de atraso de interconexões de Capacitância Concentrada \cite{Rabaey08};
 
-				\item Implementar o modelo de atraso de interconexões Elmore \cite{Elmore48}; \label{objetivos:elmore}
+				\item Implementar o modelo de atraso de interconexões de \citeonline{Elmore48}; \label{objetivos:elmore}
 
-				\item Implementar o modelo de atraso de interconexões utilizando a abordagem de Capacitância Efetiva, como descrito em \cite{PURI02}; \label{objetivos:puri};
+				\item Implementar o modelo de atraso de interconexões utilizando a abordagem de Capacitância Efetiva, proposto por \citeonline{PURI02}; \label{objetivos:puri}
 
-				\item Comparação e avaliação dos métodos descritos nos objetivos \ref{objetivos:elmore} e \ref{objetivos:puri} com ferramenta comercial de Análise de \emph{Timing} Synopsys PrimeTime \textregistered \cite{PrimeTime12};
+				\item Comparação e avaliação dos métodos descritos nos objetivos \ref{objetivos:elmore} e \ref{objetivos:puri} com ferramenta industrial de Análise de \emph{Timing} PrimeTime \textregistered\  da \citeonline{PrimeTime12};
 
 				\item Por fim, avaliar a ferramenta com uma técnica de otimização, possivelmente a ferramenta de \emph{Gate Sizing} \cite{Livramento13}, a qual o aluno já possui experiência. 
 
@@ -171,9 +171,9 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 			A ferramenta de Análise de \emph{Timing} desenvolvida será capaz de reportar informações de \emph{timing} de um circuito, considerando modelos de atraso de \emph{lookup tables} presentes em bibliotecas de células atuais.
 
-			A ferramenta considerará também, os atrasos de interconexões, utilizando pelo menos, 3 modelos de atraso, Elmore \cite{Elmore48}, abordagem Capacitância Efetiva \cite{PURI02} e modelo de Capacitância Concentrada \cite{Rabaey08}.
+			A ferramenta considerará também, os atrasos de interconexões, utilizando pelo menos, 3 modelos de atraso, de \citeonline{Elmore48}, abordagem de Capacitância Efetiva proposta por \citeonline{PURI02} e modelo de Capacitância Concentrada \cite{Rabaey08}.
 
-			Por fim, a ferramenta será validada perante à ferramenta comercial Synopsys PrimeTime\textregistered \cite{PrimeTime12} e incorporada a uma ferramenta de \emph{Gate Sizing} \cite{Livramento13}.
+			Por fim, a ferramenta será validada perante à ferramenta industrial PrimeTime \textregistered \ da \citeonline{PrimeTime12} e incorporada a uma ferramenta de \emph{Gate Sizing} \cite{Livramento13}.
 
 			Neste trabalho elementos sequenciais serão tratados como saídas e entradas primárias, e não serão consideradas suas informações específicas de \emph{timing}, como tempos de \emph{set-up}, \emph{hold} e \emph{carga}.
 
@@ -185,7 +185,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 			\item Uma biblioteca \emph{standard cell} realista, composta por onze células combinacionais de diversas funções lógicas e um célula sequencial;
 
-			\item Uma ferramenta de análise de \emph{timing} estática Synopsys PrimeTime \textregistered \cite{PrimeTime12}  para comparação de resultados;
+			\item Uma ferramenta de análise de \emph{timing} estática PrimeTime \textregistered \ da empresa \citeonline{PrimeTime12}  para comparação de resultados;
 			\end{itemize}
 
 			Os circuitos são compostos por descrições no formato Verilog, capacitâncias parasitas e resistências (modelo RC Distribuído) descritas no formato IEEE SPEF (\emph{Standard Parasitic Exchange Format}) \cite{IEEE99}, e restrições de \emph{timing} descritas no formato SDC (\emph{Synopsys Design Constraints}).
@@ -254,7 +254,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 		\end{center}
 		\end{figure}
 
-		Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de Elmore (\emph{Elmore Delay}) \cite{Elmore48}, pela simplicidade e razoável correlação com os atrasos reais. Em um nodo $i$ da Árvore RC, o atraso de Elmore ($\tau_{Di}$) pode ser facilmente calculado como:
+		Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de \citeonline{Elmore48} (\emph{Elmore Delay}), pela simplicidade e razoável correlação com os atrasos reais. Em um nodo $i$ da Árvore RC, o atraso de Elmore ($\tau_{Di}$) pode ser facilmente calculado como:
 		\begin{equation}
 		\tau_{Di} = \sum_{k=1}^{N} C_k R_{ik} \label{eq:tau}
 		\end{equation} Onde $C_k$ é a capacitância do nodo $k$ da Árvore e $R_{ik}$ é a resistência compartilhada entre os caminhos desde o nodo fonte $s$ até os nodos $i$ e $k$. $R_{ik}$ é definida por:
@@ -287,9 +287,9 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 		Como visto anteriormente, o Modelo RC Concentrado é uma a\-pro\-xi\-ma\-ção simplificada. O modelo de atraso de Elmore pode obter erros, pois ignora o efeito conhecido como \emph{resistive shield}, sendo impreciso quando se trata de interconexões grandes.
 
-		Em \cite{Kashyap00}, é proposta uma métrica, que leva em consideração o efeito de \emph{resistive shield}, calculando uma Capacitância Efetiva ($C_{eff}$) para modelar o impacto das capacitâncias \emph{downstream}.
+		\citeonline{Kashyap00} propuseram uma métrica, que leva em consideração o efeito de \emph{resistive shield}, calculando uma Capacitância Efetiva ($C_{eff}$) para modelar o impacto das capacitâncias \emph{downstream}.
 
-		Devido a limitação de que o cálculo da Capacitância Efetiva depende do \emph{slew} aplicado no nodo fonte da Árvore RC, e que por sua vez, depende da Capacitância Efetiva, este trabalho abordará uma alternativa, proposta em \cite{PURI02}, computacionalmente eficiente e precisa, para estimativa dos atrasos das interconexões em circuitos \emph{CMOS}, contornando o problema observado em \cite{Kashyap00}.
+		Devido a limitação de que o cálculo da Capacitância Efetiva depende do \emph{slew} aplicado no nodo fonte da Árvore RC, e que por sua vez, depende da Capacitância Efetiva, este trabalho abordará uma alternativa, proposta por \citeonline{PURI02}, computacionalmente eficiente e precisa, para estimativa dos atrasos das interconexões em circuitos \emph{CMOS}, contornando o problema observado em por \citeonline{Kashyap00}.
 
 		\subsection{Desafios de Implementar o Modelo RC Distribuído}
 
@@ -302,7 +302,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	\section{Representação dos parasitas no fluxo de projeto \emph{Standard Cells}}
 
-		Em projetos de circuitos digitais, as capacitâncias parasitas são descritas no formato SPEF (\emph{Standard Parasitic Exchange Format}) \cite{IEEE99} do IEEE (\emph{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade antre ferramentas de Automação de Projeto Eletrônica (\emph{EDA}). As parasitas podem ser representadas em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de árvores RC distribuídas.
+		Em projetos de circuitos digitais, as capacitâncias parasitas são descritas no formato SPEF (\emph{Standard Parasitic Exchange Format}) \cite{IEEE99} do IEEE (\emph{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de Automação de Projeto Eletrônica (\emph{EDA}). As parasitas podem ser representadas em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de árvores RC distribuídas.
 
 		Um exemplo de interconexão descrita no formato SPEF \cite{IEEE99} pode ser visualizado nas Figuras \ref{fig:spef_example} e \ref{fig:spef_example_code}. A linha 1 no código SPEF da Figura \ref{fig:spef_example_code} apresenta o nome da interconexão (inp1) e o valor de sua capacitância total (5.4). As linhas 2, 3 e 4 indicam que existe uma conexão entre uma entrada primária \emph{inp1}, indicado por \emph{*P inp1 I}, e a entrada de um pino interno \emph{a} da porta \emph{u1}, indicado por \emph{*I u1:a I}. Da linha 6 até a linha 9 são representadas as capacitâncias da Árvore RC.
 
@@ -319,7 +319,6 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 		\end{verbatim}
 
 		O valor *END (linha 14) é utilizado para determinar o fim da descrição de uma interconexão.
-
 
 		\begin{figure}[ht]
 		\begin{center}
@@ -345,6 +344,18 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	Dado um design de entrada, descrito em uma linguagem de descrição de hardware (\emph{HDL: Hardware description language}), restrições de projeto e uma biblioteca de células, o objetivo da Análise de \emph{Timing} é apresentar informações temporais em todos os pontos do circuito, e apontar suas possíveis violações (Figura \ref{fig:STA}). Essas informações são utilizadas para validar se o projeto sob verificação pode operar no desempenho estipulado, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
 
+	O fluxo básico de uma ferramenta de análise de timing é:
+
+	\begin{enumerate}
+
+		\item Leitura dos arquivos de entrada (biblioteca de células, \emph{netlist}, restrições, etc)
+		\item Geração de um modelo de grafo
+		\item \label{enum:etapa_sta} Atualização de informações temporais
+
+	\end{enumerate}
+
+	Onde a etapa \ref{enum:etapa_sta} é repetida quantas vezes for necessário durante um processo de otimização.
+
 	\afazer{
 		Neste capitulo será apresentado também:
 		\begin{itemize}
@@ -355,7 +366,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 			\item Funcionamento da Análise de Timing Estática, descrita em pseudo código.
 
-			\item O atraso das portas lógicas é dependente do modelo de interconexão, então, certas informações ficaram a cargo do capítulo \ref{cap:}
+			\item O atraso das portas lógicas é dependente do modelo de interconexão, então, certas informações ficaram a cargo do capítulo \ref{cap:atraso}
 
 		\end{itemize}
 	}
@@ -369,9 +380,26 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 	\end{center}
 	\end{figure}
 
-	% \section{Representação de Circuitos Digitais}
+	\section{Representação de Circuitos Digitais}
 
-	% A lógica combinacional de um circuito, pode ser representada como um grafo direcionado $G = (V, A)$, onde V é o conjunto das portas lógicas, entradas e saídas primárias. Um par de vértices, ou portas lógicas, $v_i$ e $v_j \in V$, são conectadas por uma aresta direcionada $(v_i,v_j) \in A$ se existe uma interconexão da saída de $v_i$ para uma entrada de $v_j$ \cite{Sapatnekar04}. Um modelo de circuito combinacional e seu grafo correspondente podem ser visualizados na Figura \ref{fig:circuit_graph}.
+	Um circuito combinacional pode ser representado como um grafo direcionado $G(V, A)$, onde em $V$, o conjunto de vértices, são encontrados os pinos do circuito, e nas arestas ($E$), a união de dois conjuntos: as interconexões, denotado pela letra $I$, e os arcos de \emph{timing}, neste caso denominado $A$.
+
+	Segue algumas definições sobre o modelo de grafo $G(V, A)$:
+
+	\begin{itemize}
+
+		\item V  = \{ $v_i | v_i$ é um pino, ou ponto de \emph{timing} (\emph{timing point}) \}
+		\item I = \{ $(v_i, v_j) | v_i, v_j \in V$ e $v_i$ é um pino de saída de uma porta lógica, ou uma entrada primária do circuito, e $v_j$ é um pino de entrada de uma porta lógica ou uma saída primária do circuito \}
+		\item A = \{ $(v_i, v_j) | v_i, v_j \in V$ e $v_i$ e $v_j$ são pinos de entrada e saída, respectivamente, de uma mesma porta lógica. \}
+		\item Por fim, E = I $\cup$ A.
+
+	\end{itemize}
+
+
+	, onde V é o conjunto dos pinos do circuito, ou \emph{timing points}. Um par de vértices, ou pinos, $v_i$ e $v_j \in V$, são conectados por uma aresta direcionada $(v_i,v_j) \in A$ se existe uma interconexão que liga $v_i$ em $v_j$, sendo que $v_i$ é um pino de saída de uma porta lógica e $v_j$ é o pino de entrada de outra porta lógica.
+
+
+	% Um modelo de circuito combinacional e seu grafo correspondente podem ser visualizados na Figura \ref{fig:circuit_graph}.
 
 
 	% \begin{figure}[ht]
