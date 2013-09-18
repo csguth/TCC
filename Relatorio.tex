@@ -344,7 +344,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	Dado um design de entrada, descrito em uma linguagem de descrição de hardware (\emph{HDL: Hardware description language}), restrições de projeto e uma biblioteca de células, o objetivo da Análise de \emph{Timing} é apresentar informações temporais em todos os pontos do circuito, e apontar suas possíveis violações (Figura \ref{fig:STA}). Essas informações são utilizadas para validar se o projeto sob verificação pode operar no desempenho estipulado, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
 
-	O fluxo básico de uma ferramenta de análise de timing é:
+	O fluxo básico de uma ferramenta de análise de \emph{timing} é:
 
 	\begin{enumerate}
 
@@ -382,21 +382,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	\section{Representação de Circuitos Digitais}
 
-	Um circuito combinacional pode ser representado como um grafo direcionado $G(V, A)$, onde em $V$, o conjunto de vértices, são encontrados os pinos do circuito, e nas arestas ($E$), a união de dois conjuntos: as interconexões, denotado pela letra $I$, e os arcos de \emph{timing}, neste caso denominado $A$.
-
-	Segue algumas definições sobre o modelo de grafo $G(V, A)$:
-
-	\begin{itemize}
-
-		\item V  = \{ $v_i | v_i$ é um pino, ou ponto de \emph{timing} (\emph{timing point}) \}
-		\item I = \{ $(v_i, v_j) | v_i, v_j \in V$ e $v_i$ é um pino de saída de uma porta lógica, ou uma entrada primária do circuito, e $v_j$ é um pino de entrada de uma porta lógica ou uma saída primária do circuito \}
-		\item A = \{ $(v_i, v_j) | v_i, v_j \in V$ e $v_i$ e $v_j$ são pinos de entrada e saída, respectivamente, de uma mesma porta lógica. \}
-		\item Por fim, E = I $\cup$ A.
-
-	\end{itemize}
-
-
-	, onde V é o conjunto dos pinos do circuito, ou \emph{timing points}. Um par de vértices, ou pinos, $v_i$ e $v_j \in V$, são conectados por uma aresta direcionada $(v_i,v_j) \in A$ se existe uma interconexão que liga $v_i$ em $v_j$, sendo que $v_i$ é um pino de saída de uma porta lógica e $v_j$ é o pino de entrada de outra porta lógica.
+	
 
 
 	% Um modelo de circuito combinacional e seu grafo correspondente podem ser visualizados na Figura \ref{fig:circuit_graph}.
@@ -512,86 +498,113 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 	% \item Arquivos \emph{.spef} que descrevem as características parasitas desses circuitos;
 	% \item Arquivos \emph{.sdc} que definem as restrições de projeto impostas, tais como atrasos de entrada, capacitância de saída, ou desempenho esperado.
 
+\chapter{Implementação da Ferramenta de Análise de Timing}
+	
+	\section{Modelo de Grafo}
 
-\chapter{Implementação do Atraso das Interconexões}
-	\label{cap:atraso}
-	\afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
+		Na ferramenta implementada neste trabalho, foi necessário definir um modelo de grafo condizente com a realidade e que possibilite um desempenho razoável para as rotinas de atualização das informações de \emph{timing}. O modelo de grafo implementado é definido pelo conjunto de pinos dos circuitos, ou vértices do grafo, e a união do conjunto das interconexões com o conjunto dos arcos de \emph{timing}, formando assim, o conjunto das arestas.
 
-	\section{Técnica de Elmore} 
-	\afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
+		 % Um circuito combinacional pode ser representado como um grafo direcionado $G(V, A)$, onde em $V$, o conjunto de vértices, são encontrados os pinos do circuito, e nas arestas ($E$), a união de dois conjuntos: as interconexões, denotado pela letra $I$, e os arcos de \emph{timing}, neste caso denominado $A$.
 
-	\section{Técnica de \citeonline{PURI02}}
-	\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
+		A seguir, é apresentada a nomenclatura utilizada no modelo do grafo direcionado $G(V, A)$:
 
-	Para simular a interdependência entre o \emph{slew} e a Capacitância Efetiva, o \emph{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
+		\begin{itemize}
 
-	Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \emph{driver} uma porta combinacional \emph{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \emph{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \emph{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
+			\item V  = \{ $v_i | v_i$ é ponto de \emph{timing} (\emph{timing point}), que pode ser um pino, uma entrada ou uma saída primária do circuito \}
+			\item I = \{ $(v_i, v_j) | v_i, v_j \in V$ e $v_i$ é um pino de saída de uma porta lógica, ou uma entrada primária do circuito, e $v_j$ é um pino de entrada de uma porta lógica ou uma saída primária do circuito \}
+			\item A = \{ $(v_i, v_j) | v_i, v_j \in V$ e $v_i$ e $v_j$ são pinos de entrada e saída, respectivamente, de uma mesma porta lógica. \}
+			\item Por fim, E = I $\cup$ A.
 
-	O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \citeonline{PURI02}, se dá em 5 passos:
+		\end{itemize}
 
-	\begin{enumerate}
-
-		\item Inicialização
-
-			\begin{enumerate}
-
-				\item A Capacitância Efetiva $C_{eff_i}$ de cada nodo da Árvore RC com o somatório de todas as Capacitâncias \emph{Downstream} $C_{tot_i}$
-
-				\item O \emph{slew} no nodo fonte da Árvore RC $S_0$ é calculado diretamente, utilizando a Capacitância Concentrada da Árvore RC: $S_0 = f(C_{tot_0})$
-
-			\end{enumerate}
-
-		\item Em ordem topológica com origem no nodo fonte  \label{enum:algo_net_timing:1}
-
-			\begin{enumerate}
-
-				\item Atraso $T_{0-i}$ do nodo fonte $0$ para cada nodo $i$ da árvore é calculado utilizando o Atraso de Elmore, com a Capacitância Igual a Capacitância Efetiva de $i$.
-
-				\begin{equation}
-					T_{0-i} = \sum_{\forall \  nodos \ k} R_{k,i} \ C_{eff_i}
-				\end{equation}
+		Nos vértices, ou \emph{timing points}, são armazenadas as informações temporais para os pinos do circuito. Essas informações são: o \emph{arrival time}, que é o tempo de chegada no determinado pino, ou a soma dos atrasos desde uma entrada primária até o ponto atual; o \emph{slew}, que é o tempo de transição no ponto; o \emph{slack}, que é a folga do caminho em que o ponto se encontra.
 
 
-				\item A degradação do \emph{slew} em cada nodo $i$ é computada como
-				\begin{equation}
-					S_{i} = \frac{S_{i-1}}{1-\frac{R_i\ C_{eff_i}}{S_{i-1}} (1-e^{-\frac{S_{i-1}}{R_i\ C_{eff_i}}})}
-				\end{equation}
+	% , onde V é o conjunto dos pinos do circuito, ou \emph{timing points}. Um par de vértices, ou pinos, $v_i$ e $v_j \in V$, são conectados por uma aresta direcionada $(v_i,v_j) \in A$ se existe uma interconexão que liga $v_i$ em $v_j$, sendo que $v_i$ é um pino de saída de uma porta lógica e $v_j$ é o pino de entrada de outra porta lógica.
 
-			\end{enumerate}
+	\section{Algoritmo de Análise de Timing Estática}
 
-		\item Em ordem topológica reversa com origem no nodo terminal
-			\begin{enumerate}
+		Com o modelo de grafo definido e implementado em suas devidas estruturas de dados, a análise de \emph{timing} estática já pode ser realizada. Basta chamar a rotina \emph{update\_timing}.
 
-				\item A Capacitância Efetiva ($C_{eff_i}$) de cada nodo é calculada como a soma da capacitância do nodo $C_i$ e todas as capacitâncias dos nodos filhos:
+	\section{Atraso das Interconexões}
+		\label{cap:atraso}
+		\afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
 
-				\begin{equation}
-					C_{eff_i}=C_i + \sum_{\forall\ filhos\ j}\ K_j \times C_{tot_j}
-				\end{equation}
+		\subsection{Técnica de Elmore} 
+		\afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
 
-				Onde o fator de \emph{shielding} é definido por
+		\subsection{Técnica de \citeonline{PURI02}}
+		\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
 
-				\begin{equation}
-					K_j=1-\frac{2R_jC_{eff_j}}{S_i}(1-e^{-\frac{S_i}{2R_jC_{eff_j}}})
-				\end{equation}
+		Para simular a interdependência entre o \emph{slew} e a Capacitância Efetiva, o \emph{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
 
-			\end{enumerate}
+		Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \emph{driver} uma porta combinacional \emph{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \emph{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \emph{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
+
+		O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \citeonline{PURI02}, se dá em 5 passos:
+
+		\begin{enumerate}
+
+			\item Inicialização
+
+				\begin{enumerate}
+
+					\item A Capacitância Efetiva $C_{eff_i}$ de cada nodo da Árvore RC com o somatório de todas as Capacitâncias \emph{Downstream} $C_{tot_i}$
+
+					\item O \emph{slew} no nodo fonte da Árvore RC $S_0$ é calculado diretamente, utilizando a Capacitância Concentrada da Árvore RC: $S_0 = f(C_{tot_0})$
+
+				\end{enumerate}
+
+			\item Em ordem topológica com origem no nodo fonte  \label{enum:algo_net_timing:1}
+
+				\begin{enumerate}
+
+					\item Atraso $T_{0-i}$ do nodo fonte $0$ para cada nodo $i$ da árvore é calculado utilizando o Atraso de Elmore, com a Capacitância Igual a Capacitância Efetiva de $i$.
+
+					\begin{equation}
+						T_{0-i} = \sum_{\forall \  nodos \ k} R_{k,i} \ C_{eff_i}
+					\end{equation}
 
 
-		\item O \emph{slew} no nodo fonte é calculado diretamente, utilizando o $C_{eff_0}$ atual  \label{enum:algo_net_timing:2}
+					\item A degradação do \emph{slew} em cada nodo $i$ é computada como
+					\begin{equation}
+						S_{i} = \frac{S_{i-1}}{1-\frac{R_i\ C_{eff_i}}{S_{i-1}} (1-e^{-\frac{S_{i-1}}{R_i\ C_{eff_i}}})}
+					\end{equation}
 
-		\item Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $S_0$ convirja, dada uma precisão $\epsilon$
+				\end{enumerate}
 
-	\end{enumerate}
+			\item Em ordem topológica reversa com origem no nodo terminal
+				\begin{enumerate}
 
-	Após a execução do algoritmo, pode-se obter a degradação de \emph{slew} e de atraso do \emph{driver} em todos os \emph{fanouts} da interconexão em questão.
-	\chapter{Experimentos}
-	\afazer{Este capítulo apresentará como foram realizados os experimentos, e como foram validados.}
+					\item A Capacitância Efetiva ($C_{eff_i}$) de cada nodo é calculada como a soma da capacitância do nodo $C_i$ e todas as capacitâncias dos nodos filhos:
 
-	\section{Validação da Ferramenta de STA Perante a uma Ferramenta Industrial}
-		\afazer{Nesta seção, os resultados obtidos pelas técnicas implementadas, descritas no Capítulo \ref{cap:atraso}, serão comparadas com uma ferramenta industrial. Os parâmetros utilizados para comparação serão: \emph{runtime} e precisão dos resultados.}
+					\begin{equation}
+						C_{eff_i}=C_i + \sum_{\forall\ filhos\ j}\ K_j \times C_{tot_j}
+					\end{equation}
 
-	\section{Aplicação da Ferramenta de STA em uma Técnica de \emph{Gate Sizing}}
-		\afazer{As duas técnicas descritas no Capítulo \ref{cap:atraso} serão incorporadas à ferramenta de \emph{Gate Sizing} proposta por \citeauthor{Livramento13} em \citeyear{Livramento13}. \emph{Runtime} e precisão nos resultados serão comparados entre as técnicas implementadas neste trabalho.}
+					Onde o fator de \emph{shielding} é definido por
+
+					\begin{equation}
+						K_j=1-\frac{2R_jC_{eff_j}}{S_i}(1-e^{-\frac{S_i}{2R_jC_{eff_j}}})
+					\end{equation}
+
+				\end{enumerate}
+
+
+			\item O \emph{slew} no nodo fonte é calculado diretamente, utilizando o $C_{eff_0}$ atual  \label{enum:algo_net_timing:2}
+
+			\item Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $S_0$ convirja, dada uma precisão $\epsilon$
+
+		\end{enumerate}
+
+		Após a execução do algoritmo, pode-se obter a degradação de \emph{slew} e de atraso do \emph{driver} em todos os \emph{fanouts} da interconexão em questão.
+	\section{Experimentos}
+		\afazer{Este capítulo apresentará como foram realizados os experimentos, e como foram validados.}
+
+		\subsection{Validação da Ferramenta de STA Perante a uma Ferramenta Industrial}
+			\afazer{Nesta seção, os resultados obtidos pelas técnicas implementadas, descritas no Capítulo \ref{cap:atraso}, serão comparadas com uma ferramenta industrial. Os parâmetros utilizados para comparação serão: \emph{runtime} e precisão dos resultados.}
+
+		\subsection{Aplicação da Ferramenta de STA em uma Técnica de \emph{Gate Sizing}}
+			\afazer{As duas técnicas descritas no Capítulo \ref{cap:atraso} serão incorporadas à ferramenta de \emph{Gate Sizing} proposta por \citeauthor{Livramento13} em \citeyear{Livramento13}. \emph{Runtime} e precisão nos resultados serão comparados entre as técnicas implementadas neste trabalho.}
 
 
 \chapter{Conclusão}
