@@ -356,11 +356,13 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	Onde a etapa \ref{enum:etapa_sta} é repetida quantas vezes for necessário durante um processo de otimização.
 
+	As informações temporais nos pontos do circuito são os atrasos de propagação (\emph{delay}) pino-a-pino, os tempos de transição (\emph{slew}), os tempos de chegada (\emph{arrival times}), tempos requeridos (\emph{required times}) e a folgas (\emph{slacks}). O tempo de transição (\emph{slew}), é o tempo que o sinal leva para ir do nível lógico 0 ao nivel lógico 1 (transição de subida, ou \emph{rise slew}), ou o tempo que o sinal leva para ir do nível lógico 1 ao nível lógico 0 (transição de descida, ou \emph{fall slew}). O \emph{delay} é o tempo que leva para saída de uma porta lógica mudar de nível lógico ao se alterar o nivel lógico de um pino de entrada. Semelhante ao \emph{slew}, o \emph{slew} para gerar uma queda de sinal na saída (\emph{fall delay}) é diferente do atraso para elevar o nível lógico da saída (\emph{rise delay}). 
+
 	\afazer{
 		Neste capitulo será apresentado também:
 		\begin{itemize}
 
-			\item Definições dos termos utilizados na Análise de \emph{Timing} Estática (slack, slew, required, ...);
+			\item Definições dos termos utilizados na Análise de \emph{Timing} Estática (slack, slew, required, ...) OK;
 			
 			\item Representação dos circuitos digitais no processode Análise de \emph{Timing} Estática (definição do modelo de grafo);
 
