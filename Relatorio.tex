@@ -356,22 +356,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	Onde a etapa \ref{enum:etapa_sta} é repetida quantas vezes for necessário durante um processo de otimização.
 
-	As informações temporais nos pontos do circuito são os atrasos de propagação (\emph{delay}) pino-a-pino, os tempos de transição (\emph{slew}), os tempos de chegada (\emph{arrival times}), tempos requeridos (\emph{required times}) e a folgas (\emph{slacks}). O tempo de transição (\emph{slew}), é o tempo que o sinal leva para ir do nível lógico 0 ao nivel lógico 1 (transição de subida, ou \emph{rise slew}), ou o tempo que o sinal leva para ir do nível lógico 1 ao nível lógico 0 (transição de descida, ou \emph{fall slew}). O \emph{delay} é o tempo que leva para saída de uma porta lógica mudar de nível lógico ao se alterar o nivel lógico de um pino de entrada. Semelhante ao \emph{slew}, o \emph{slew} para gerar uma queda de sinal na saída (\emph{fall delay}) é diferente do atraso para elevar o nível lógico da saída (\emph{rise delay}). 
-
-	\afazer{
-		Neste capitulo será apresentado também:
-		\begin{itemize}
-
-			\item Definições dos termos utilizados na Análise de \emph{Timing} Estática (slack, slew, required, ...) OK;
-			
-			\item Representação dos circuitos digitais no processode Análise de \emph{Timing} Estática (definição do modelo de grafo);
-
-			\item Funcionamento da Análise de Timing Estática, descrita em pseudo código.
-
-			\item O atraso das portas lógicas é dependente do modelo de interconexão, então, certas informações ficaram a cargo do capítulo \ref{cap:atraso}
-
-		\end{itemize}
-	}
+	
 
 	\begin{figure}[ht]
 	\begin{center}
@@ -382,123 +367,188 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 	\end{center}
 	\end{figure}
 
+
+	% As informações temporais nos pontos do circuito são os atrasos de propagação (\emph{delay}) pino-a-pino, os tempos de transição (\emph{slew}), os tempos de chegada (\emph{arrival times}), tempos requeridos (\emph{required times}) e a folgas (\emph{slacks}). O tempo de transição (\emph{slew}), é o tempo que o sinal leva para ir do nível lógico 0 ao nivel lógico 1 (transição de subida, ou \emph{rise slew}), ou o tempo que o sinal leva para ir do nível lógico 1 ao nível lógico 0 (transição de descida, ou \emph{fall slew}). O \emph{delay} é o tempo que leva para saída de uma porta lógica mudar de nível lógico ao se alterar o nivel lógico de um pino de entrada. Semelhante ao \emph{slew}, o \emph{slew} para gerar uma queda de sinal na saída (\emph{fall delay}) é diferente do atraso para elevar o nível lógico da saída (\emph{rise delay}). 
+
+	% \afazer{
+	% 	Neste capitulo será apresentado também:
+	% 	\begin{itemize}
+
+	% 		\item Definições dos termos utilizados na Análise de \emph{Timing} Estática (slack, slew, required, ...) OK;
+			
+	% 		\item Representação dos circuitos digitais no processode Análise de \emph{Timing} Estática (definição do modelo de grafo);
+
+	% 		\item Funcionamento da Análise de Timing Estática, descrita em pseudo código.
+
+	% 		\item O atraso das portas lógicas é dependente do modelo de interconexão, então, certas informações ficaram a cargo do capítulo \ref{cap:atraso}
+
+	% 	\end{itemize}
+	% }
+
 	\section{Representação de Circuitos Digitais}
 
-	
+		Um circuito combinacional pode ser representado por um grafo de \emph{timing} $G(V, A)$, onde os elementos de $V$, o conjunto de vértices, são portas lógicas, entradas ou saídas primárias do circuito.
+
+		Um par de vértices, $v_i$ e $v_j \in V$ são conectados por uma aresta direcionada $a(v_i, v_j) \in A$ se existe uma interconexão da saída do elemento depresentado pelo vértice $v_i$ para a entrada do elemento representado pelo vértice $v_j$. Um exemplo de circuito e seu grafo correspondente são ilustrados nas Figuras \ref{fig:exemplo_circuito_simple} e \ref{fig:exemplo_grafo_simple}. Node que neste caso, a entrada primária de \emph{clock} e sua interconexão não é representada no modelo de grafo, visto que neste trabalho, a abordagem será restringida a análise de timing em circuitos combinacionais, ou seja, não serão considerados tempos de \emph{setup}, \emph{hold}.
+
+		\begin{figure}[ht]
+		\begin{center}% TRIM = L D R U
+		\includegraphics[width=\linewidth, trim=0 8cm 0 8cm]{imagens/exemplo_circuito_simple.pdf}
+		% \includegraphics{sta.png}
+		\caption{Um exemplo de circuito}
+		\label{fig:exemplo_circuito_simple}
+		\end{center}
+		\end{figure}
+
+		\begin{figure}[ht]
+		\begin{center}
+		\includegraphics[width=\linewidth, trim=0 8cm 0 8cm]{imagens/exemplo_grafo_simple.pdf}
+		% \includegraphics{sta.png}
+		\caption{Grafo correspondente ao circuito da Figura \ref{fig:exemplo_circuito_simple}}
+		\label{fig:exemplo_grafo_simple}
+		\end{center}
+		\end{figure}
 
 
-	% Um modelo de circuito combinacional e seu grafo correspondente podem ser visualizados na Figura \ref{fig:circuit_graph}.
+		% \begin{figure}[ht]
+		% \begin{center}
+		% \includegraphics[scale=0.35]{imagens/circuit_graph.png}
+		% % \includegraphics{sta.png}
+		% \caption{(a) Um exemplo de circuito combinacional, e (b) é o grafo de \emph{timing} correspondente}
+		% \label{fig:circuit_graph}
+		% \end{center}
+		% \end{figure}
 
+	\section{Cálculo e Propagação dos Atrasos}
 
-	% \begin{figure}[ht]
-	% \begin{center}
-	% \includegraphics[scale=0.35]{imagens/circuit_graph.png}
-	% % \includegraphics{sta.png}
-	% \caption{(a) Um exemplo de circuito combinacional, e (b) é o grafo de \emph{timing} correspondente}
-	% \label{fig:circuit_graph}
-	% \end{center}
-	% \end{figure}
+		Na Análise de Timing Estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Uma rotina $atualiza\_timing(v_i)$ é executada para cada $v_i \in V$. Ela consiste em calcular os tempos de chegada \emph{(arrival times)} na saída de uma porta lógica, bem como os tempos de transição (\emph{slews}). O tempo de chegada e os tempos de transição no pino de saída $o$ de uma porta lógica $v_i \in V$ são definidos como:
 
-	% Na Análise de Timing Estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Uma rotina $atualiza\_timing(v_i)$ é executada para cada $v_i \in V$. Ela consiste em calcular os tempos de chegada na saída de uma porta lógica, bem como os tempos de transição. O tempo de chegada e os tempos de transição no pino de saída $o$ de uma porta lógica $v_i \in V$ podem ser calculados como:
+		\begin{equation}
+		arrival\_time_{io} = \max_{\forall j \in input\_pins(i)}(arrival\_time_{ij} + delay_{i_{j \to o}})
+		\end{equation}
 
-	% \begin{equation}
-	% chegada_{io} = \max_{\forall j \in entradas(i)}(chegada_{ij} + atraso_{i_{j \to o}})
-	% \end{equation}
+		\begin{equation}
+		slew_{io} = \max_{\forall j \in input\_pins(i)}(slew_{i_{j \to o}})
+		\end{equation}
 
-	% \begin{equation}
-	% transicao_{io} = \max_{\forall j \in entradas(i)}(transicao_{i_{j \to o}})
-	% \end{equation}
+		Onde $chegada_{ik}$ é o tempo de chegada (\emph{arrival Time}) da porta $v_i$ no pino $k$ e $delay_{i_{j \to o}}$ é o Atraso de Propagação da porta $v_i$, no arco que vai do pino de entrada $j$, até um pino de saída $o$. 
 
-	% Onde $chegada_{ik}$ é o Tempo de Chegada (\emph{Arrival Time}) da porta $v_i$ no pino $k$ e $atraso_{i_{j \to o}}$ é o Atraso de Propagação (\emph{Delay}) da porta $v_i$, no arco que vai do pino de entrada $j$, até um pino de saída $o$. 
+		O tempo de chegada, em um pino de entrada $j$ de uma porta lógica $i$ é definido por
 
-	% O tempo de chegada, em um pino de entrada $j$ de uma porta lógica $i$ é definido por
+		\begin{equation}
+		arrival\_time_{ij} = arrival\_time_{ko} + \Delta D_{ko, ij}
+		\end{equation}
 
-	% \begin{equation}
-	% chegada_{ij} = chegada_{ko} + \Delta D_{ko, ij}
-	% \end{equation}
+		Onde $k$ é o \emph{fanin} da porta $i$ pelo pino $j$, e $\Delta D_{ko, ij}$ é o atraso de propagação do pino de saída $o$ da porta lógica $k$ e o pino de entrada $j$ da porta lógica $i$ através da interconexão que conecta estes pinos.
 
-	% Onde $k$ é o \emph{fanin} da porta $i$ pelo pino $j$, e $\Delta D_{ko, ij}$ é a degradação, da Árvore RC, no atraso da interconexão entre o pino de saída $o$ da porta lógica $k$ e o pino de entrada $j$ da porta lógica $i$.
+		Similarmente, denotamos o \emph{slew} da porta lógica $v_i$ no pino $k$ como $slew_{ik}$, e o \emph{slew} do arco que vai do pino de entrada $j$, até um pino de saída $o$, como $slew_{i_{j \to o}}$.
 
-	% Similarmente, denotamos o \emph{slew} da porta lógica $v_i$ no pino $k$ como $transicao_{ik}$, e o \emph{slew} do arco que vai do pino de entrada $j$, até um pino de saída $o$, como $transicao_{i_{j \to o}}$.
+		O \emph{slew}, em um pino de entrada $j$ de uma porta lógica $i$ pode ser calculado como
 
-	% O \emph{slew}, em um pino de entrada $j$ de uma porta lógica $i$ pode ser calculado como
+		\begin{equation}
+		slew_{ij} = slew_{ko} + \Delta S_{ko, ij}
+		\end{equation}
 
-	% \begin{equation}
-	% transicao_{ij} = transicao_{ko} + \Delta S_{ko, ij}
-	% \end{equation}
+		Onde $\Delta S_{ko, ij}$ é a degradação no \emph{slew} através da interconexão que liga $k$ a $i$.
 
-	% Onde $\Delta D_{ko, ij}$ é a degradação no \emph{slew} na Árvore RC, devido o efeito \emph{resistive shield}.
-
-	% {\color{red}FALAR DO REQUIRED TIME E DO SLACK}
-
-	% O algorítmo de Análise de Timing Estática é representado, em alto nível, pelo que segue:
-
-	% \begin{algorithm}
-	% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
-	% \LinesNumbered
-	%         \Input{$G(V, A)$}
-	%         \Output{Informação de \emph{Timing} $\forall v_i \in V$}
-	%         \For{ $\forall v_i \in V$ em ordem topológica}{
-	%         	$atualiza\_timing(v_i)$
-	%         }
-	%         \For{ $\forall v_i \in V$ em ordem topológica reversa}{
-	%         	$atualiza\_folgas(v_i)$
-	%         }
-	% \caption{ANÁLISE\_DE\_TIMING\_ESTÁTICA}\label{alg:STA}
-	% \end{algorithm}
-
-	% Para melhor representação do modelo de grafo, se faz necessária a representação dos pinos e dos arcos de \emph{timing}. Assim, o grafo de \emph{timing} G(V, A, P, Ar) consiste em:
-
-	% \begin{itemize}
+	\section{Tempos Requeridos (\emph{required times}) e Folgas (\emph{slacks})}
 		
-	% 	\item V = \{ $v_i | v_i$ é uma porta lógica do circuito digital \}
+		No projeto dos circuitos digitais, geralmente são impostas algumas restrições, como a frequência de operação, ou o tempo máximo permitido para que as saídas primárias se estabilizem a cada ciclo de clock. Seja a frequência estipulada $f$, o tempo máximo que as saídas primárias do circuito devem levar para se estabilizar, dado uma mudança nas entradas, é $T = {1 \over f}$. O tempo requerido, ou \emph{required time}, é o valor máximo que o \emph{arrival time} pode assumir em um determinado ponto no circuito, para que a restrição da frequência de operação seja respeitada. Portanto, nas saídas primárias, o tempo requerido é igual ao período $T$. Denominamos $required_{ij}$ o tempo requirido no pino $j$ da porta lógica $i$ e $required_{out} = T$ quando $out$ for uma saída primária do circuito.
 
-	% 	\item P = \{ $p_{ik} | p_{ik}$ é um pino de entrada ou saída de $v_i \in V$ \}
+		Em um pino de saída $o$ de uma porta lógica $v_i$, o tempo requerido pode ser obtido facilmente, observando o menor dos tempos requeridos dentre os seus \emph{fanouts}.
 
-	% 	\item A = \{ $(p_{io}, p_{jk}) | (p_{io}, p_{jk})$ é uma interconexão entre o pino de saída $p_{io} \in P$ de $v_i \in V$ e um pino de entrada $p_{jk} \in P$ de $v_j \in V$\}
-		
-	% 	\item Ar = \{ $ar_{i_{j \to o}} | ar_{i_{j \to o}} $ é o arco de \emph{timing}, do pino de entrada $p_{ij} \in P$ até o pino de saída $p_{io} \in P$ de $v_i \in V$\}
+		\begin{equation}
+		required_{io} = \min_{\forall j \in fanouts(io)}(required_{jk})
+		\end{equation}
 
-	% \end{itemize}
+		A propagação dos tempos requeridos é realizada em ordem topológica inversa, utilizando os valores já calculados de \emph{delay}.
 
+		Então, o tempo requerido no pino de entrada $j$ de uma porta lógica $v_i$ pode ser definido como:
 
-	% \begin{algorithm}
-	% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
-	% \LinesNumbered
-	%         \Input{$netlist(V, A, P, Ar)$}
-	%         \Output{Informação de \emph{Timing} $\forall ar_i \in Ar$, $\forall p_i \in P$}
-	%         \For{ $\forall v_i \in V$ em ordem topológica}{
-	%         	\For{$\forall j \in entradas_i$}{
-	%         		$chegada_{ij} \gets chegada_{ko} + atraso_{n_{ko \to ij}} | $ $ k\in fanins_i$
-	%         	}
-	%         	$chegada_{io} \gets  \max_{j \in P_i}(chegada_{ij} + atraso_{j \to o})$\;
-	%         	$transicao_{io} \gets \max_{j \in P_i}(transicao_{j \to o})$\;
-	%         }
-	% \caption{ANÁLISE\_DE\_TIMING\_ESTATICA}\label{alg:STA}
-	% \end{algorithm}
+		\begin{equation}
+		required_{ij} = required_{io} - delay_{i_{j \to o}}
+		\end{equation}
 
 
-	% $G$ é o conjunto de portas lógicas do circuito.
+		A partir dos \emph{required times} e \emph{arrival times}, podemos determinar as folgas diversos caminhos do circuito, ou seja, quanto o circuito pode ficar mais lento, para que o período máximo continue sendo respeitado. Assim, o \emph{slack} no pino $j$ de uma porta lógica $v_i$ é definido por:
 
-	% $A$ é o conjunto de \emph{timing arcs}.
+		\begin{equation}
+		slack_{ij} = required_{ij} - arrival\_time_{ij}
+		\end{equation}
 
-	% $P$ é o conjunto de \emph{timing points}.
-
-	% $N$ é o conjunto de interconexões.
-
-	% $chegada_{ij}$ é o tempo de chegada no pino $j$ da porta $i$.
-
-	% $transicao_{ij}$ é o tempo de transição no pino $j$ da porta $i$.
-
-	% $transicao_{i_{j \to o}}$ é tempo de transição do arco de origem no pino $j$, de entrada, e destino no pino $o$, de saída, da porta $i$.
-
-	% $atraso_{i_{j \to o}}$ é o atraso de propagação do arco de origem no pino $j$, de entrada, e destino no pino $o$, de saída, da porta $i$.
-
-	% $atraso_{n_{io \to jk}}$ é o atraso da interconexão entre o pino $o$, de saída, da porta $i$ e o pino $k$, de entrada, da porta $j$ .
+		Se em um determinado ponto do circuito, o tempo requirido é negativo, então o caminho em questão está violando a restrição de atraso máximo do sistema.
 
 
-	% \item Arquivos \emph{.spef} que descrevem as características parasitas desses circuitos;
-	% \item Arquivos \emph{.sdc} que definem as restrições de projeto impostas, tais como atrasos de entrada, capacitância de saída, ou desempenho esperado.
+		% {\color{red}FALAR DO REQUIRED TIME E DO SLACK}
+
+		% O algorítmo de Análise de Timing Estática é representado, em alto nível, pelo que segue:
+
+		% \begin{algorithm}
+		% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
+		% \LinesNumbered
+		%         \Input{$G(V, A)$}
+		%         \Output{Informação de \emph{Timing} $\forall v_i \in V$}
+		%         \For{ $\forall v_i \in V$ em ordem topológica}{
+		%         	$atualiza\_timing(v_i)$
+		%         }
+		%         \For{ $\forall v_i \in V$ em ordem topológica reversa}{
+		%         	$atualiza\_folgas(v_i)$
+		%         }
+		% \caption{ANÁLISE\_DE\_TIMING\_ESTÁTICA}\label{alg:STA}
+		% \end{algorithm}
+
+		% Para melhor representação do modelo de grafo, se faz necessária a representação dos pinos e dos arcos de \emph{timing}. Assim, o grafo de \emph{timing} G(V, A, P, Ar) consiste em:
+
+		% \begin{itemize}
+			
+		% 	\item V = \{ $v_i | v_i$ é uma porta lógica do circuito digital \}
+
+		% 	\item P = \{ $p_{ik} | p_{ik}$ é um pino de entrada ou saída de $v_i \in V$ \}
+
+		% 	\item A = \{ $(p_{io}, p_{jk}) | (p_{io}, p_{jk})$ é uma interconexão entre o pino de saída $p_{io} \in P$ de $v_i \in V$ e um pino de entrada $p_{jk} \in P$ de $v_j \in V$\}
+			
+		% 	\item Ar = \{ $ar_{i_{j \to o}} | ar_{i_{j \to o}} $ é o arco de \emph{timing}, do pino de entrada $p_{ij} \in P$ até o pino de saída $p_{io} \in P$ de $v_i \in V$\}
+
+		% \end{itemize}
+
+
+		% \begin{algorithm}
+		% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
+		% \LinesNumbered
+		%         \Input{$netlist(V, A, P, Ar)$}
+		%         \Output{Informação de \emph{Timing} $\forall ar_i \in Ar$, $\forall p_i \in P$}
+		%         \For{ $\forall v_i \in V$ em ordem topológica}{
+		%         	\For{$\forall j \in entradas_i$}{
+		%         		$chegada_{ij} \gets chegada_{ko} + atraso_{n_{ko \to ij}} | $ $ k\in fanins_i$
+		%         	}
+		%         	$chegada_{io} \gets  \max_{j \in P_i}(chegada_{ij} + atraso_{j \to o})$\;
+		%         	$transicao_{io} \gets \max_{j \in P_i}(transicao_{j \to o})$\;
+		%         }
+		% \caption{ANÁLISE\_DE\_TIMING\_ESTATICA}\label{alg:STA}
+		% \end{algorithm}
+
+
+		% $G$ é o conjunto de portas lógicas do circuito.
+
+		% $A$ é o conjunto de \emph{timing arcs}.
+
+		% $P$ é o conjunto de \emph{timing points}.
+
+		% $N$ é o conjunto de interconexões.
+
+		% $chegada_{ij}$ é o tempo de chegada no pino $j$ da porta $i$.
+
+		% $transicao_{ij}$ é o tempo de transição no pino $j$ da porta $i$.
+
+		% $transicao_{i_{j \to o}}$ é tempo de transição do arco de origem no pino $j$, de entrada, e destino no pino $o$, de saída, da porta $i$.
+
+		% $atraso_{i_{j \to o}}$ é o atraso de propagação do arco de origem no pino $j$, de entrada, e destino no pino $o$, de saída, da porta $i$.
+
+		% $atraso_{n_{io \to jk}}$ é o atraso da interconexão entre o pino $o$, de saída, da porta $i$ e o pino $k$, de entrada, da porta $j$ .
+
+
+		% \item Arquivos \emph{.spef} que descrevem as características parasitas desses circuitos;
+		% \item Arquivos \emph{.sdc} que definem as restrições de projeto impostas, tais como atrasos de entrada, capacitância de saída, ou desempenho esperado.
 
 \chapter{Implementação da Ferramenta de Análise de Timing}
 	
