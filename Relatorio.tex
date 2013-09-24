@@ -18,7 +18,9 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[lined,boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
+
+
 %----------------------------------------------------------------------
 % Comandos criados pelo usuário
 \newcommand{\afazer}[1]{{\color{red}{#1}}} % Para destacar uma parte a ser trabalhada
@@ -389,26 +391,50 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 		Um circuito combinacional pode ser representado por um grafo de \emph{timing} $G(V, A)$, onde os elementos de $V$, o conjunto de vértices, são portas lógicas, entradas ou saídas primárias do circuito.
 
-		Um par de vértices, $v_i$ e $v_j \in V$ são conectados por uma aresta direcionada $a(v_i, v_j) \in A$ se existe uma interconexão da saída do elemento depresentado pelo vértice $v_i$ para a entrada do elemento representado pelo vértice $v_j$. Um exemplo de circuito e seu grafo correspondente são ilustrados nas Figuras \ref{fig:exemplo_circuito_simple} e \ref{fig:exemplo_grafo_simple}. Node que neste caso, a entrada primária de \emph{clock} e sua interconexão não é representada no modelo de grafo, visto que neste trabalho, a abordagem será restringida a análise de timing em circuitos combinacionais, ou seja, não serão considerados tempos de \emph{setup}, \emph{hold}.
+		Um par de vértices, $v_i$ e $v_j \in V$ são conectados por uma aresta direcionada $a(v_i, v_j) \in A$ se existe uma interconexão da saída do elemento depresentado pelo vértice $v_i$ para a entrada do elemento representado pelo vértice $v_j$. Dois vértices especiais, juntamente de suas arestas, fonte (\emph{source}) e terminal (\emph{sink}) são inseridos antes das entradas e depois das saídas primárias, respectivamente, a fim de fornecer ao grafo, um único ponto de entrada e de saída.
+
+		Um exemplo de circuito e seu grafo correspondente são ilustrados nas Figuras \ref{fig:exemplo_circuito_simple} e \ref{fig:exemplo_grafo_simple}, em que as cores utilizadas para representar as entradas primárias, células combinacionais, células sequenciais e saídas primárias são respectivamente: azul, laranja, amarelo e verde. Node que neste caso, a entrada primária de \emph{clock} e sua interconexão não é representada no modelo de grafo, visto que neste trabalho, a abordagem será restringida a análise de timing em circuitos combinacionais, ou seja, não serão considerados tempos de \emph{setup} e \emph{hold} nas células sequenciais.
+
+		Um circuito sequencial que consiste de células combinacionais e sequenciais (\emph{flip-flops} e \emph{latches}) pode ser representado como um conjunto de blocos combinacionais, divididos pelos latches, como visualizado na figura \ref{fig:subcircuitos}, assim, a entrada de uma célula sequencial pode ser tratada como uma saída primária do circuito, e a saída dessa pode ser tratada como uma entrada primária do circito, conforme ilustrado na figura \ref{fig:grafo_refinado}.
+
+
 
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
 		\includegraphics[width=\linewidth, trim=0 8cm 0 8cm]{imagens/exemplo_circuito_simple.pdf}
 		% \includegraphics{sta.png}
-		\caption{Um exemplo de circuito}
+		\caption{Um exemplo de circuito.}
 		\label{fig:exemplo_circuito_simple}
 		\end{center}
 		\end{figure}
 
 		\begin{figure}[ht]
 		\begin{center}
-		\includegraphics[width=\linewidth, trim=0 8cm 0 8cm]{imagens/exemplo_grafo_simple.pdf}
+		\includegraphics[width=\linewidth, trim=0 17cm 0 12cm]{imagens/exemplo_grafo_simple.pdf}
 		% \includegraphics{sta.png}
-		\caption{Grafo correspondente ao circuito da Figura \ref{fig:exemplo_circuito_simple}}
+		\caption{Grafo correspondente ao circuito da Figura \ref{fig:exemplo_circuito_simple}.}
 		\label{fig:exemplo_grafo_simple}
 		\end{center}
 		\end{figure}
 
+
+		\begin{figure}[ht]
+		\begin{center}
+		\includegraphics[width=\linewidth, trim=0 13cm 0 12cm]{imagens/subcircuitos.pdf}
+		% \includegraphics{sta.png}
+		\caption{Grafo de timing dividido em dois subcircuitos devido a existência de uma célula sequencial.}
+		\label{fig:subcircuitos}
+		\end{center}
+		\end{figure}
+
+		\begin{figure}[ht]
+		\begin{center}
+		\includegraphics[width=\linewidth, trim=0 13cm 0 15cm]{imagens/grafo_refinado.pdf}
+		% \includegraphics{sta.png}
+		\caption{Grafo de \emph{timing} com célula sequencial atuando como entrada e saída primária do circuito.}
+		\label{fig:grafo_refinado}
+		\end{center}
+		\end{figure}
 
 		% \begin{figure}[ht]
 		% \begin{center}
@@ -479,23 +505,8 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 		Se em um determinado ponto do circuito, o tempo requirido é negativo, então o caminho em questão está violando a restrição de atraso máximo do sistema.
 
 
-		% {\color{red}FALAR DO REQUIRED TIME E DO SLACK}
 
-		% O algorítmo de Análise de Timing Estática é representado, em alto nível, pelo que segue:
-
-		% \begin{algorithm}
-		% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
-		% \LinesNumbered
-		%         \Input{$G(V, A)$}
-		%         \Output{Informação de \emph{Timing} $\forall v_i \in V$}
-		%         \For{ $\forall v_i \in V$ em ordem topológica}{
-		%         	$atualiza\_timing(v_i)$
-		%         }
-		%         \For{ $\forall v_i \in V$ em ordem topológica reversa}{
-		%         	$atualiza\_folgas(v_i)$
-		%         }
-		% \caption{ANÁLISE\_DE\_TIMING\_ESTÁTICA}\label{alg:STA}
-		% \end{algorithm}
+		
 
 		% Para melhor representação do modelo de grafo, se faz necessária a representação dos pinos e dos arcos de \emph{timing}. Assim, o grafo de \emph{timing} G(V, A, P, Ar) consiste em:
 
@@ -512,21 +523,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 		% \end{itemize}
 
 
-		% \begin{algorithm}
-		% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
-		% \LinesNumbered
-		%         \Input{$netlist(V, A, P, Ar)$}
-		%         \Output{Informação de \emph{Timing} $\forall ar_i \in Ar$, $\forall p_i \in P$}
-		%         \For{ $\forall v_i \in V$ em ordem topológica}{
-		%         	\For{$\forall j \in entradas_i$}{
-		%         		$chegada_{ij} \gets chegada_{ko} + atraso_{n_{ko \to ij}} | $ $ k\in fanins_i$
-		%         	}
-		%         	$chegada_{io} \gets  \max_{j \in P_i}(chegada_{ij} + atraso_{j \to o})$\;
-		%         	$transicao_{io} \gets \max_{j \in P_i}(transicao_{j \to o})$\;
-		%         }
-		% \caption{ANÁLISE\_DE\_TIMING\_ESTATICA}\label{alg:STA}
-		% \end{algorithm}
-
+		
 
 		% $G$ é o conjunto de portas lógicas do circuito.
 
@@ -554,7 +551,11 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 	
 	\section{Modelo de Grafo}
 
-		Na ferramenta implementada neste trabalho, foi necessário definir um modelo de grafo condizente com a realidade e que possibilite um desempenho razoável para as rotinas de atualização das informações de \emph{timing}. O modelo de grafo implementado é definido pelo conjunto de pinos dos circuitos, ou vértices do grafo, e a união do conjunto das interconexões com o conjunto dos arcos de \emph{timing}, formando assim, o conjunto das arestas.
+		Na ferramenta implementada neste trabalho, foi necessário definir um modelo de grafo condizente com a realidade e que possibilite um desempenho razoável para as rotinas de atualização das informações de \emph{timing}.
+
+		O modelo de grafo escolhido se difere um pouco da definição dada no capítulo anterior que era apenas ilustrativa, representando com mais detalhe a estrutura de \emph{timing} do circuito. O conjunto de pinos dos circuitos, ou vértices do grafo, e a união do conjunto das interconexões (\emph{setas pretas}) com o conjunto dos arcos de \emph{timing} (\emph{setas roxas}), formando assim, o conjunto das arestas.
+
+		As entradas primárias e registradores geralmente são mapeados para células presentes na biblioteca \emph{standard-cells}, por isso é necessário criar \emph{timing points} também para os pinos de entrada e seus respectivos \emph{timing arcs}. Um grafo representando o modelo escolhido pode ser visualizado na figura \ref{fig:grafo_timing_points}
 
 		 % Um circuito combinacional pode ser representado como um grafo direcionado $G(V, A)$, onde em $V$, o conjunto de vértices, são encontrados os pinos do circuito, e nas arestas ($E$), a união de dois conjuntos: as interconexões, denotado pela letra $I$, e os arcos de \emph{timing}, neste caso denominado $A$.
 
@@ -569,6 +570,15 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 		\end{itemize}
 
+		\begin{figure}[ht]
+		\begin{center}% TRIM = L D R U
+		\includegraphics[width=1.1 \linewidth, trim=2cm 13cm 0 0cm]{imagens/grafo_timing_points.pdf}
+		% \includegraphics{sta.png}
+		\caption{Grafo de \emph{timing} com representação dos \emph{timing points}, \emph{timing arcs} e \emph{timing nets}.}
+		\label{fig:grafo_timing_points}
+		\end{center}
+		\end{figure}
+
 		Nos vértices, ou \emph{timing points}, são armazenadas as informações temporais para os pinos do circuito. Essas informações são: o \emph{arrival time}, que é o tempo de chegada no determinado pino, ou a soma dos atrasos desde uma entrada primária até o ponto atual; o \emph{slew}, que é o tempo de transição no ponto; o \emph{slack}, que é a folga do caminho em que o ponto se encontra.
 
 
@@ -577,6 +587,40 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 	\section{Algoritmo de Análise de Timing Estática}
 
 		Com o modelo de grafo definido e implementado em suas devidas estruturas de dados, a análise de \emph{timing} estática já pode ser realizada. Basta chamar a rotina \emph{update\_timing}.
+
+
+		O algorítmo de Análise de Timing Estática é representado, em alto nível, pelo que segue:
+
+		\begin{algorithm}[H]
+			\SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saida}
+			\Input{Grafo de \emph{timing} $G(V, A)$}
+			\Output{Ìnformação de \emph{timing} $\forall v_i \in V$}
+
+			\For{ todos $v_i \in V$ em ordem topológica}{
+			$atualiza\_timing(v_i)$
+			}
+			\For{ todos $v_i \in V$ em ordem topológica reversa}{
+			$atualiza\_folgas(v_i)$
+			}
+			\caption{How to write algorithms}
+		\end{algorithm}
+		
+
+		% \begin{algorithm}
+		% \SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saída}
+		% \LinesNumbered
+		%         \Input{$netlist(V, A, P, Ar)$}
+		%         \Output{Informação de \emph{Timing} $\forall ar_i \in Ar$, $\forall p_i \in P$}
+		%         \For{ $\forall v_i \in V$ em ordem topológica}{
+		%         	\For{$\forall j \in entradas_i$}{
+		%         		$chegada_{ij} \gets chegada_{ko} + atraso_{n_{ko \to ij}} | $ $ k\in fanins_i$
+		%         	}
+		%         	$chegada_{io} \gets  \max_{j \in P_i}(chegada_{ij} + atraso_{j \to o})$\;
+		%         	$transicao_{io} \gets \max_{j \in P_i}(transicao_{j \to o})$\;
+		%         }
+		% \caption{ANÁLISE\_DE\_TIMING\_ESTATICA}\label{alg:STA}
+		% \end{algorithm}
+
 
 	\section{Atraso das Interconexões}
 		\label{cap:atraso}
