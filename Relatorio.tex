@@ -372,7 +372,7 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 	\end{figure}
 
 
-	% As informações temporais nos pontos do circuito são os atrasos de propagação (\emph{delay}) pino-a-pino, os tempos de transição (\emph{slew}), os tempos de chegada (\emph{arrival times}), tempos requeridos (\emph{required times}) e a folgas (\emph{slacks}). O tempo de transição (\emph{slew}), é o tempo que o sinal leva para ir do nível lógico 0 ao nivel lógico 1 (transição de subida, ou \emph{rise slew}), ou o tempo que o sinal leva para ir do nível lógico 1 ao nível lógico 0 (transição de descida, ou \emph{fall slew}). O \emph{delay} é o tempo que leva para saída de uma porta lógica mudar de nível lógico ao se alterar o nivel lógico de um pino de entrada. Semelhante ao \emph{slew}, o \emph{slew} para gerar uma queda de sinal na saída (\emph{fall delay}) é diferente do atraso para elevar o nível lógico da saída (\emph{rise delay}). 
+	% 
 
 	% \afazer{
 	% 	Neste capitulo será apresentado também:
@@ -404,16 +404,14 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
 		\includegraphics[width=\linewidth, trim=0 16cm 0 0]{imagens/exemplo_circuito_simple.pdf}
-		% \includegraphics{sta.png}
 		\caption{Um exemplo de circuito.}
 		\label{fig:exemplo_circuito_simple}
 		\end{center}
 		\end{figure}
 
 		\begin{figure}[ht]
-		\begin{center}
+		\begin{center}% TRIM = L D R U
 		\includegraphics[width=\linewidth, trim=0 17cm 0 0]{imagens/exemplo_grafo_simple.pdf}
-		% \includegraphics{sta.png}
 		\caption{Grafo correspondente ao circuito da Figura \ref{fig:exemplo_circuito_simple}.}
 		\label{fig:exemplo_grafo_simple}
 		\end{center}
@@ -421,18 +419,16 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 
 		\begin{figure}[ht]
-		\begin{center}
+		\begin{center}% TRIM = L D R U
 		\includegraphics[width=\linewidth, trim=0 13cm 0 0]{imagens/subcircuitos.pdf}
-		% \includegraphics{sta.png}
 		\caption{Grafo de timing dividido em dois subcircuitos devido a existência de uma célula sequencial.}
 		\label{fig:subcircuitos}
 		\end{center}
 		\end{figure}
 
 		\begin{figure}[ht]
-		\begin{center}
+		\begin{center}% TRIM = L D R U
 		\includegraphics[width=\linewidth, trim=0 13cm 0 0]{imagens/grafo_refinado.pdf}
-		% \includegraphics{sta.png}
 		\caption{Grafo de \emph{timing} com célula sequencial atuando como entrada e saída primária do circuito.}
 		\label{fig:grafo_refinado}
 		\end{center}
@@ -449,7 +445,46 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	\section{Cálculo e Propagação dos Atrasos}
 
-		\afazer{falar das lookup tables}
+		Nas bibliotecas de célula atuais são fornecidos modelos de atrasos para os arcos de \emph{timing} das células disponíveis, esses modelos, geralmente são obtidos através de simulações em nível elétrico.
+
+		Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu arco de \emph{timing} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$, o atraso e o tempo de propagação em seu arco de \emph{timing} são funções não lineares depentendes de dois fatores, capacitância total vista no pino de saída da porta lógica, e o tempo de transição aplicado na entrada da porta. Nas bibliotecas de célula atuais, o modelo não linear de atraso e transição é definido por \emph{lookup tables} como a mostrada na Figura \ref{fig:lookup_table}.
+
+
+\begin{figure}
+		\lstset{basicstyle=\footnotesize}
+\begin{lstlisting}[frame=single]
+cell_rise (delay_outputslew_template_7X8) {
+ index_1 (0.0, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2) ;
+ index_2 (0.5, 3.0, 5.0, 8.0, 14.0, 20.0, 30.0, 50.0) ;
+ values (
+   1.17, 1.82, 2.26, 2.76, 3.48, 4.04, 4.82, 6.12,
+   1.69, 2.34, 2.86, 3.49, 4.41, 5.11, 6.06, 7.58,
+   2.21, 2.86, 3.38, 4.12, 5.22, 6.05, 7.16, 8.90,
+   3.25, 3.90, 4.42, 5.20, 6.60, 7.67, 9.08, 11.23,
+   5.33, 5.98, 6.50, 7.28, 8.84, 10.30, 12.24, 15.14,
+   9.50, 10.15, 10.67, 11.45, 13.01, 14.57, 17.15, 21.33,
+   17.83, 18.48, 19.00, 19.78, 21.34, 22.90, 25.50, 30.70
+  );
+}
+
+
+\end{lstlisting}
+\caption{Uma \emph{Lookup table} para atraso de subida de um arco de \emph{timing} (\emph{cell\_rise}). As linhas são endereçadas por \emph{index\_1} (capacitância) e as colunas por \emph{index\_2}(\emph{slew}). Ou seja, entrando com valores $0.1$ para capacitância e $8.0$ para \emph{slew}, obtém-se $delay_{rise} = 3.49$.}
+\label{fig:lookup_table}
+\end{figure}
+		
+		
+
+		O tempo de transição (\emph{slew}), é o tempo que o sinal leva para ir do nível lógico 0 ao nivel lógico 1 (transição de subida, ou \emph{rise slew}), ou o tempo que o sinal leva para ir do nível lógico 1 ao nível lógico 0 (transição de descida, ou \emph{fall slew}). O \emph{delay} é o tempo que leva para saída de uma porta lógica mudar de nível lógico ao se alterar o nivel lógico de um pino de entrada. Semelhante ao \emph{slew}, o tempo para gerar uma queda de sinal na saída (\emph{fall delay}) é diferente do atraso para elevar o nível lógico da saída (\emph{rise delay}). 
+
+
+		\begin{figure}[ht]
+		\begin{center}% TRIM = L D R U
+		\includegraphics[width=1.1 \linewidth, trim=3cm 10cm 0 0]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
+		\caption{Arco de \emph{timing} para uma célula inversora. Adaptado de \cite{BhaskerChadha09}.}
+		\label{fig:arco_de_timing_fall_rise_slew_delay}
+		\end{center}
+		\end{figure}
 		
 		Na Análise de Timing Estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Uma rotina $atualiza\_timing(v_i)$ é executada para cada $v_i \in V$. Ela consiste em calcular os tempos de chegada \emph{(arrival times)} na saída de uma porta lógica, bem como os tempos de transição (\emph{slews}). O tempo de chegada e os tempos de transição no pino de saída $o$ de uma porta lógica $v_i \in V$ são definidos como:
 
