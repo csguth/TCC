@@ -625,7 +625,6 @@ cell_rise (delay_outputslew_template_7X8) {
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
 		\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/grafo_lista_nivel_logico.pdf}
-		% \includegraphics{sta.png}
 		\caption{Na lista ordenada, observando o elemento \emph{u1:o}, os elementos de menor nível lógico (\emph{fonte, inp1:a, inp1, inp2:a, inp2, f1:ck, f1:q, u1:a, u1:b, u2:a}) se encontram à esquerda, e os de maior (\emph{u2:o, f1:d, out, terminal}) se encontram à esquerda.}
 		\label{fig:grafo_lista_nivel_logico}
 		\end{center}
@@ -737,11 +736,61 @@ cell_rise (delay_outputslew_template_7X8) {
 
 
 	\section{Atraso das Interconexões}
-		\label{cap:atraso}
-		\afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
+		% \label{cap:atraso}
+		% \afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
+
+		Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) é utilizado para representar o fio em relação a suas capacitâncias e resistências.
+
+		No modelo de grafo $I(C, R)$ proposto, o conjunto dos vértices, ou capacitores $C$, é composto pelos nodos internos da interconexão, ou capacitores, juntamente com seus valores de capacitâncias. As arestas do grafo representam os resistores, onde cada resitor conecta dois capacitores com um valor de resistência. Sendo assim:
+		\begin{equation}
+			C = \{((u, c) | c > 0\}.
+		\end{equation}
+		\begin{equation}
+			R = \{((u_1, c_1), (u_2, c_2), r) | (u_1, c_1), (u_2, c_2) \in C \land c1, c2, r > 0\}.
+		\end{equation}
+
+		
+		\begin{figure}[ht]
+		\begin{center}% TRIM = L D R U
+		\includegraphics[width=1 \linewidth, trim=0cm 15cm 0 0]{imagens/grafo_interconexao.pdf}
+		\caption{a) Uma interconexão com três capacitores, \emph{u1:o, u1:1 e u2:a}, e dois resistores, \emph{r1 e r2}, ligando duas portas lógicas, \emph{u1 e u2}; b) O grafo correspondente, com três vértices e duas arestas.}
+		\label{fig:grafo_interconexao}
+		\end{center}
+		\end{figure}
+
 
 		\subsection{Técnica de Elmore} 
-		\afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
+		% \afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
+
+		A técnica de \citeonline{Elmore48}, amplamente conhecida na literatura é de fácil implementação. O algoritmo para cálculo do atraso de Elmore (Algorítmo \ref{algo:elmore}) recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais ($c_{tot_i}$) de cada nodo interno. Em ordem topológica reversa, os nodos são inicializados da seguinte maneira:
+		
+		\begin{equation}
+			 c_{tot_i} = \left\{
+			\begin{array}{l l}
+				c_i & \quad \text{se $(u_i, c_i)$ é um capacitor terminal} \\
+				\sum_{j \in filhos(i)} c_{tot_j} & \quad \text{caso contrário}
+			\end{array} \right. 
+		\end{equation}
+
+		Onde o conjunto $filhos(i)$ é o conjunto de capacitores que estão interligados diretamente com o capacitor ($u_i, c_i$) através de um resistor $r$, que tenham um nível topológico maior que este. Analogamente, o $pai(i)$ é um capacitor que precede ($u_i, c_i$) e se conecta com ele, também, através de um resistor.
+
+		A função $r(i, j)$ retorna o valor da resistência que liga dois capacitores $(u_i, c_i)$ e $(u_j, c_j) \in C$. O atributo $c_{tot_i}$ é a capacitância total de um nodo $u_i$, obtida a partir da soma de todas as capacitâncias a partir do capacitor $(u_i, c_i)$.
+
+		Para determinar os atrasos da interconexão utilizando o modelo de Elmore, basta obter os valores T = \{$\tau_i | u_i$ que é um nodo terminal da árvore RC\}.
+
+		\begin{algorithm}[H]
+		\Entrada{Árvore RC $I(C, R)$}
+
+		$\tau_1 = 0$
+
+		\Para{todo $(u_i, c_i) \in C\ |\ i > 1$ em ordem topológica}{
+			$\tau_i = \tau_{pai(i)} + r(pai(i), i) * c_{tot_i}$
+		}
+		\label{algo:elmore}
+		\caption{Atraso de Elmore}
+		\end{algorithm}
+
+		
 
 		\subsection{Técnica de \citeonline{PURI02}}
 		\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
@@ -750,7 +799,7 @@ cell_rise (delay_outputslew_template_7X8) {
 
 		Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \emph{driver} uma porta combinacional \emph{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \emph{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \emph{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
 
-		O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \citeonline{PURI02}, se dá em 5 passos:
+		O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \cite{PURI02}, se dá em 5 passos:
 
 		\begin{enumerate}
 
