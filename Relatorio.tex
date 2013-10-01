@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portuguese, lined,boxed,ruled,commentsnumbered]{algorithm2e}
 
 
 
@@ -641,14 +641,13 @@ cell_rise (delay_outputslew_template_7X8) {
 		O algorítmo de Análise de Timing Estática é representado, em alto nível, pelo que segue:
 
 		\begin{algorithm}[H]
-			\SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saida}
-			\Input{Grafo de \emph{timing} $G(V, E)$}
-			\Output{Informações de \emph{timing} para os elementos do grafo (\emph{timing points, timing nets} e \emph{timing arcs})}
+			\Entrada{Grafo de \emph{timing} $G(V, E)$}
+			\Saida{Informações de \emph{timing} para os elementos do grafo (\emph{timing points, timing nets} e \emph{timing arcs})}
 
-			\For{ todos $v_i \in V$ em ordem topológica}{
+			\Para{ todos $v_i \in V$ em ordem topológica}{
 			$atualiza\_timing(v_i)$
 			}
-			\For{ todos $v_i \in V$ em ordem topológica reversa}{
+			\Para{ todos $v_i \in V$ em ordem topológica reversa}{
 			$atualiza\_folgas(v_i)$
 			}
 			\caption{Análise de \emph{Timing} Estática}
@@ -662,10 +661,9 @@ cell_rise (delay_outputslew_template_7X8) {
 
 
 		\begin{algorithm}[H]
-			\SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saida}
-			\Input{\emph{Timing point $v_i \in V$}}
+			\Entrada{\emph{Timing point $v_i \in V$}}
 			
-			\uIf{ $v_i$ é um pino de entrada ou saída primária }
+			\uSe{ $v_i$ é um pino de entrada ou saída primária }
 			{
 				$o$ = pino de saída através do arco que parte de $v_i$
 
@@ -677,7 +675,7 @@ cell_rise (delay_outputslew_template_7X8) {
 
 				$slew_o$ = $\max(slew_o, slew_{i \to o})$;
 			}
-			\ElseIf {$v_i$ é um pino de saída ou entrada primária}
+			\SenaoSe {$v_i$ é um pino de saída ou entrada primária}
 			{
 
 				$j$ = pino fanout de $v_i$
@@ -700,9 +698,23 @@ cell_rise (delay_outputslew_template_7X8) {
 			\SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saida}
 			\Input{\emph{Timing point $v_i \in V$}}
 
-			required time
+			\uSe{$v_i \in PO$}
+			{
+				$required_i = T$ 
+			}
+			\uSenaoSe{$v_i \in PI$ ou $v_i$ é um pino de saída}
+			{
+				$required_i = min_{j \in fanouts(i)}(required_j)$
+			}
+			\SenaoSe{$v_i$ é um pino de entrada}
+			{
+				$o$ = pino de saída através do arco que parte de $v_i$
 
-			slack
+				$required_i = required_o - delay_{i \to o}$
+			}
+
+
+			$slack_i = required_i - arrival_i$
 
 
 			\caption{Rotina Atualiza Folgas}
