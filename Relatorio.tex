@@ -393,11 +393,11 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 		Um circuito combinacional pode ser representado por um grafo de \emph{timing} $G(V, E)$, onde os elementos de $V$, o conjunto de vértices, são portas lógicas, entradas ou saídas primárias do circuito.
 
-		Um par de vértices, $v_i$ e $v_j \in V$ são conectados por uma aresta direcionada $a(v_i, v_j) \in E$ se existe uma interconexão da saída do elemento depresentado pelo vértice $v_i$ para a entrada do elemento representado pelo vértice $v_j$. Dois vértices especiais, fonte (\emph{source}) e terminal (\emph{sink}), juntamente de suas arestas,  são inseridos antes das entradas e depois das saídas primárias, respectivamente, a fim de fornecer ao grafo, um único ponto de entrada e de saída.
+		Um par de vértices, $v_i$ e $v_j \in V$ são conectados por uma aresta direcionada $a(v_i, v_j) \in E$ se existe uma interconexão da saída do elemento representado pelo vértice $v_i$ para a entrada do elemento representado pelo vértice $v_j$. Dois vértices especiais, fonte (\emph{source}) e terminal (\emph{sink}), juntamente de suas arestas,  são inseridos antes das entradas e depois das saídas primárias, respectivamente, a fim de fornecer ao grafo, um único ponto de entrada e de saída.
 
-		Um exemplo de circuito e seu grafo correspondente são ilustrados nas Figuras \ref{fig:exemplo_circuito_simple} e \ref{fig:exemplo_grafo_simple}, em que as cores utilizadas para representar as entradas primárias, células combinacionais, células sequenciais e saídas primárias são respectivamente: azul, laranja, amarelo e verde. Node que neste caso, a entrada primária de \emph{clock} e sua interconexão não é representada no modelo de grafo, visto que neste trabalho, a abordagem será restringida a análise de timing em circuitos combinacionais, ou seja, não serão considerados tempos de \emph{setup} e \emph{hold} nas células sequenciais.
+		Um exemplo de circuito e seu grafo correspondente é ilustrado nas Figuras \ref{fig:exemplo_circuito_simple} e \ref{fig:exemplo_grafo_simple}, em que as cores utilizadas para representar as entradas primárias, células combinacionais, células sequenciais e saídas primárias são respectivamente: azul, laranja, amarelo e verde. Note que neste caso, a entrada primária de \emph{clock} e sua interconexão não são representados no modelo de grafo, visto que neste trabalho, a abordagem será restringida a análise de timing em circuitos combinacionais, ou seja, não serão considerados tempos de \emph{setup} e \emph{hold} nas células sequenciais.
 
-		Um circuito sequencial que consiste de células combinacionais e sequenciais (\emph{flip-flops} e \emph{latches}) pode ser representado como um conjunto de blocos combinacionais, divididos pelos latches, como visualizado na Figura \ref{fig:subcircuitos}, assim, a entrada de uma célula sequencial pode ser tratada como uma saída primária do circuito, e a saída dessa pode ser tratada como uma entrada primária do circito, conforme ilustrado na Figura \ref{fig:grafo_refinado}.
+		Um circuito que consiste de células combinacionais e sequenciais (\emph{flip-flops} e \emph{latches}) pode ser representado como um conjunto de blocos combinacionais, divididos pelos latches, como visualizado na Figura \ref{fig:subcircuitos}, assim, a entrada de uma célula sequencial pode ser tratada como uma saída primária do circuito, e a saída dessa pode ser tratada como uma entrada primária do circito, conforme ilustrado na Figura \ref{fig:grafo_refinado}.
 
 
 
@@ -445,9 +445,16 @@ Análise de \emph{Timing} Estática (\emph{STA: Static Timing Analysis}) é a técni
 
 	\section{Cálculo e Propagação dos Atrasos}
 
-		Nas bibliotecas de célula atuais são fornecidos modelos de atrasos para os arcos de \emph{timing} das células disponíveis, esses modelos, geralmente são obtidos através de simulações em nível elétrico.
+	Na Análise de \emph{Timing} Estática, os cicuitos são modelados considerando duas partes principais, as portas lógicas e as interconexões. As portas lógicas são modeladas a nível de seus arcos de \emph{timing}, e seus modelos são fornecidos pelas bibliotecas de célula, através de elementos conhecidas como \emph{lookup tables}. As interconexões, podem receber um modelo simplista ou mais sofisticado, dependendo da etapa que o projeto se encontra no fluxo \emph{standard cell}. Para etapas mais preliminares, as interconexões são modeladas como capacitâncias, sem atraso. Nas etapas seguintes, as interconexões são representadas por suas árvores RC.
+	
+	Nesta seção, serão apresentados detalhes sobre a modelagem das portas lógicas, e seu mapeamento para a biblioteca de célula, e posteriormente, como é calculado o atraso de propagação nas interconexões, dependendo do modelo empregado.
+	
+	%\includegraphics[width=0.8 \linewidth]{imagens/methodology_for_rc_delay_calculation.png} 
 
-		Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu arco de \emph{timing} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$, o atraso e o tempo de propagação em seu arco de \emph{timing} são funções não lineares depentendes de dois fatores, capacitância total vista no pino de saída da porta lógica, e o tempo de transição aplicado na entrada da porta. Nas bibliotecas de célula atuais, o modelo não linear de atraso e transição é definido por \emph{lookup tables} como a mostrada na Figura \ref{fig:lookup_table}.
+		\subsection{Modelo de Atraso Não-Linear (\emph{NLDM})}
+		Nas bibliotecas de célula atuais, modelos de atrasos não lineares são fornecidos para os arcos de \emph{timing} das células disponíveis. Esses modelos, que geralmente são obtidos através de simulações em nível elétrico, são registrados na forma de \emph{lookup tables}, como a da Figura \ref{fig:lookup_table}. Uma \emph{lookup table} descreve o atraso ou o tempo de transição de um arco de timing em função de dois fatores: o tempo de transição na entrada do arco, e a capacitância vista na saída.
+
+		Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu arco de \emph{timing} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$. O atraso de propagação (\emph{delay}) é o tempo que o sinal no pino $o$ leva para se estabilizar, devido a uma mudança no sinal no pino $a$. Se a transição na saída for de 0 para Vdd, o atraso é chamado de atraso de subida (\emph{rise delay}), caso o contrário, é chamado de atraso de descida (\emph{fall delay}). O tempo de transição (\emph{slew}), é o tempo que o sinal leva para mudar de nível lógico. Se for uma mudança positiva, a transição é chamada de transição de subida (\emph{rise slew}), caso contrário, transição de descida (\emph{fall slew}). Com o objetivo de simplificar as futuras apresentações, somente um atraso e um \emph{slew} serão considerados.
 
 
 \begin{figure}
@@ -473,9 +480,6 @@ cell_rise (delay_outputslew_template_7X8) {
 \label{fig:lookup_table}
 \end{figure}
 		
-		
-
-		O tempo de transição (\emph{slew}), é o tempo que o sinal leva para ir do nível lógico 0 ao nivel lógico 1 (transição de subida, ou \emph{rise slew}), ou o tempo que o sinal leva para ir do nível lógico 1 ao nível lógico 0 (transição de descida, ou \emph{fall slew}). O \emph{delay} é o tempo que leva para saída de uma porta lógica mudar de nível lógico ao se alterar o nivel lógico de um pino de entrada. Semelhante ao \emph{slew}, o tempo para gerar uma queda de sinal na saída (\emph{fall delay}) é diferente do atraso para elevar o nível lógico da saída (\emph{rise delay}). 
 
 
 		\begin{figure}[ht]
@@ -486,7 +490,9 @@ cell_rise (delay_outputslew_template_7X8) {
 		\end{center}
 		\end{figure}
 		
-		Na Análise de Timing Estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Uma rotina $atualiza\_timing(v_i)$ é executada para cada $v_i \in V$. Ela consiste em calcular os tempos de chegada \emph{(arrival times)} na saída de uma porta lógica, bem como os tempos de transição (\emph{slews}). O tempo de chegada e os tempos de transição no pino de saída $o$ de uma porta lógica $v_i \in V$ são definidos como:
+		\subsection{Propagação dos Atrasos}
+		
+		Na Análise de Timing Estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Para cada $v_i \in V$, os tempos de chegada \emph{(arrival times)}, ou seja, o somatório dos atrasos desde a entrada primária até $v_i$, bem como os tempos de transição (\emph{slews}) são determinados de modo a respeitar as seguintes restrições:
 
 		\begin{equation}
 		arrival_{io} = \max_{\forall j \in input\_pins(i)}(arrival_{ij} + delay_{i_{j \to o}})
@@ -498,17 +504,13 @@ cell_rise (delay_outputslew_template_7X8) {
 
 		Onde $arrival_{ik}$ é o tempo de chegada (\emph{arrival time}) da porta $v_i$ no pino $k$ e $delay_{i_{j \to o}}$ é o atraso de propagação (\emph{delay}) da porta $v_i$, no arco que vai do pino de entrada $j$, até um pino de saída $o$. 
 
-		O tempo de chegada, em um pino de entrada $j$ de uma porta lógica $i$ calculado da seguinte maneira:
+		O tempo de chegada, em um pino de entrada $j$ de uma porta lógica $i$ é definido por:
 
 		\begin{equation}
 		arrival_{ij} = arrival_{ko} + \Delta D_{ko, ij}
 		\end{equation}
 
-		Onde $k$ é o \emph{fanin} da porta $i$ pelo pino $j$, e $\Delta D_{ko, ij}$ é o atraso de propagação do pino de saída $o$ da porta lógica $k$ e o pino de entrada $j$ da porta lógica $i$ através da interconexão que conecta estes pinos. Em um modelo simplista de interconexões como o modelo da capacitância concentrada (\emph{lumped}), as interconexões não oferecem degradação nenhuma ao desempenho, portanto $\Delta D_{ko, ij} = 0$.
-
-		Similarmente, denotamos o \emph{slew} da porta lógica $v_i$ no pino $k$ como $slew_{ik}$, e o \emph{slew} do arco que vai do pino de entrada $j$, até um pino de saída $o$, como $slew_{i_{j \to o}}$.
-
-		O \emph{slew}, em um pino de entrada $j$ de uma porta lógica $i$ e definido por:
+		Onde $k$ é o \emph{fanin} da porta $i$ pelo pino $j$, e $\Delta D_{ko, ij}$ é o atraso de propagação do pino de saída $o$ da porta lógica $k$ e o pino de entrada $j$ da porta lógica $i$ através da interconexão que conecta estes pinos. Em um modelo simplista de interconexões como o modelo da capacitância concentrada (\emph{lumped}), as interconexões não oferecem degradação nenhuma ao desempenho, portanto $\Delta D_{ko, ij} = 0$. Similarmente, denotamos o \emph{slew} da porta lógica $v_i$ no pino $k$ como $slew_{ik}$, e o \emph{slew} do arco que vai do pino de entrada $j$, até um pino de saída $o$, como $slew_{i_{j \to o}}$. O \emph{slew}, em um pino de entrada $j$ de uma porta lógica $i$ é definido por:
 
 		\begin{equation}
 		slew_{ij} = slew_{ko} + \Delta S_{ko, ij}
@@ -541,7 +543,7 @@ cell_rise (delay_outputslew_template_7X8) {
 		slack_{ij} = required_{ij} - arrival_{ij}
 		\end{equation}
 
-		Se em um determinado ponto do circuito, o tempo requirido é negativo, então o caminho em questão está violando a restrição de atraso máximo do sistema.
+		Se em um determinado ponto do circuito, o \emph{slack} é negativo, então o caminho em questão está violando a restrição de atraso máximo do sistema.
 
 
 
@@ -588,11 +590,13 @@ cell_rise (delay_outputslew_template_7X8) {
 
 \chapter{Implementação da Ferramenta de Análise de Timing}
 	
+	Este capítulo apresentará as estratégias utilizadas para o desenvolvimento da ferramenta de análise de \emph{timing}. Serão ilustradas as principais estruturas de dados, modelos de grafo, e serão apresentados também, os algoritmos implementados na ferramenta desenvolvida.
+
 	\section{Modelo de Grafo}
 
 		Na ferramenta implementada neste trabalho, foi necessário definir um modelo de grafo condizente com a realidade e que possibilite um desempenho razoável para as rotinas de atualização das informações de \emph{timing}.
 
-		O modelo de grafo escolhido se difere um pouco da definição dada no capítulo anterior que era apenas ilustrativa, representando com mais detalhe a estrutura de \emph{timing} do circuito. O conjunto de pinos dos circuitos, ou vértices do grafo, e a união do conjunto das interconexões (\emph{setas pretas}) com o conjunto dos arcos de \emph{timing} (\emph{setas roxas}), formando assim, o conjunto das arestas.
+		O modelo de grafo escolhido se difere um pouco da definição dada no capítulo anterior que era apenas ilustrativa, representando com mais detalhe a estrutura de \emph{timing} do circuito. Assim, o grafo de \emph{timing} é definido pelo conjunto de pinos dos circuitos, entradas e saídas primárias, constituindo o conjunto dos vértices, e a união do conjunto das interconexões com o conjunto dos arcos de \emph{timing}, formando assim, o conjunto das arestas.
 
 		As entradas primárias e registradores geralmente são mapeados para células presentes na biblioteca \emph{standard-cells}, por isso é necessário criar \emph{timing points} também para os pinos de entrada e seus respectivos \emph{timing arcs}. Um grafo representando o modelo escolhido pode ser visualizado na Figura \ref{fig:grafo_timing_points}.
 
@@ -618,9 +622,9 @@ cell_rise (delay_outputslew_template_7X8) {
 		\end{center}
 		\end{figure}
 
-		Nos vértices, ou \emph{timing points}, são armazenadas as informações temporais para os pinos do circuito. Essas informações são: o \emph{arrival time}, que é o tempo de chegada no determinado pino, ou a soma dos atrasos desde uma entrada primária até o ponto atual; o \emph{slew}, que é o tempo de transição no ponto; o \emph{slack}, que é a folga do caminho em que o ponto se encontra.
+		Nos vértices, ou \emph{timing points}, são armazenadas as informações temporais para os pinos do circuito, tais como os \emph{arrival times}, \emph{slews} e \emph{slacks}.
 
-		As estruturas de dados utilizadas para armazenar os elementos do grafo são essencialmente listas ordenadas topologicamente. À esquerda de um elemento, necessariamente se encontram os elementos de mesmo ou menor nível lógico, e à direita, de nível igual ao maior, como na Figura \ref{fig:grafo_lista_nivel_logico}. A mesma coisa acontece com os \emph{timing arcs} e com as \emph{timing nets}. Com essa escolha, o algoritmo de análise de timing estática passa a ser apenas de uma varredura em ordem, na lista, atualizando a informação de \emph{timing} acumulada para cada vértice do grafo.
+		As estruturas de dados utilizadas para armazenar os elementos do grafo são essencialmente listas ordenadas topologicamente. À esquerda de um elemento, necessariamente se encontram os elementos de mesmo ou menor nível lógico, e à direita, de nível igual ao maior, como na Figura \ref{fig:grafo_lista_nivel_logico}. Da mesma maneira, os \emph{timing arcs} e as \emph{timing nets} também são ordenados topologicamente. Com essa escolha, o algoritmo de análise de timing estática passa a ser apenas de uma varredura em ordem, na lista de \emph{timing points}, atualizando a informação de \emph{timing} acumulada para cada vértice do grafo.
 
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
@@ -658,7 +662,6 @@ cell_rise (delay_outputslew_template_7X8) {
 		O procedimento $atualiza\_timing(v_i)$ para um \emph{timing point $v_i$} pode ser melhor observado no pseudo-código a seguir:
 
 
-
 		\begin{algorithm}[H]
 			\Entrada{\emph{Timing point $v_i \in V$}}
 			
@@ -691,7 +694,7 @@ cell_rise (delay_outputslew_template_7X8) {
 
 		Onde $delay_{i \to o}$ é o atraso de propagação no arco $i \to o$; $slew_{i \to o}$ é o tempo de transição no arco $i \to o$; $arrival_i$ é o tempo de chegada no pino $i$; $slew_i$ é o tempo de transição no pino $i$; $\Delta D_{i, j}$ é o tempo de propagação pela interconexão que liga o pino $i$ no pino $j$; e $\Delta S_{i, j}$ é a degradação no \emph{slew} causada pela interconexão entre $i$ e $j$.
 
-		\afazer{rotina atualiza folgas}
+		Após todos os \emph{arrival times} serem calculados, as folgas são obtidas propagando os \emph{required times} em ordem topológica reversa. A rotina $atualiza\_folgas$ para um nodo $v_i$ é apresentada no Algoritmo \ref{alg:update_slacks}.
 
 		\begin{algorithm}[H]
 			\SetKwInOut{Input}{Entrada}\SetKwInOut{Output}{Saida}
@@ -717,6 +720,7 @@ cell_rise (delay_outputslew_template_7X8) {
 
 
 			\caption{Rotina Atualiza Folgas}
+			\label{alg:update_slacks}
 		\end{algorithm}
 
 		% \begin{algorithm}
@@ -734,14 +738,21 @@ cell_rise (delay_outputslew_template_7X8) {
 		% \caption{ANÁLISE\_DE\_TIMING\_ESTATICA}\label{alg:STA}
 		% \end{algorithm}
 
+	\section{Cálculo e Propagação dos Atrasos e Tempos de Transição}
 
-	\section{Atraso das Interconexões}
+		\afazer{explicar com imagens os atrasos nos pontos, etc}
+
+	\subsection{Modelo de Atraso Não Linear (\emph{NLDM})}
+
+		\afazer{explicar as lookup tables, o que é}	
+	
+	\subsection{Atraso das Interconexões}
 		% \label{cap:atraso}
 		% \afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
 
 		Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) é utilizado para representar o fio em relação a suas capacitâncias e resistências.
 
-		No modelo de grafo $I(C, R)$ proposto, o conjunto dos vértices, ou capacitores $C$, é composto pelos nodos internos da interconexão, ou capacitores, juntamente com seus valores de capacitâncias. As arestas do grafo representam os resistores, onde cada resitor conecta dois capacitores com um valor de resistência. Sendo assim:
+		No modelo de grafo $I(C, R)$ proposto, o conjunto dos vértices, ou capacitores $C$, é composto pelos nodos internos da interconexão, ou capacitores, juntamente com seus valores de capacitâncias. As arestas do grafo representam os resistores, onde cada resistor conecta dois capacitores com um valor de resistência. Sendo assim:
 		\begin{equation}
 			C = \{((u, c) | c > 0\}.
 		\end{equation}
@@ -759,7 +770,7 @@ cell_rise (delay_outputslew_template_7X8) {
 		\end{figure}
 
 
-		\subsection{Técnica de Elmore} 
+		\subsubsection{Técnica de Elmore} 
 		% \afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
 
 		A técnica de \citeonline{Elmore48}, amplamente conhecida na literatura é de fácil implementação. O algoritmo para cálculo do atraso de Elmore (Algorítmo \ref{algo:elmore}) recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais ($c_{tot_i}$) de cada nodo interno. Em ordem topológica reversa, os nodos são inicializados da seguinte maneira:
@@ -792,7 +803,7 @@ cell_rise (delay_outputslew_template_7X8) {
 
 		
 
-		\subsection{Técnica de \citeonline{PURI02}}
+		\subsubsection{Técnica de \citeonline{PURI02}}
 		\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
 
 		Para simular a interdependência entre o \emph{slew} e a Capacitância Efetiva, o \emph{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
