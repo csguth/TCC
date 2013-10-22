@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portuguese, lined,boxed,ruled,commentsnumbered]{algorithm2e}
 
 
 
@@ -190,8 +190,28 @@ Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) é a t
 		\afazer{explicar como se organiza o trablaho}
 
 \chapter{Conceitos Fundamentais de Circuitos Digitais}
+
+	Neste capítulo, serão apresentados alguns conceitos básicos de circuitos digitais, que são necessários para melhor entendimento do tema abordado no trabalho. A primeira seção definirá as características temporais das portas lógicas, a segunda falará da interconexão, e a terceira, das diferentes maneiras de se modelar as interconexões.
+
 \section{Características Temporais}
 \afazer{delay, slew}
+
+As características temporais do circuito obtidas como produto da Análise de \textit{Timing} Estática são derivadas das caracteristicas temporais de suas partes, ou seja, as portas lógicas e as interconexões que compõem o circuito. No fluxo \textit{standard cell}, as características temporais desses elementos são definidos na biblioteca \textit{standard cell}.
+
+Para as portas lógicas, as informações a seguir são relevantes \cite{Livramento13}:
+
+\begin{itemize}
+	\item \textbf{Atraso de propagação (\textit{delay}): } é o tempo que o sinal em um pino de saída $o$ leva para atingir 50\% de sua transição total, devido a uma mudança no sinal em um pino de entrada $a$. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}).
+	
+	\item \textbf{Tempo de Transição (\textit{Slew): }} é o tempo que o sinal leva para transicionar de uma tensão de referência a outra, por exemplo: $0 \to 5V$. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}). 
+	
+	\item \textbf{Propagação do \textit{Slew: }}
+	
+
+
+\end{itemize}
+
+Com o objetivo de simplificar as futuras apresentações, somente um atraso e um \textit{slew} serão considerados.
 
 \section{Interconexões}
 \afazer{load seen by driver
@@ -200,10 +220,19 @@ wire delay
 
 slew degradation}
 
+%
+%A medida que os dispositivos eletrônicos operam em frequências maiores, o atraso das interconexões torna-se muito mais significante. Quando os dispositivos são reduzidos nas três dimensões por um fator $S$, o \textit{delay} intrínsico da porta lógica é reduzido por um fator de $S$, o atraso de interconexões locais continua o mesmo, porém, o atraso das interconexões globais aumenta por um fator de $S^2$.
+
 
 \section{Modelo de Interconexões}
 
-	Este capítulo tem por objetivo, apresentar alguns modelos de representação de interconexões (fios), suas vantagens e desvantagens. Também será apresentado, o formato de representação de parasitas mais utilizado no projeto de circuitos digitais.
+\afazer{Fazer um link: Motivação: Primeiro parágrafo de introdução do paper ``Performance Optimization of VLSI Interconnect Layout''}
+
+	Em diversos sistemas projetados atualmente, cerca de 50\% a 70\% do ciclo de relógio é ``consumido'' pelo atraso de propagação de suas interconexões \cite{Cong96}. Nas tecnologias com alta escala de integração (\textit{VLSI: Very-large-scale integration}) atuais, onde diversas otimizações tem por objetivo reduzir a resistência dos \textit{drivers}, as interconexões passam a ser cada vez mais impactantes no desempenho do circuito digital.
+	
+	Dependendo da etapa no fluxo em que o projeto se encontra, as interconexões se apresentam modeladas de maneiras diferentes. Inicialmente, de forma a oferecer uma simulação rápida e não tão precisa, ja que as informações de \textit{placement} e \textit{routing} ainda não foram obtidas. Nas etapas posteriores, as interconexões precisam ser modeladas adequadamente, em funções dos seus parasitas, que já foram obtidos e otimizados.
+
+	Esta seção tem por objetivo, apresentar alguns modelos de representação de interconexões (fios), suas vantagens e desvantagens. Também será apresentado, o formato de representação de parasitas mais utilizado no projeto de circuitos digitais.
 
 %	\subsection{Modelo de Interconexão Ideal}
 %
@@ -211,7 +240,7 @@ slew degradation}
 %
 %	A medida em que o fluxo de projeto atinge fases mais avançadas, as interconexões necessitam ser abordadas em outro nível, considerando seu efeito e comportamento elétrico.
 
-\afazer{Fazer um link: Motivação: Primeiro parágrafo de introdução do paper ``Performance Optimization of VLSI Interconnect Layout''}
+
 
 	\subsection{Modelo RC Distribuído (\textit{Distributed RC Model})}
 		\afazer{no closed form
@@ -220,43 +249,23 @@ slew degradation}
 		
 				
 		}
+		Uma interconexão pode ser representada como uma linha distribuída (Figura \ref{fig:distributed_rc}. Porém, este modelo reflete em complexidade computacional significativa 
 
-
-		Como visto anteriormente, o Modelo RC Concentrado é uma a\-pro\-xi\-ma\-ção simplificada. O modelo de atraso de Elmore pode obter erros, pois ignora o efeito conhecido como \textit{resistive shield}, sendo impreciso quando se trata de interconexões grandes.
-
-		\citeonline{Kashyap00} propuseram uma métrica, que leva em consideração o efeito de \textit{resistive shield}, calculando uma Capacitância Efetiva ($C_{eff}$) para modelar o impacto das capacitâncias \textit{downstream}.
-
-		Devido a limitação de que o cálculo da Capacitância Efetiva depende do \textit{slew} aplicado no nodo fonte da Árvore RC, e que por sua vez, depende da Capacitância Efetiva, este trabalho abordará uma alternativa, proposta por \citeonline{PURI02}, computacionalmente eficiente e precisa, para estimativa dos atrasos das interconexões em circuitos \textit{CMOS}, contornando o problema observado em por \citeonline{Kashyap00}.
-%
-%		\subsubsection{Desafios de Implementar o Modelo RC Distribuído}
-%
-%			\afazer{
-%			Aqui é necessário apontar que não existe fórmula ``fechada'' para se estimar os atrasos no modelo RC Distribuído, e que uma estimativa boa requer um tempo de execução maior que uma estimativa utilizando o modelo \citeonline{Elmore48}, por exemplo.
-%
-%			}
-
+	\begin{figure}[ht]
+		\begin{center}
+		\includegraphics[width=\linewidth]{imagens/distributed_rc.png}
+		% \includegraphics{sta.png}
+		\caption{Modelo RC Distribuído (a) e seu sim \cite{Rabaey08}.}
+		\label{fig:distributed_rc}
+		\end{center}
+		\end{figure}
 
 
 
 	\subsection{Modelo de Capacitância Concentrada (\textit{Lumped C Model})}
 	
-		O Modelo \textit{Lumped} foi amplamente utilizado, por se tratar de um modelo simplista que provê baixo tempo de execução. Ele assume que a resistência da interconexão é despresível. Geralmente, isso é verdade, quando a resistência da porta lógica que se conecta no fio, ou \textit{driver}, é substancialmente maior que a resistência da interconexão.
+		O Modelo \textit{Lumped} foi amplamente utilizado, pois se trata de um modelo simples e fácil de simular. Ele assume que a resistência da interconexão é despresível, o que geralmente é verdade, quando a resistência do \textit{driver} é substancialmente maior que a resistência da interconexão. Como a resistência da interconexão é despresível, o fio pode ser representado como um capacitor e seu atraso de propagação é desconsiderado como impacto global no circuito. O único impacto no desempenho é devido ao tempo de carga deste capacitor pelo \textit{driver} \cite{Rabaey08}.
 
-		Como a resistência da interconexão é despresível, ela pode ser representada como um capacitor e seu tempo de propagação pode ser desconsiderado como impacto global no circuito. O único impacto no desempenho é devido ao tempo de carga deste capacitor pela porta lógica \textit{driver} da interconexão \cite{Rabaey08}.
-
-
-		
-		% \begin{equation}
-		% C_{lumped} \frac{dV}{dt} out + \frac{V_{out}-V_{in}}{R_{driver}} = 0
-		% \end{equation}
-
-		% A resposta transitória de um circuito RC simples pode ser definida como:
-
-		% \begin{equation}
-		% V_{out}(t)=(1-e^{-t/V})V
-		% \end{equation}
-
-		% Isso implica que atraso de propagação pode ser facilmente calculado como $t$ = ln(2) $\tau$ = 0.69 $\tau$ \cite{Rabaey08}.
 
 		\begin{figure}[ht]
 		\begin{center}
@@ -269,15 +278,15 @@ slew degradation}
 
 		\subsubsection{Limitações do Modelo Concentrado}
 
-			Em muitos sistemas desenvolvidos, cerca de 50\% a 70\% do ciclo de relógio é \"consumido\" pelo atraso de propagação de suas interconexões \cite{Cong96}. Nas tecnologias com alta escala de integração (\textit{VLSI: Very-large-scale integration}) atuais, onde diversas otimizações tem por objetivo reduzir a resistência dos \textit{drivers} dos fios, estes passam a ser impactantes no desempenho do circuito digital, necessitando de uma representação mais afiada de seus modelos de atraso, levando em conta também, as suas resistências.
+			asdsad
 
 	\subsection{Modelo RC Concentrado (\textit{Lumped RC Model})}
 
 		\afazer{n~ao falar do Elmore}
 
-		Uma das formas de se representar as resistências e as capacitâncias como parasitas é o Modelo RC Concentrado (\textit{Lumped RC Model}). No Modelo RC Concentrado, concentra-se toda a resistência de cada parte da interconexão em um $R$ e similarmente combina-se a capacitância total em um único capacitor $C$. É um modelo simplificado \cite{Cong96}, pessimista \cite{Gupta97}, e pode ser ineficiente para cálculo de atraso em interconexões muito grandes.
-
-		Considerando a rede resistor-capacitor ilustrada na Figura \ref{fig:rc_tree}. Esse circuito é chamado de Árvore RC (\textit{RC Tree}) e tem as seguintes propriedades:
+		No Modelo RC Concentrado (\textit{Lumped RC Model}), concentra-se toda a resistência de cada segmento da interconexão em um $R$ e similarmente combina-se a capacitância total em um único capacitor $C$.
+		A rede resistor-capacitor é representada como uma Árvore RC (Figura \ref{fig:rc_tree}). E possui as seguintes propriedades \cite{Rabaey08}:
+		
 		\begin{itemize}
 		\item A rede tem apenas um nodo de entrada
 		\item Todos os capacitores são entre um nodo e o terra
@@ -293,34 +302,11 @@ slew degradation}
 		\end{center}
 		\end{figure}
 
-		Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de \citeonline{Elmore48} (\textit{Elmore Delay}), pela simplicidade e razoável correlação com os atrasos reais. Em um nodo $i$ da Árvore RC, o atraso de Elmore ($\tau_{Di}$) pode ser facilmente calculado como:
-		\begin{equation}
-		\tau_{Di} = \sum_{k=1}^{N} C_k R_{ik} \label{eq:tau}
-		\end{equation} Onde $C_k$ é a capacitância do nodo $k$ da Árvore e $R_{ik}$ é a resistência compartilhada entre os caminhos desde o nodo fonte $s$ até os nodos $i$ e $k$. $R_{ik}$ é definida por:
-		\begin{equation}
-		R_{ik} = \sum R_j \Rightarrow (R_j \in [caminhos(s \to i)\cap caminhos(s \to k)])
-		\label{eq:rik}
-		\end{equation}
+		
 
-		Nesta topologia, em particular, a resistência entre o nodo fonte $s$ e nodo $4$ é dada por:
-		\begin{equation}
-		R_{44} = R_1 + R_3 + R_4
-		\end{equation}
-
-		E a resistência entre o nodo fonte $s$ e os nodos $2$ e $4$:
-		\begin{equation}
-		R_{42} = R_1
-		\end{equation}
-
-		Assim, utilizando o atraso de Elmore, o atraso no nodo $4$ ($\tau_{Di}$) é equivalente a:
-		\begin{equation}
-		\tau_{D4} = C_1\ R_1 + C_2\ R_1 + C_3(R_1+R_3) + C_4(R_1+R_3+R_4) + C_i(R_1+R_3) 
-		\label{eq:delay_4}
-		\end{equation}
-
-		\subsubsection{Limitações do Modelo RC Concentrado}
-
-			Com a utilização do atraso de Elmore, ignora-se o fato de que algumas resistências influenciam nas capacitâncias dos nodos da Árvore RC, ponderando de forma diferente a soma da Equação \ref{eq:tau}. Ao se obter a resistência compartilhada entre dois nodos $i$ e $k$ e o nodo fonte $s$, o impacto da resistência nas capacitâncias \textit{downstream} de $i$ e $k$ não são considerados, resultando em uma perda de precisão no modelo de atraso de Elmore. Por exemplo, a influência de $R_2$ em $C_2$ não é considerada no atraso $\tau_{D4}$ (Figura \ref{fig:rc_tree}). Esse efeito é conhecido como \textit{resistive shield} \cite{Kashyap00}. Considerando um caso hipotético, nesta topologia, se $R_2 = \infty$, o atraso de Elmore $\tau_{D4}$ continuaria sendo dado pela Equação \ref{eq:delay_4}, mesmo que $R_2$ impedisse $C_4$ de ser carregado ou descarregado.
+%		\subsubsection{Limitações do Modelo RC Concentrado}
+%
+%			Com a utilização do atraso de Elmore, ignora-se o fato de que algumas resistências influenciam nas capacitâncias dos nodos da Árvore RC, ponderando de forma diferente a soma da Equação \ref{eq:tau}. Ao se obter a resistência compartilhada entre dois nodos $i$ e $k$ e o nodo fonte $s$, o impacto da resistência nas capacitâncias \textit{downstream} de $i$ e $k$ não são considerados, resultando em uma perda de precisão no modelo de atraso de Elmore. Por exemplo, a influência de $R_2$ em $C_2$ não é considerada no atraso $\tau_{D4}$ (Figura \ref{fig:rc_tree}). Esse efeito é conhecido como \textit{resistive shield} \cite{Kashyap00}. Considerando um caso hipotético, nesta topologia, se $R_2 = \infty$, o atraso de Elmore $\tau_{D4}$ continuaria sendo dado pela Equação \ref{eq:delay_4}, mesmo que $R_2$ impedisse $C_4$ de ser carregado ou descarregado.
 
 
 
@@ -386,7 +372,7 @@ Interconnect trees extracted from pre-layout or post-layout... Best-case, Balanc
 
 		Nas bibliotecas de célula atuais, modelos de atrasos não lineares são fornecidos para os arcos de \textit{timing} das células disponíveis. Esses modelos, que geralmente são obtidos através de simulações em nível elétrico, são registrados na forma de \textit{lookup tables}, como a da Figura \ref{fig:lookup_table}. Uma \textit{lookup table} descreve o atraso ou o tempo de transição de um arco de timing em função de dois fatores: o tempo de transição na entrada do arco, e a capacitância vista na saída.
 
-		Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu arco de \textit{timing} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$. O atraso de propagação (\textit{delay}) é o tempo que o sinal no pino $o$ leva para se estabilizar, devido a uma mudança no sinal no pino $a$. Se a transição na saída for de 0 para Vdd, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}). O tempo de transição (\textit{slew}), é o tempo que o sinal leva para mudar de nível lógico. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}). Com o objetivo de simplificar as futuras apresentações, somente um atraso e um \textit{slew} serão considerados.
+		Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu arco de \textit{timing} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$. 
 
 
 \begin{figure}
@@ -439,7 +425,32 @@ cell_rise (delay_outputslew_template_7X8) {
 		citar outros modelos ( citar second moment, third moment)
 		
 		descrever o elmore em cima de uma RC tree
-		}		
+		}
+		
+		Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de \citeonline{Elmore48} (\textit{Elmore Delay}), pela simplicidade e razoável correlação com os atrasos reais. Em um nodo $i$ da Árvore RC, o atraso de Elmore ($\tau_{Di}$) pode ser facilmente calculado como:
+		\begin{equation}
+		\tau_{Di} = \sum_{k=1}^{N} C_k R_{ik} \label{eq:tau}
+		\end{equation} Onde $C_k$ é a capacitância do nodo $k$ da Árvore e $R_{ik}$ é a resistência compartilhada entre os caminhos desde o nodo fonte $s$ até os nodos $i$ e $k$. $R_{ik}$ é definida por:
+		\begin{equation}
+		R_{ik} = \sum R_j \Rightarrow (R_j \in [caminhos(s \to i)\cap caminhos(s \to k)])
+		\label{eq:rik}
+		\end{equation}
+
+		Nesta topologia, em particular, a resistência entre o nodo fonte $s$ e nodo $4$ é dada por:
+		\begin{equation}
+		R_{44} = R_1 + R_3 + R_4
+		\end{equation}
+
+		E a resistência entre o nodo fonte $s$ e os nodos $2$ e $4$:
+		\begin{equation}
+		R_{42} = R_1
+		\end{equation}
+
+		Assim, utilizando o atraso de Elmore, o atraso no nodo $4$ ($\tau_{Di}$) é equivalente a:
+		\begin{equation}
+		\tau_{D4} = C_1\ R_1 + C_2\ R_1 + C_3(R_1+R_3) + C_4(R_1+R_3+R_4) + C_i(R_1+R_3) 
+		\label{eq:delay_4}
+		\end{equation}
 		
 	\subsection{Degradação do \textit{Slew} na Interconexão}
 	
