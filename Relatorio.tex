@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portuguese, lined,boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
 
 
 
@@ -90,13 +90,12 @@ Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) é a t
 	Este capítulo tem por objetivo, apresentar uma visão geral sobre os fluxo de projeto \textit{Standard Cells} e a importância da Análise de \textit{Timing} no desenvolvimento de circuitos digitais. Serão apontadas as vantagens e desvantagens de se desconsiderar o impacto das interconexões no atraso total do circuito, e em que etapas do fluxo de projeto, a Análise de Timing é aplicada.
 
 	\section{Fluxo de Projeto \textit{Standard Cell}}
-		\afazer{bla bla}
-		
-		No Fluxo de Projeto \textit{Standard Cell} as células são desenvolvidas e verificadas previamente em uma dada tecnologia. Essas células, ou implementações disponíveis para as portas lógicas, são catalogadas com suas diversas características elétricas e tabelas (\textit{Lookup Tables}) de atraso em uma espécie de biblioteca, sendo reutilizadas em diversos projetos na mesma tecnologia. O reuso amortiza o custo dos projetos inseridos neste nodo tecnológico e possibilta um tempo de entrega ao mercado (\textit{time-to-market}) mais curto. Este é um dos principais motivos que faz com que os projetos dos dispositivos eletrônicos, como os \textit{PMDs} citados anteriormente, sigam o Fluxo \textit{Standard Cell}.
+
+A grande dimensão em número de portas lógicas dos circuitos digitais contemporâneos e a necessidade de um tempo de entrega ao mercado (\textit{time-to-market}) curto faz com que os projetos esses circuitos adotem o Fluxo de Projeto \textit{Standard Cell}. No Fluxo \textit{Standard Cell} as células são desenvolvidas e verificadas previamente em uma dada tecnologia. Essas células, ou implementações disponíveis para as portas lógicas, são catalogadas com suas diversas características elétricas e tabelas (\textit{Lookup Tables}) de atraso em uma biblioteca \textit{standard-cell}, sendo reutilizadas em diversos projetos na mesma tecnologia. O reuso amortiza o custo dos projetos inseridos neste nodo tecnológico e possibilta um \textit{time-to-market} mais curto.
 
 		Os projetos de circuitos digitais no Fluxo \textit{Standard Cells}, são realizados visando, além de suas funcionalidades, a operação em uma frequência especificada. Por isso, diversas otimizações são efetuadas ao longo do fluxo, para que todos os recursos e tarefas do dispositivo consigam ser concluídas dentro do tempo limite. Nas primeiras etapas de um projeto no Fluxo \textit{Standard Cells}, apenas as questões relacionadas \`a funcionalidade do \textit{design} são verificadas, pois ainda, não se tem com precisão, todas as informações de atraso e informações elétricas necessárias, para realizar uma avaliação precisa de desempenho. 
 
-		A partir das otimizações em nível de Transferência entre Registradores (\textit{RTL: Register Transfer Level}), as informações de desempenho começam a ser levantadas utilizando modelos de atrasos simplificados e pessimistas. Exemplos dessas otimizações são: \textit{Transistor Sizing}\cite{Fishburn85}, \textit{Gate Sizing}\cite{Livramento13}\cite{Hu12}\cite{Mohammad12}, \textit{Placement} \cite{Shahookar91}, entre outras. Ao decorrer do projeto, após a execução de variados processos de otimização, além do mapeamento do circuito na Biblioteca \textit{Standard Cell}, informações de posicionamento, interconexões e seus parasitas são obtidas, tornando possível e necessária, uma análise minuciosa das informações temporais, ou então, a chamada Análise de \textit{Timing}.
+		
 
 		% \begin{figure}[ht]
 		% \begin{center}
@@ -114,25 +113,17 @@ Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) é a t
 		\afazer{
 			Fluxo standard cells é muito utilizado
 			
-			Talvez falar em uma frase dos PMDs
-			
-			No Fluxo:
-			\begin{itemize}
-
-				\item As etapas finais (\textit{sign-off}) pedem maior precisão
-				
-				\item As etapas iniciais pedem velocidade, por causa das otimizações
-			
-			\end{itemize}
-			
-
 		}		
-	
-		A dimensão, e a complexidade, dos circuitos digitais contemporâneos, impedem que seus projetos sejam realizados manualmente, devido ao fato de que, com a evolução da tecnologia e das necessidades dos usuários, mais e mais recursos são integrados em uma mesma quantidade de silício. Assim, no projeto dos circuitos digitais atuais, é imprescindível o uso de ferramentas eficientes e escaláveis, para a Automação de Projeto Eletrônico (\textit{EDA: Eletronic Design Automation}).
+		
+No fluxo \textit{Standard Cell}, à partir do nível de Transferência entre Registradores (\textit{RTL: Register Transfer Level}), diversas otimizações como \textit{Gate Sizing} \cite{Livramento13} \cite{Hu12} \cite{Mohammad12} e \textit{Placement} \cite{Shahookar91} são realizadas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais. Nas etapas iniciais, o Analisador de \textit{Timing} pode ser requisitado milhares de vezes, demandando um desempenho alto. Por outro lado, devido ao fato de que as informações físicas do circuito, como de posicionamento, ainda são muito vagas, não espera-se que a qualidade dos resultados seja realista. Já nas etapas finais, mais próximas da síntese física, é necessário que a avaliação de \textit{Timing} considere o circuito no maior grau de detalhe possível, para que informações precisas sejam fornecidas. Essa demanda de precisão faz com que o tempo de simulação seja maior, o que já era esperado.
+
+Como as informações \textit{Timing} precisam ser avaliadas centenas ou milhares de vezes durante os processos de otimização, ferramentas de Análise de \textit{Timing} eficientes e escaláveis precisam ser desenvolvidas e aperfeiçoadas para acompanhar a evolução da tecnologia \textit{CMOS} (\textit{Complementary Metal-Oxide Semiconductor}).
+		
+%Em diversos sistemas projetados atualmente, cerca de 50\% a 70\% do ciclo de relógio é ``consumido'' pelo atraso de propagação de suas interconexões \cite{Cong96}. Nas tecnologias com alta escala de integração (\textit{VLSI: Very-large-scale integration}) atuais, onde diversas otimizações tem por objetivo reduzir a resistência dos \textit{drivers}, as interconexões passam a ser cada vez mais impactantes no desempenho do circuito digital.
 
 	\section{Justificativa}
 
-		Diversas otimizações são realizadas no decorrer do Fluxo de Projeto \textit{Standard Cells}, e o uso de ferramentas de EDA é indispensável em suas diferentes etapas. A inexistência de ferramentas de Análise de \textit{Timing} Estática precisas de domínio público, resulta em um problema de infraestrutura de pesquisa. Assim, este trabalho será uma alternativa de ferramenta de Análise de \textit{Timing} para projetistas de Circuitos Digitais, bem como uma infraestrutura realista e precisa, para desenvolvedores de ferramentas, que necessitam da Análise de \textit{Timing}, em alguma etapa do fluxo de projeto \textit{Standard Cells}.
+		Diversas otimizações são realizadas no decorrer do Fluxo de Projeto \textit{Standard Cell}, e o uso de ferramentas de EDA é indispensável em suas diferentes etapas. A inexistência de ferramentas de Análise de \textit{Timing} Estática precisas de domínio público, resulta em um problema de infraestrutura de pesquisa. Assim, este trabalho terá como resultado, uma alternativa de ferramenta de Análise de \textit{Timing} para projetistas de Circuitos Digitais, bem como uma infraestrutura realista e precisa, para desenvolvedores de ferramentas, que necessitam da Análise de \textit{Timing}, em alguma etapa do fluxo de projeto \textit{Standard Cell}.
 
 
 	\section{Objetivos}
@@ -190,28 +181,27 @@ Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) é a t
 		\afazer{explicar como se organiza o trablaho}
 
 \chapter{Conceitos Fundamentais de Circuitos Digitais}
+\label{cap:conceitos}
 
-	Neste capítulo, serão apresentados alguns conceitos básicos de circuitos digitais, que são necessários para melhor entendimento do tema abordado no trabalho. A primeira seção definirá as características temporais das portas lógicas, a segunda falará da interconexão, e a terceira, das diferentes maneiras de se modelar as interconexões.
+Neste capítulo, serão apresentados alguns conceitos básicos de circuitos digitais, que são necessários para melhor entendimento do tema abordado no trabalho. A primeira seção definirá as características temporais das portas lógicas, a segunda falará da interconexão, e a terceira, das diferentes maneiras de se modelar as interconexões.
 
 \section{Características Temporais}
-\afazer{delay, slew}
 
 As características temporais do circuito obtidas como produto da Análise de \textit{Timing} Estática são derivadas das caracteristicas temporais de suas partes, ou seja, as portas lógicas e as interconexões que compõem o circuito. No fluxo \textit{standard cell}, as características temporais desses elementos são definidos na biblioteca \textit{standard cell}.
 
 Para as portas lógicas, as informações a seguir são relevantes \cite{Livramento13}:
 
 \begin{itemize}
-	\item \textbf{Atraso de propagação (\textit{delay}): } é o tempo que o sinal em um pino de saída $o$ leva para atingir 50\% de sua transição total, devido a uma mudança no sinal em um pino de entrada $a$. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}).
-	
-	\item \textbf{Tempo de Transição (\textit{Slew): }} é o tempo que o sinal leva para transicionar de uma tensão de referência a outra, por exemplo: $0 \to 5V$. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}). 
-	
-	\item \textbf{Propagação do \textit{Slew: }}
-	
+	\item \textbf{Arco de \textit{Timing (\textit{Timing Arc}): }} cada porta lógica possui pelo menos um Arco de \textit{Timing} de cada pino de entrada, para cada pino de saída. Células sequenciais, como os \textit{flip-flops} possuem Arcos de \textit{Timing} dos pinos de \textit{clock} para as saídas. O arco é chamado \textit{positive unate}, se uma transição de subida na entrada causa uma transição de subida na saída e se uma transição de descida na entrada gera uma transição de descida na saída. Se uma transição de subida (descida) da entrada causa uma transição de descida (subida) na saída, o arco é chamado \textit{negative unate} \cite{BhaskerChadha09}.
 
-
+	\item \textbf{Atraso de propagação (\textit{delay}): } é o tempo que o sinal em um pino de saída $o$ leva para atingir um limiar\footnote{Este limiar geralmente é definido nas bibliotecas de célula como sendo 50\% do $Vdd$.} de sua transição total, devido a uma mudança no sinal em um pino de entrada $a$. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}).
+	
+	\item \textbf{Tempo de Transição (\textit{slew): }} é o tempo que o sinal leva para transicionar de uma tensão de referência a outra\footnote{Estas tensões de referência são definidas na biblioteca de célula (e.g. 20\% e 80\% $Vdd$)}. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}). 
+	
+	\item \textbf{Propagação do \textit{Slew: }} é a política utilizada para propagação dos \textit{slews} dentro das portas lógicas. A estratégia utilizada pode ser a de propagar o maior ou o menor \textit{slew} entre os \textit{slews} dos \textit{timing arcs}, para o pino de saída da porta lógica.
+	
 \end{itemize}
-
-Com o objetivo de simplificar as futuras apresentações, somente um atraso e um \textit{slew} serão considerados.
+Com o objetivo de simplificar as futuras definições, somente um atraso e um \textit{slew} serão considerados.
 
 \section{Interconexões}
 \afazer{load seen by driver
@@ -228,7 +218,7 @@ slew degradation}
 
 \afazer{Fazer um link: Motivação: Primeiro parágrafo de introdução do paper ``Performance Optimization of VLSI Interconnect Layout''}
 
-	Em diversos sistemas projetados atualmente, cerca de 50\% a 70\% do ciclo de relógio é ``consumido'' pelo atraso de propagação de suas interconexões \cite{Cong96}. Nas tecnologias com alta escala de integração (\textit{VLSI: Very-large-scale integration}) atuais, onde diversas otimizações tem por objetivo reduzir a resistência dos \textit{drivers}, as interconexões passam a ser cada vez mais impactantes no desempenho do circuito digital.
+	
 	
 	Dependendo da etapa no fluxo em que o projeto se encontra, as interconexões se apresentam modeladas de maneiras diferentes. Inicialmente, de forma a oferecer uma simulação rápida e não tão precisa, ja que as informações de \textit{placement} e \textit{routing} ainda não foram obtidas. Nas etapas posteriores, as interconexões precisam ser modeladas adequadamente, em funções dos seus parasitas, que já foram obtidos e otimizados.
 
