@@ -87,7 +87,7 @@ Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) é a t
 % Elementos textuais
 \chapter{Introdução}
 	
-	Este capítulo tem por objetivo, apresentar uma visão geral sobre os fluxo de projeto \textit{Standard Cells} e a importância da Análise de \textit{Timing} no desenvolvimento de circuitos digitais. Serão apontadas as vantagens e desvantagens de se desconsiderar o impacto das interconexões no atraso total do circuito, e em que etapas do fluxo de projeto, a Análise de Timing é aplicada.
+	Este capítulo tem por objetivo, apresentar uma visão geral sobre os fluxo de projeto \textit{Standard Cells} e a importância da Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) no desenvolvimento de circuitos digitais. Serão apontadas as vantagens e desvantagens de se desconsiderar o impacto das interconexões no atraso total do circuito, e em que etapas do fluxo de projeto, a Análise de Timing é aplicada.
 
 	\section{Fluxo de Projeto \textit{Standard Cell}}
 
@@ -110,12 +110,8 @@ A grande dimensão em número de portas lógicas dos circuitos digitais contemporân
 	\section{Motivação}
 
 
-		\afazer{
-			Fluxo standard cells é muito utilizado
-			
-		}		
 		
-No fluxo \textit{Standard Cell}, à partir do nível de Transferência entre Registradores (\textit{RTL: Register Transfer Level}), diversas otimizações como \textit{Gate Sizing} \cite{Livramento13} \cite{Hu12} \cite{Mohammad12} e \textit{Placement} \cite{Shahookar91} são realizadas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais. Nas etapas iniciais, o Analisador de \textit{Timing} pode ser requisitado milhares de vezes, demandando um desempenho alto. Por outro lado, devido ao fato de que as informações físicas do circuito, como de posicionamento, ainda são muito vagas, não espera-se que a qualidade dos resultados seja realista. Já nas etapas finais, mais próximas da síntese física, é necessário que a avaliação de \textit{Timing} considere o circuito no maior grau de detalhe possível, para que informações precisas sejam fornecidas. Essa demanda de precisão faz com que o tempo de simulação seja maior, o que já era esperado.
+No fluxo \textit{Standard Cell}, à partir do nível de Transferência entre Registradores (\textit{RTL: Register Transfer Level}), diversas otimizações como \textit{Gate Sizing} \cite{Livramento13} \cite{Hu12} \cite{Mohammad12} e \textit{Placement} \cite{Shahookar91} são realizadas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais. Nas etapas iniciais, o Analisador de \textit{Timing} pode ser requisitado milhares de vezes, demandando alto desempenho por parte deste. Por outro lado, devido ao fato de que as informações físicas do circuito, como de posicionamento, ainda são muito vagas, não espera-se que a qualidade dos resultados seja realista. Já nas etapas finais, mais próximas da síntese física, é necessário que a avaliação de \textit{Timing} considere o circuito no maior grau de detalhe possível, para que informações precisas sejam fornecidas. Essa demanda de precisão faz com que o tempo de simulação seja maior, o que já era esperado.
 
 Como as informações \textit{Timing} precisam ser avaliadas centenas ou milhares de vezes durante os processos de otimização, ferramentas de Análise de \textit{Timing} eficientes e escaláveis precisam ser desenvolvidas e aperfeiçoadas para acompanhar a evolução da tecnologia \textit{CMOS} (\textit{Complementary Metal-Oxide Semiconductor}).
 		
@@ -189,26 +185,49 @@ Neste capítulo, serão apresentados alguns conceitos básicos de circuitos digitai
 
 As características temporais do circuito obtidas como produto da Análise de \textit{Timing} Estática são derivadas das caracteristicas temporais de suas partes, ou seja, as portas lógicas e as interconexões que compõem o circuito. No fluxo \textit{standard cell}, as características temporais desses elementos são definidos na biblioteca \textit{standard cell}.
 
-Para as portas lógicas, as informações a seguir são relevantes \cite{Livramento13}:
+Para as portas lógicas, as informações (Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}) a seguir são relevantes \cite{Livramento13}:
 
 \begin{itemize}
 	\item \textbf{Arco de \textit{Timing (\textit{Timing Arc}): }} cada porta lógica possui pelo menos um Arco de \textit{Timing} de cada pino de entrada, para cada pino de saída. Células sequenciais, como os \textit{flip-flops} possuem Arcos de \textit{Timing} dos pinos de \textit{clock} para as saídas. O arco é chamado \textit{positive unate}, se uma transição de subida na entrada causa uma transição de subida na saída e se uma transição de descida na entrada gera uma transição de descida na saída. Se uma transição de subida (descida) da entrada causa uma transição de descida (subida) na saída, o arco é chamado \textit{negative unate} \cite{BhaskerChadha09}.
 
 	\item \textbf{Atraso de propagação (\textit{delay}): } é o tempo que o sinal em um pino de saída $o$ leva para atingir um limiar\footnote{Este limiar geralmente é definido nas bibliotecas de célula como sendo 50\% do $Vdd$.} de sua transição total, devido a uma mudança no sinal em um pino de entrada $a$. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}).
 	
-	\item \textbf{Tempo de Transição (\textit{slew): }} é o tempo que o sinal leva para transicionar de uma tensão de referência a outra\footnote{Estas tensões de referência são definidas na biblioteca de célula (e.g. 20\% e 80\% $Vdd$)}. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}). 
+	\item \textbf{Tempo de Transição (\textit{slew): }} é o tempo que o sinal leva para transicionar de 10\% até 90\% do valor final do sinal \cite{Kallmann1945}. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}). 
 	
 	\item \textbf{Propagação do \textit{Slew: }} é a política utilizada para propagação dos \textit{slews} dentro das portas lógicas. A estratégia utilizada pode ser a de propagar o maior ou o menor \textit{slew} entre os \textit{slews} dos \textit{timing arcs}, para o pino de saída da porta lógica.
+	
+	\item \textbf{\textit{Driver:} } é a porta lógica, ou o pino que está ligado imediatamente na entrada de uma interconexão.
 	
 \end{itemize}
 Com o objetivo de simplificar as futuras definições, somente um atraso e um \textit{slew} serão considerados.
 
+\begin{figure}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=1.1 \linewidth, trim=3cm 10cm 0 0]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
+\caption{Arco de \textit{timing} para uma célula inversora. Adaptado de \cite{BhaskerChadha09}.}
+\label{fig:arco_de_timing_fall_rise_slew_delay}
+\end{center}
+\end{figure}
+
 \section{Interconexões}
-\afazer{load seen by driver
 
-wire delay
+As ferramentas de STA realizam a análise em duas etapas principais: o cálculo dos atrasos das portas lógicas; e o cálculo dos atrasos das interconexões. Os atrasos dos \textit{Timing Arc} de cada porta lógica são calculados utilizando as \textit{lookup tables} disponíveis nas bibliotecas \textit{Standard Cell}. Cada \textit{Timing Arc} é definido por funcões não-lineares do seu \textit{slew} de entrada e da sua capacitância de saída (\textit{load}).
 
-slew degradation}
+Na Figura \ref{fig:modelos_driver_interconexao}-a é apresentado um circuito combinacional simples, com as portas lógicas $u1$ e $u2$, seus respectivos \textit{Timing Arcs} e a interconexão que liga a saída da porta $u1$ na entrada da porta $u2$. Na Figura \ref{fig:modelos_driver_interconexao}-b, é mostrada em blocos, a modelagem utilizada para o circuito da Figura \ref{fig:modelos_driver_interconexao}-a. Neste caso, a interconexão é representada na forma de uma capacitância, que é vista pelos \textit{Timing Arc} de $u1$. O cálculo dessa Capacitância Equivalente, ou Capacitância Efetiva ($C_{eff}$) pode ser realizada de diversas maneiras, que serão apresentadas na Seção \ref{sec:calculo_capacitancia}. Esta informação, juntamente com os \textit{slews} de entrada correspondente aos pinos $a$ ($inp1$) e $b$ ($inp2$), são utilizadas para calcular o \textit{delay} e o \textit{slew} através dos arcos de $u1$. Por exemplo, o cálculo de atraso no arco $b\to o$ da porta lógica $u1$, é realizado com base na sua \textit{Lookup Table}, em função do \textit{slew} aplicado em $b$ (vindo da entrada primária $inp2$) e da carga de saída ($load$), a qual foi obtida na modelagem da interconexão.
+
+\begin{figure}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\linewidth, trim=0 7cm 0 0]{imagens/modelos_driver_interconexao.pdf}
+\caption{Arco de \textit{timing} para uma célula inversora. Adaptado de \cite{BhaskerChadha09}.}
+\label{fig:modelos_driver_interconexao}
+\end{center}
+\end{figure}
+
+Para que o \textit{delay} e \textit{slew} dos \textit{Timing Arcs} de uma porta lógica sejam calculados, é necessária uma modelagem para as interconexões que esta porta lógica é \textit{driver}, de modo a fornecer a informação de \textit{load} para o cálculo de suas funções de \textit{delay} e de \textit{slew}. Algumas modelagens serão apresentadas na próxima seção.
+
+Além do impacto local nos \textit{delays} e \textit{slews} dos \textit{Timing Arcs} de seus \textit{drivers}, as interconexões exercem impacto global no circuito, com seu próprio atraso de propagação. Com a alta frequência de operação dos circuitos digitais atuais e o dimensionamento dos transistores para escalas nanométricas, os atrasos das interconexões que antes não eram significativos, hoje chegam consumir de 50 a 70\% do ciclo dos relógios, e esta percentagem tende a aumentar na medida que os transistores diminuem \cite{Cong96}.
+
+O cálculo do \textit{slew} é crucial para determinar a precisão de uma ferramenta de \textit{STA} \cite{Zhou2007}. Os \textit{delays} dos \textit{Timing Arcs} dependem do \textit{slew} de entrada e o \textit{slew} de saída, ao se propagar em uma interconexão, sofre uma degradação. A não modelagem desta degradação pela interconexão, acarreta erros de até 50\% \cite{Sheehan2002}.
 
 %
 %A medida que os dispositivos eletrônicos operam em frequências maiores, o atraso das interconexões torna-se muito mais significante. Quando os dispositivos são reduzidos nas três dimensões por um fator $S$, o \textit{delay} intrínsico da porta lógica é reduzido por um fator de $S$, o atraso de interconexões locais continua o mesmo, porém, o atraso das interconexões globais aumenta por um fator de $S^2$.
@@ -216,13 +235,11 @@ slew degradation}
 
 \section{Modelo de Interconexões}
 
-\afazer{Fazer um link: Motivação: Primeiro parágrafo de introdução do paper ``Performance Optimization of VLSI Interconnect Layout''}
+%\afazer{Fazer um link: Motivação: Primeiro parágrafo de introdução do paper ``Performance Optimization of VLSI Interconnect Layout''}
 
-	
-	
-	Dependendo da etapa no fluxo em que o projeto se encontra, as interconexões se apresentam modeladas de maneiras diferentes. Inicialmente, de forma a oferecer uma simulação rápida e não tão precisa, ja que as informações de \textit{placement} e \textit{routing} ainda não foram obtidas. Nas etapas posteriores, as interconexões precisam ser modeladas adequadamente, em funções dos seus parasitas, que já foram obtidos e otimizados.
+De acordo com a etapa que o projeto se encontra no fluxo, as interconexões recebem uma modelagem diferente. Inicialmente, de forma a oferecer uma simulação rápida e não tão precisa, ja que as informações de \textit{placement} e \textit{routing} ainda não foram obtidas. Nas etapas posteriores, as interconexões precisam ser modeladas adequadamente, em funções dos seus parasitas, que já foram obtidos e otimizados.
 
-	Esta seção tem por objetivo, apresentar alguns modelos de representação de interconexões (fios), suas vantagens e desvantagens. Também será apresentado, o formato de representação de parasitas mais utilizado no projeto de circuitos digitais.
+Esta seção tem por objetivo, apresentar alguns modelos de representação de interconexões (fios), suas vantagens e desvantagens. Também será apresentado, o formato de representação de parasitas mais utilizado no projeto de circuitos digitais.
 
 %	\subsection{Modelo de Interconexão Ideal}
 %
@@ -233,64 +250,53 @@ slew degradation}
 
 
 	\subsection{Modelo RC Distribuído (\textit{Distributed RC Model})}
-		\afazer{no closed form
 
-		nao falar da CEFF
-		
-				
-		}
-		Uma interconexão pode ser representada como uma linha distribuída (Figura \ref{fig:distributed_rc}. Porém, este modelo reflete em complexidade computacional significativa 
+Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}). Uma linha é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um $r$ e um $c$. Assim, a resistência e a capacitância total da interconexão é $r \times \Delta L$ e $c \times \Delta L$, respectivamente. O cálculo dos atrasos em um Modelo RC Distribuido reflete na resolução de equações diferenciais, que por sua vez, não possuem fórmula fechada. Essa complexidade, faz com que, na Análise de \textit{Timing}, modelos mais simples de interconexões sejam adotados.
 
-	\begin{figure}[ht]
-		\begin{center}
-		\includegraphics[width=\linewidth]{imagens/distributed_rc.png}
-		% \includegraphics{sta.png}
-		\caption{Modelo RC Distribuído (a) e seu sim \cite{Rabaey08}.}
-		\label{fig:distributed_rc}
-		\end{center}
-		\end{figure}
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\linewidth]{imagens/distributed_rc.png}
+% \includegraphics{sta.png}
+\caption{Modelo RC Distribuído (a) e seu símbolo de esquemático (b) \cite{Rabaey08}.}
+\label{fig:distributed_rc}
+\end{center}
+\end{figure}
 
 
 
 	\subsection{Modelo de Capacitância Concentrada (\textit{Lumped C Model})}
 	
-		O Modelo \textit{Lumped} foi amplamente utilizado, pois se trata de um modelo simples e fácil de simular. Ele assume que a resistência da interconexão é despresível, o que geralmente é verdade, quando a resistência do \textit{driver} é substancialmente maior que a resistência da interconexão. Como a resistência da interconexão é despresível, o fio pode ser representado como um capacitor e seu atraso de propagação é desconsiderado como impacto global no circuito. O único impacto no desempenho é devido ao tempo de carga deste capacitor pelo \textit{driver} \cite{Rabaey08}.
+		O Modelo \textit{Lumped} foi amplamente utilizado, pois se trata de um modelo simples e fácil de simular.
+Quando a resistência da interconexão é despresível, devido o fato de que a resistência do \textit{driver} é substancialmente maior, ou quando as informações parasitas ainda não foram obtidas com detalhe, o fio pode ser representado como um capacitor $C$, que corresponde à capacitância total da interconexão. Seu atraso de propagação é desconsiderado como impacto global do circuito, já que o fio não possui resistências. Seu único impacto no desempenho é a sua contribuição na capacitância vista pelo \textit{driver} \cite{Rabaey08}.
 
-
-		\begin{figure}[ht]
-		\begin{center}
-		\includegraphics[width=\linewidth]{imagens/lumped_model.jpg}
-		% \includegraphics{sta.png}
-		\caption{Modelo Concentrado}
-		\label{fig:lumped_model}
-		\end{center}
-		\end{figure}
-
-		\subsubsection{Limitações do Modelo Concentrado}
-
-			asdsad
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\linewidth]{imagens/lumped_model.jpg}
+% \includegraphics{sta.png}
+\caption{Modelo de Capacitância Concentrada (\textit{Lumped C Model}).}
+\label{fig:lumped_model}
+\end{center}
+\end{figure}
 
 	\subsection{Modelo RC Concentrado (\textit{Lumped RC Model})}
 
-		\afazer{n~ao falar do Elmore}
-
-		No Modelo RC Concentrado (\textit{Lumped RC Model}), concentra-se toda a resistência de cada segmento da interconexão em um $R$ e similarmente combina-se a capacitância total em um único capacitor $C$.
-		A rede resistor-capacitor é representada como uma Árvore RC (Figura \ref{fig:rc_tree}). E possui as seguintes propriedades \cite{Rabaey08}:
+		No Modelo RC Concentrado (\textit{Lumped RC Model}), concentra-se toda a resistência de cada segmento da interconexão em um $R$ e similarmente combina-se a capacitância total em um único capacitor $C$. A rede resistor-capacitor é representada como uma Árvore RC (Figura \ref{fig:rc_tree}). E possui as seguintes propriedades \cite{Rabaey08}:
 		
-		\begin{itemize}
-		\item A rede tem apenas um nodo de entrada
-		\item Todos os capacitores são entre um nodo e o terra
-		\item A rede não possui \textit{loops} resistivos, por isso é chamada de Árvore
-		\end{itemize}
+\begin{itemize}
+\item A rede tem apenas um nodo de entrada, chamado de \textbf{fonte} (\textit{source});
+\item Todos os capacitores são entre um nodo e o terra;
+\item A rede não possui \textit{loops} resistivos, por isso é chamada de Árvore.
+\end{itemize}
+
 
 		\begin{figure}[ht]
-		\begin{center}
-		\includegraphics[width=0.8 \linewidth]{imagens/rc_tree.jpg}
-		% \includegraphics{sta.png}
-		\caption{Uma Árvore RC \cite{Rabaey08}}
-		\label{fig:rc_tree}
-		\end{center}
-		\end{figure}
+\begin{center}
+\includegraphics[width=0.8 \linewidth]{imagens/rc_tree.jpg}
+% \includegraphics{sta.png}
+\caption{Uma Árvore RC \cite{Rabaey08}}
+\label{fig:rc_tree}
+\end{center}
+\end{figure}
 
 		
 
@@ -301,15 +307,26 @@ slew degradation}
 
 
 
-	\subsection{Extração de Elementos Parasitas no Projeto de Circuitos Digitais}
+\subsection{Extração de Elementos Parasitas no Projeto de Circuitos Digitais}
 
-		\afazer{
-		
-Interconnect trees extracted from pre-layout or post-layout... Best-case, Balanced tree, worst-case		
-		
-		}
+Quando se tem as informações de capacitância e resistência totais de uma interconexão, $C_{fio}$ e $R_{fio}$ respectivamente, em uma fase de \textit{pre-layout}, é necessário criar uma topologia para este fio, uma vez que o atraso da interconexão depende de como ela está estruturada. Existem três topologias (Figura \ref{fig:interconnect_tree}) que podem ser utilizadas a fim de representar a interconexão \cite{BhaskerChadha09}:
 
-		Em projetos de circuitos digitais, as capacitâncias parasitas são descritas no formato SPEF (\textit{Standard Parasitic Exchange Format}) \cite{IEEE99} do IEEE (\textit{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de Automação de Projeto Eletrônica (\textit{EDA}). As parasitas podem ser representadas em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de árvores RC distribuídas.
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.8 \linewidth]{imagens/interconnect_tree.png}
+% \includegraphics{sta.png}
+\caption{Representações utilizadas para as Árvores RC em um contexto de \textit{pre-layout}.}
+\label{fig:interconnect_tree}
+\end{center}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Árvore de melhor caso (\textit{Best-case tree}): } (Figura \ref{fig:interconnect_tree}-a) Assume-se que cada pino de destino é fisicamente adjacente ao \textit{driver}. Assim, nenhuma resistência estará no caminho entre \textit{driver} e destino, e todos os pinos de destino atuarão como \textit{load} na saída da interconexão.
+\item \textbf{Árvore balanceada (\textit{Balanced tree}): } Na árvore balanceada, todos os pinos de destino se encontram na mesma distância do \textit{driver}, e o caminho para cada destino corresponde a mesma quantidade de capacitância e resistência que os outros caminhos.
+\item \textbf{Árvore de pior caso (\textit{Worst-case tree}): } Neste caso, todos os destinos se encontram no fim da interconexão. Assim, cada pino de destino vê a resistência e a capacitância total da interconexão.
+\end{itemize}
+
+		Em projetos de circuitos digitais, as capacitâncias parasitas são geralmente descritas no formato SPEF (\textit{Standard Parasitic Exchange Format}) do \textit{IEEE} (\textit{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de Automação de Projeto Eletrônica (\textit{EDA}). Os parasitas podem ser representados em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de Árvores RC.
 
 		Um exemplo de interconexão descrita no formato SPEF \cite{IEEE99} pode ser visualizado nas Figuras \ref{fig:spef_example} e \ref{fig:spef_example_code}. A linha 1 no código SPEF da Figura \ref{fig:spef_example_code} apresenta o nome da interconexão (inp1) e o valor de sua capacitância total (5.4). As linhas 2, 3 e 4 indicam que existe uma conexão entre uma entrada primária \textit{inp1}, indicado por \textit{*P inp1 I}, e a entrada de um pino interno \textit{a} da porta \textit{u1}, indicado por \textit{*I u1:a I}. Da linha 6 até a linha 9 são representadas as capacitâncias da Árvore RC.
 
@@ -388,15 +405,10 @@ cell_rise (delay_outputslew_template_7X8) {
 \label{fig:lookup_table}
 \end{figure}
 
-		\begin{figure}[ht]
-		\begin{center}% TRIM = L D R U
-		\includegraphics[width=1.1 \linewidth, trim=3cm 10cm 0 0]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
-		\caption{Arco de \textit{timing} para uma célula inversora. Adaptado de \cite{BhaskerChadha09}.}
-		\label{fig:arco_de_timing_fall_rise_slew_delay}
-		\end{center}
-		\end{figure}
+		
 	
 	\subsection{Cálculo da Capacitância de Saída (enxergada)}
+	\label{sec:calculo_capacitancia}
 		\afazer{figura mostrando os modelos de driver,  capacitancia de interconexão, receiver
 
 		atraso e slew na sa´ida do driver <-> lookup table
