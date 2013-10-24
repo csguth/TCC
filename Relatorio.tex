@@ -19,7 +19,7 @@
 \usepackage{mathtools}
 \usepackage{listings}
 \usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
-
+\usepackage{float}
 
 
 
@@ -119,7 +119,7 @@ Como as informações \textit{Timing} precisam ser avaliadas centenas ou milhares 
 
 	\section{Justificativa}
 
-		Diversas otimizações são realizadas no decorrer do Fluxo de Projeto \textit{Standard Cell}, e o uso de ferramentas de EDA é indispensável em suas diferentes etapas. A inexistência de ferramentas de Análise de \textit{Timing} Estática precisas de domínio público, resulta em um problema de infraestrutura de pesquisa. Assim, este trabalho terá como resultado, uma alternativa de ferramenta de Análise de \textit{Timing} para projetistas de Circuitos Digitais, bem como uma infraestrutura realista e precisa, para desenvolvedores de ferramentas, que necessitam da Análise de \textit{Timing}, em alguma etapa do fluxo de projeto \textit{Standard Cell}.
+Diversas otimizações são realizadas no decorrer do Fluxo de Projeto \textit{Standard Cell}, e o uso de ferramentas de EDA é indispensável em suas diferentes etapas. A inexistência de ferramentas de Análise de \textit{Timing} Estática precisas de domínio público, resulta em um problema de infraestrutura de pesquisa. Assim, este trabalho terá como resultado, uma alternativa de ferramenta de Análise de \textit{Timing} para projetistas de Circuitos Digitais, bem como uma infraestrutura realista e precisa, para desenvolvedores de ferramentas, que necessitam da Análise de \textit{Timing}, em alguma etapa do fluxo de projeto \textit{Standard Cell}.
 
 
 	\section{Objetivos}
@@ -181,11 +181,11 @@ Como as informações \textit{Timing} precisam ser avaliadas centenas ou milhares 
 
 Neste capítulo, serão apresentados alguns conceitos básicos de circuitos digitais, que são necessários para melhor entendimento do tema abordado no trabalho. A primeira seção definirá as características temporais das portas lógicas, a segunda falará da interconexão, e a terceira, das diferentes maneiras de se modelar as interconexões.
 
-\section{Características Temporais}
+\section{Características Temporais das Portas Lógicas}
 
 As características temporais do circuito obtidas como produto da Análise de \textit{Timing} Estática são derivadas das caracteristicas temporais de suas partes, ou seja, as portas lógicas e as interconexões que compõem o circuito. No fluxo \textit{standard cell}, as características temporais desses elementos são definidos na biblioteca \textit{standard cell}.
 
-Para as portas lógicas, as informações (Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}) a seguir são relevantes \cite{Livramento13}:
+Para as portas lógicas, as informações a seguir são relevantes \cite{Livramento13}:
 
 \begin{itemize}
 	\item \textbf{Arco de \textit{Timing (\textit{Timing Arc}): }} cada porta lógica possui pelo menos um Arco de \textit{Timing} de cada pino de entrada, para cada pino de saída. Células sequenciais, como os \textit{flip-flops} possuem Arcos de \textit{Timing} dos pinos de \textit{clock} para as saídas. O arco é chamado \textit{positive unate}, se uma transição de subida na entrada causa uma transição de subida na saída e se uma transição de descida na entrada gera uma transição de descida na saída. Se uma transição de subida (descida) da entrada causa uma transição de descida (subida) na saída, o arco é chamado \textit{negative unate} \cite{BhaskerChadha09}.
@@ -201,6 +201,28 @@ Para as portas lógicas, as informações (Figura \ref{fig:arco_de_timing_fall_rise
 \end{itemize}
 Com o objetivo de simplificar as futuras definições, somente um atraso e um \textit{slew} serão considerados.
 
+
+
+\subsection{Características Temporais em Fluxo \textit{Standard Cell}}
+%
+%\afazer{apresentar lookup table
+%
+%falar da interpolaç~ao
+%
+%modelo n~ao linear}	
+
+%Na Análise de \textit{Timing} Estática, os cicuitos são modelados considerando duas partes principais, as portas lógicas e as interconexões. As portas lógicas são modeladas a nível de seus arcos de \textit{timing}, e seus modelos são fornecidos pelas bibliotecas de célula, através de elementos conhecidas como \textit{lookup tables}. As interconexões, podem receber um modelo simplista ou mais sofisticado, dependendo da etapa que o projeto se encontra no fluxo \textit{standard cell}. Para etapas mais preliminares, as interconexões são modeladas como capacitâncias, sem atraso. Nas etapas seguintes, as interconexões são representadas por suas árvores RC.
+%	
+%	Nesta seção, serão apresentados detalhes sobre a modelagem das portas lógicas, e seu mapeamento para a biblioteca de célula, e posteriormente, como é calculado o atraso de propagação nas interconexões, dependendo do modelo empregado.
+	
+	%\includegraphics[width=0.8 \linewidth]{imagens/methodology_for_rc_delay_calculation.png} 
+
+
+
+Nas bibliotecas de \textit{standard cell} atuais, modelos de atrasos não-lineares são fornecidos para os \textit{Timing Arcs} das células disponíveis. Esses modelos, que geralmente são obtidos através de simulações em nível elétrico, são registrados na forma de \textit{lookup tables}, como a da Figura \ref{fig:lookup_table}. Uma \textit{lookup table} descreve o \textit{delay} ou o \textit{slew} de um \textit{Timing Arc} em função de dois fatores: o \textit{slew} na entrada do arco, e a capacitância vista na saída.
+
+Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu \textit{Timing Arc} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$. O \textit{delay} deste \textit{Timing Arc} pode ser estimado realizando uma interpolação na \textit{lookup table} fornecida pela biblioteca.
+
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
 \includegraphics[width=1.1 \linewidth, trim=3cm 10cm 0 0]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
@@ -209,31 +231,63 @@ Com o objetivo de simplificar as futuras definições, somente um atraso e um \tex
 \end{center}
 \end{figure}
 
-\section{Interconexões}
+Utilizando a \textit{lookup table} da Figura \ref{fig:lookup_table} para o \textit{delay} do inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay} e supondo que o \textit{slew} na entrada $a$ seja de $8.0$, e a capacitância vista pelo pino $o$ seja $0.1$, ao se realizar a interpolação, obtém se o valor $delay = 3.49$. Da mesma forma, o cálculo do \textit{slew} do \textit{Timing Arc} é realizado com base na \textit{lookup table}.
 
-As ferramentas de STA realizam a análise em duas etapas principais: o cálculo dos atrasos das portas lógicas; e o cálculo dos atrasos das interconexões. Os atrasos dos \textit{Timing Arc} de cada porta lógica são calculados utilizando as \textit{lookup tables} disponíveis nas bibliotecas \textit{Standard Cell}. Cada \textit{Timing Arc} é definido por funcões não-lineares do seu \textit{slew} de entrada e da sua capacitância de saída (\textit{load}).
+\begin{figure}
+\lstset{basicstyle=\footnotesize}
+\begin{lstlisting}[frame=single]
+cell_rise (delay_outputslew_template_7X8) {
+ index_1 (0.0, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2) ;
+ index_2 (0.5, 3.0, 5.0, 8.0, 14.0, 20.0, 30.0, 50.0) ;
+ values (
+   1.17, 1.82, 2.26, 2.76, 3.48, 4.04, 4.82, 6.12,
+   1.69, 2.34, 2.86, 3.49, 4.41, 5.11, 6.06, 7.58,
+   2.21, 2.86, 3.38, 4.12, 5.22, 6.05, 7.16, 8.90,
+   3.25, 3.90, 4.42, 5.20, 6.60, 7.67, 9.08, 11.23,
+   5.33, 5.98, 6.50, 7.28, 8.84, 10.30, 12.24, 15.14,
+   9.50, 10.15, 10.67, 11.45, 13.01, 14.57, 17.15, 21.33,
+   17.83, 18.48, 19.00, 19.78, 21.34, 22.90, 25.50, 30.70
+  );
+}
 
-Na Figura \ref{fig:modelos_driver_interconexao}-a é apresentado um circuito combinacional simples, com as portas lógicas $u1$ e $u2$, seus respectivos \textit{Timing Arcs} e a interconexão que liga a saída da porta $u1$ na entrada da porta $u2$. Na Figura \ref{fig:modelos_driver_interconexao}-b, é mostrada em blocos, a modelagem utilizada para o circuito da Figura \ref{fig:modelos_driver_interconexao}-a. Neste caso, a interconexão é representada na forma de uma capacitância, que é vista pelos \textit{Timing Arc} de $u1$. O cálculo dessa Capacitância Equivalente, ou Capacitância Efetiva ($C_{eff}$) pode ser realizada de diversas maneiras, que serão apresentadas na Seção \ref{sec:calculo_capacitancia}. Esta informação, juntamente com os \textit{slews} de entrada correspondente aos pinos $a$ ($inp1$) e $b$ ($inp2$), são utilizadas para calcular o \textit{delay} e o \textit{slew} através dos arcos de $u1$. Por exemplo, o cálculo de atraso no arco $b\to o$ da porta lógica $u1$, é realizado com base na sua \textit{Lookup Table}, em função do \textit{slew} aplicado em $b$ (vindo da entrada primária $inp2$) e da carga de saída ($load$), a qual foi obtida na modelagem da interconexão.
 
-\begin{figure}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 7cm 0 0]{imagens/modelos_driver_interconexao.pdf}
-\caption{Arco de \textit{timing} para uma célula inversora. Adaptado de \cite{BhaskerChadha09}.}
-\label{fig:modelos_driver_interconexao}
-\end{center}
+\end{lstlisting}
+\caption{Uma \textit{Lookup table} para atraso de subida de um arco de \textit{timing} (\textit{cell\_rise}). As linhas são endereçadas por \textit{index\_1} (capacitância) e as colunas por \textit{index\_2}(\textit{slew}). Ou seja, entrando com valores $0.1$ para capacitância e $8.0$ para \textit{slew}, obtém-se $delay_{rise} = 3.49$.}
+\label{fig:lookup_table}
 \end{figure}
 
-Para que o \textit{delay} e \textit{slew} dos \textit{Timing Arcs} de uma porta lógica sejam calculados, é necessária uma modelagem para as interconexões que esta porta lógica é \textit{driver}, de modo a fornecer a informação de \textit{load} para o cálculo de suas funções de \textit{delay} e de \textit{slew}. Algumas modelagens serão apresentadas na próxima seção.
+\section{Características Temporais das Interconexões}
 
-Além do impacto local nos \textit{delays} e \textit{slews} dos \textit{Timing Arcs} de seus \textit{drivers}, as interconexões exercem impacto global no circuito, com seu próprio atraso de propagação. Com a alta frequência de operação dos circuitos digitais atuais e o dimensionamento dos transistores para escalas nanométricas, os atrasos das interconexões que antes não eram significativos, hoje chegam consumir de 50 a 70\% do ciclo dos relógios, e esta percentagem tende a aumentar na medida que os transistores diminuem \cite{Cong96}.
+Uma interconexão tem sua contribuição para o desempenho do circuito atribuida a três fatores:
+\begin{itemize}
+	\item \textbf{Capacitância Vista Pelo \textit{Driver}: } Para que o \textit{delay} e \textit{slew} dos \textit{Timing Arcs} de uma porta lógica sejam calculados, é necessária uma modelagem para as interconexões que esta porta lógica é \textit{driver}, de modo a fornecer a informação de \textit{load} para o cálculo de suas funções de \textit{delay} e de \textit{slew}. Algumas modelagens serão apresentadas na próxima seção.	
 
-O cálculo do \textit{slew} é crucial para determinar a precisão de uma ferramenta de \textit{STA} \cite{Zhou2007}. Os \textit{delays} dos \textit{Timing Arcs} dependem do \textit{slew} de entrada e o \textit{slew} de saída, ao se propagar em uma interconexão, sofre uma degradação. A não modelagem desta degradação pela interconexão, acarreta erros de até 50\% \cite{Sheehan2002}.
+	\item \textbf{Atraso da Própria Interconexão: } Além do impacto local nos \textit{delays} e \textit{slews} dos \textit{Timing Arcs} de seus \textit{drivers}, as interconexões exercem impacto global no circuito, com seu próprio atraso de propagação. Com a alta frequência de operação dos circuitos digitais atuais e o dimensionamento dos transistores para escalas nanométricas, os atrasos das interconexões que antes não eram significativos, hoje chegam consumir de 50 a 70\% do ciclo dos relógios, e esta percentagem tende a aumentar na medida que os transistores diminuem \cite{Cong96}.
+	
+	\item \textbf{Degradação do \textit{Slew}: } O cálculo do \textit{slew} é crucial para determinar a precisão de uma ferramenta de \textit{STA} \cite{Zhou2007}. Os \textit{delays} dos \textit{Timing Arcs} dependem do \textit{slew} de entrada e o \textit{slew} de saída, ao se propagar em uma interconexão, sofre uma degradação. A não modelagem desta degradação pela interconexão, acarreta erros de até 50\% \cite{Sheehan2002}.
+\end{itemize}
+%
+%Na Figura \ref{fig:modelos_driver_interconexao}-a é apresentado um circuito combinacional simples, com as portas lógicas $u1$ e $u2$, seus respectivos \textit{Timing Arcs} e a interconexão que liga a saída da porta $u1$ na entrada da porta $u2$. Na Figura \ref{fig:modelos_driver_interconexao}-b, é mostrada em blocos, a modelagem utilizada para o circuito da Figura \ref{fig:modelos_driver_interconexao}-a. Neste caso, a interconexão é representada na forma de uma capacitância, que é vista pelos \textit{Timing Arc} de $u1$. O cálculo dessa capacitância pode ser realizado de diversas maneiras, que serão apresentadas na Seção \ref{sec:calculo_capacitancia}. Esta informação, juntamente com os \textit{slews} de entrada correspondente aos pinos $a$ e $b$, são utilizadas para calcular o \textit{delay} e o \textit{slew} através dos arcos de $u1$. Por exemplo, o cálculo de atraso no arco $b\to o$ da porta lógica $u1$, é realizado com base na sua \textit{Lookup Table}, em função do \textit{slew} aplicado em $b$ (vindo da entrada primária $inp2$) e da carga de saída ($load$), a qual foi obtida na modelagem da interconexão.
+%
+%\begin{figure}[ht]
+%\begin{center}% TRIM = L D R U
+%\includegraphics[width=\linewidth, trim=0 7cm 0 0]{imagens/modelos_driver_interconexao.pdf}
+%\caption{XXXXXXXXXXXXXXxx}
+%\label{fig:modelos_driver_interconexao}
+%\end{center}
+%\end{figure}
+
+
+
+
+
+
 
 %
 %A medida que os dispositivos eletrônicos operam em frequências maiores, o atraso das interconexões torna-se muito mais significante. Quando os dispositivos são reduzidos nas três dimensões por um fator $S$, o \textit{delay} intrínsico da porta lógica é reduzido por um fator de $S$, o atraso de interconexões locais continua o mesmo, porém, o atraso das interconexões globais aumenta por um fator de $S^2$.
 
 
-\section{Modelo de Interconexões}
+\section{Modelos de Interconexão}
 
 %\afazer{Fazer um link: Motivação: Primeiro parágrafo de introdução do paper ``Performance Optimization of VLSI Interconnect Layout''}
 
@@ -255,13 +309,12 @@ Uma interconexão pode ser representada idealmente como uma linha distribuída (Fi
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=\linewidth]{imagens/distributed_rc.png}
+\includegraphics[width=0.8 \linewidth]{imagens/distributed_rc.png}
 % \includegraphics{sta.png}
 \caption{Modelo RC Distribuído (a) e seu símbolo de esquemático (b) \cite{Rabaey08}.}
 \label{fig:distributed_rc}
 \end{center}
 \end{figure}
-
 
 
 	\subsection{Modelo de Capacitância Concentrada (\textit{Lumped C Model})}
@@ -271,7 +324,7 @@ Quando a resistência da interconexão é despresível, devido o fato de que a resis
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=\linewidth]{imagens/lumped_model.jpg}
+\includegraphics[width=0.8 \linewidth]{imagens/lumped_model.jpg}
 % \includegraphics{sta.png}
 \caption{Modelo de Capacitância Concentrada (\textit{Lumped C Model}).}
 \label{fig:lumped_model}
@@ -291,7 +344,7 @@ Quando a resistência da interconexão é despresível, devido o fato de que a resis
 
 		\begin{figure}[ht]
 \begin{center}
-\includegraphics[width=0.8 \linewidth]{imagens/rc_tree.jpg}
+\includegraphics[width=0.7 \linewidth]{imagens/rc_tree.jpg}
 % \includegraphics{sta.png}
 \caption{Uma Árvore RC \cite{Rabaey08}}
 \label{fig:rc_tree}
@@ -322,8 +375,10 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 
 \begin{itemize}
 \item \textbf{Árvore de melhor caso (\textit{Best-case tree}): } (Figura \ref{fig:interconnect_tree}-a) Assume-se que cada pino de destino é fisicamente adjacente ao \textit{driver}. Assim, nenhuma resistência estará no caminho entre \textit{driver} e destino, e todos os pinos de destino atuarão como \textit{load} na saída da interconexão.
-\item \textbf{Árvore balanceada (\textit{Balanced tree}): } Na árvore balanceada, todos os pinos de destino se encontram na mesma distância do \textit{driver}, e o caminho para cada destino corresponde a mesma quantidade de capacitância e resistência que os outros caminhos.
-\item \textbf{Árvore de pior caso (\textit{Worst-case tree}): } Neste caso, todos os destinos se encontram no fim da interconexão. Assim, cada pino de destino vê a resistência e a capacitância total da interconexão.
+
+\item \textbf{Árvore balanceada (\textit{Balanced tree}): } (Figura \ref{fig:interconnect_tree}-b) Na árvore balanceada, todos os pinos de destino se encontram na mesma distância do \textit{driver}, e o caminho para cada destino corresponde a mesma quantidade de capacitância e resistência que os outros caminhos.
+
+\item \textbf{Árvore de pior caso (\textit{Worst-case tree}): } (Figura \ref{fig:interconnect_tree}-c) Neste caso, todos os destinos se encontram no fim da interconexão. Assim, cada pino de destino vê a resistência e a capacitância total da interconexão.
 \end{itemize}
 
 		Em projetos de circuitos digitais, as capacitâncias parasitas são geralmente descritas no formato SPEF (\textit{Standard Parasitic Exchange Format}) do \textit{IEEE} (\textit{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de Automação de Projeto Eletrônica (\textit{EDA}). Os parasitas podem ser representados em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de Árvores RC.
@@ -360,60 +415,22 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 		\end{center}
 		\end{figure}
 		
-	\section{Atraso de Portas Lógicas em Fluxo \textit{Standard Cell}}
-	
 
-	\subsection{Modelo de Atraso Não-Linear (\textit{NLDM})}
-
-	\afazer{apresentar lookup table
-	
-	falar da interpolaç~ao
-	
-	modelo n~ao linear}	
-
-	Na Análise de \textit{Timing} Estática, os cicuitos são modelados considerando duas partes principais, as portas lógicas e as interconexões. As portas lógicas são modeladas a nível de seus arcos de \textit{timing}, e seus modelos são fornecidos pelas bibliotecas de célula, através de elementos conhecidas como \textit{lookup tables}. As interconexões, podem receber um modelo simplista ou mais sofisticado, dependendo da etapa que o projeto se encontra no fluxo \textit{standard cell}. Para etapas mais preliminares, as interconexões são modeladas como capacitâncias, sem atraso. Nas etapas seguintes, as interconexões são representadas por suas árvores RC.
-	
-	Nesta seção, serão apresentados detalhes sobre a modelagem das portas lógicas, e seu mapeamento para a biblioteca de célula, e posteriormente, como é calculado o atraso de propagação nas interconexões, dependendo do modelo empregado.
-	
-	%\includegraphics[width=0.8 \linewidth]{imagens/methodology_for_rc_delay_calculation.png} 
-
-		Nas bibliotecas de célula atuais, modelos de atrasos não lineares são fornecidos para os arcos de \textit{timing} das células disponíveis. Esses modelos, que geralmente são obtidos através de simulações em nível elétrico, são registrados na forma de \textit{lookup tables}, como a da Figura \ref{fig:lookup_table}. Uma \textit{lookup table} descreve o atraso ou o tempo de transição de um arco de timing em função de dois fatores: o tempo de transição na entrada do arco, e a capacitância vista na saída.
-
-		Considerando o inversor da Figura \ref{fig:arco_de_timing_fall_rise_slew_delay}, seu arco de \textit{timing} é representado pela conexão entre o pino de entrada $a$ e o pino de saída $o$. 
-
-
-\begin{figure}
-		\lstset{basicstyle=\footnotesize}
-\begin{lstlisting}[frame=single]
-cell_rise (delay_outputslew_template_7X8) {
- index_1 (0.0, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2) ;
- index_2 (0.5, 3.0, 5.0, 8.0, 14.0, 20.0, 30.0, 50.0) ;
- values (
-   1.17, 1.82, 2.26, 2.76, 3.48, 4.04, 4.82, 6.12,
-   1.69, 2.34, 2.86, 3.49, 4.41, 5.11, 6.06, 7.58,
-   2.21, 2.86, 3.38, 4.12, 5.22, 6.05, 7.16, 8.90,
-   3.25, 3.90, 4.42, 5.20, 6.60, 7.67, 9.08, 11.23,
-   5.33, 5.98, 6.50, 7.28, 8.84, 10.30, 12.24, 15.14,
-   9.50, 10.15, 10.67, 11.45, 13.01, 14.57, 17.15, 21.33,
-   17.83, 18.48, 19.00, 19.78, 21.34, 22.90, 25.50, 30.70
-  );
-}
-
-
-\end{lstlisting}
-\caption{Uma \textit{Lookup table} para atraso de subida de um arco de \textit{timing} (\textit{cell\_rise}). As linhas são endereçadas por \textit{index\_1} (capacitância) e as colunas por \textit{index\_2}(\textit{slew}). Ou seja, entrando com valores $0.1$ para capacitância e $8.0$ para \textit{slew}, obtém-se $delay_{rise} = 3.49$.}
-\label{fig:lookup_table}
-\end{figure}
 
 		
 	
-	\subsection{Cálculo da Capacitância de Saída (enxergada)}
+	\section{Cálculo da Capacitância de Saída do \textit{Driver}}
 	\label{sec:calculo_capacitancia}
-		\afazer{figura mostrando os modelos de driver,  capacitancia de interconexão, receiver
-
-		atraso e slew na sa´ida do driver <-> lookup table
+	
+	
+	
+		\afazer{
 		
-		encontrar a capacitancia a ser mapeada no calculo de atraso: capacitancia total capacitancia efetiva.
+		%figura mostrando os modelos de driver,  capacitancia de interconexão, receiver
+
+		%atraso e slew na sa´ida do driver <-> lookup table
+		
+		%encontrar a capacitancia a ser mapeada no calculo de atraso: capacitancia total capacitancia efetiva.
 		
 		modelos reduzidos para calculo da ceff = modelo pi, modelo t.
 
@@ -421,12 +438,45 @@ cell_rise (delay_outputslew_template_7X8) {
 		
 		}
 		
-	\section{Atraso de Interconexão}		
+			
+Como citado anteriormente, o impacto local de uma interconexão no seu \textit{driver} se dá pela contribuição no valor da capacitância vista por este. Nesta capacitância são incluídos também, o impacto causado pelos pinos de destino da interconexão.
+
+Para se realizar os cálculos de atrasos com precisão e eficiência, modelos são utilizados para cada parte de um estágio \textit{driver}-interconexão-destinos. Como é conhecido, cada arco de \textit{timing} é modelado de acordo com a biblioteca \textit{standard cell}, de modo a fazer com que os atrasos correspondam com a simulação elétrica. A interconexão, da mesma maneira, é modelada geralmente com modelos simplificados, que capturam o comportamento elétrico da descrição original da Árvore RC.
+
+Na Figura \ref{fig:circuito_exemplo_modelagem_interconnect} é mostrado um circuito de exemplo composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e a interconexão que liga a saída de $u1$ nas entradas de $u2$, $u3$ e $f1$. Na Figura \ref{fig:circuito_exemplo_modelagem_interconnect2} é ilustrada a modelagem deste circuito de exemplo.
+
+Existem algumas maneiras conhecidas de estimar o valor de capacitância visto na saída do \textit{driver}. Na fase \textit{pre-layout}, essa estimativa é realizada somando a capacitância total da interconexão com a capacitância de cada pino de destino dela. Porém, ao se tratar de interconexões com característica resistiva, o uso da abordagem de capacitância concentrada é impreciso. Para que os modelos de atraso não-lineares fornecidos pelas bibliotecas \textit{standard cell} sejam utilizados para os \textit{drivers} diretamente, o uso de uma abordagem conhecida como ``Capacitância Efetiva'' é necessário.
+
+A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância que pode ser utilizado como carga equivalente em termos de \textit{timing} para a saída do \textit{driver}. Essa capacitância equivalente é chamada de \textbf{Capacitância Efetiva} \cite{BhaskerChadha09}.
+
+A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que algumas resistências na interconexão alteram o tempo que certas capacitâncias são carregadas ou descarregadas, este efeito é chamado de \textit{resistive shielding} \afazer{CITAR}. Considerando a interconexão da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, no caso extremo em que $R4 = \infty$, o capacitor $C4$ nunca seria carregado, portanto a capacitância efetiva não deveria levar em consideração seu valor de capacitância, diminuindo assim, o \textit{delay} e o \textit{slew} do \textit{driver}. Note que na abordagem de capacitância concentrada, o valor de $C4$ ainda seria considerado, mesmo que o capacitor $C4$ nunca fosse carregado ou descarregado.
+
+Diversas técnicas são utilizadas para cálculo da Capacitância Efetiva \afazer{CITAR ALGUMAS}, em especial \cite{PURI02} que será abordada neste trabalho.
+
+		
+\begin{figure}[H]
+\begin{center} % TRIM = L D R U
+\includegraphics[width=0.8 \linewidth]{imagens/circuito_exemplo_modelagem_interconnect.png} 
+\caption{Um circuito composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e a interconexão, em forma de Árvore RC, que liga a saída de $u1$ nas entradas de $u2$, $u3$ e $f1$}
+\label{fig:circuito_exemplo_modelagem_interconnect}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center} % TRIM = L D R U
+\includegraphics[width=0.8 \linewidth]{imagens/circuito_exemplo_modelagem_interconnect2.png} 
+\caption{Modelagem para o circuito da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}. Em amarelo, são mostrados os \textit{Timing Arcs} da porta lógica u1; Em azul, o modelo da interconexão é abstraído, recebendo um valor de capacitância efetiva; Em verde, cada destino da interconexão, representado como um valor de capacitância de seus pinos de entrada.}
+\label{fig:circuito_exemplo_modelagem_interconnect2}
+\end{center}
+\end{figure}
+		
+
+	\section{Cálculo do Atraso de Interconexão}		
 		
 		\afazer{elmore (first moment), upper bound
 		citar outros modelos ( citar second moment, third moment)
 		
-		descrever o elmore em cima de uma RC tree
+		%descrever o elmore em cima de uma RC tree
 		}
 		
 		Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de \citeonline{Elmore48} (\textit{Elmore Delay}), pela simplicidade e razoável correlação com os atrasos reais. Em um nodo $i$ da Árvore RC, o atraso de Elmore ($\tau_{Di}$) pode ser facilmente calculado como:
@@ -454,7 +504,7 @@ cell_rise (delay_outputslew_template_7X8) {
 		\label{eq:delay_4}
 		\end{equation}
 		
-	\subsection{Degradação do \textit{Slew} na Interconexão}
+	\section{Cálculo da Degradação do \textit{Slew} na Interconexão}
 	
 		\afazer{Destacar na figura do modelo
 		
@@ -462,6 +512,133 @@ cell_rise (delay_outputslew_template_7X8) {
 		}
 		
 	\afazer{todos os conceitos abordados neste capitulo sao caracteristicas temporais locais}
+
+\chapter{Técnica Utilizada para Cálculo das Características Temporais da Interconexão}
+	
+		\afazer{
+			\cite{PURI02}		
+		
+		}
+	
+\section{Atraso das Interconexões}
+		% \label{cap:atraso}
+		% \afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
+
+		Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) é utilizado para representar o fio em relação a suas capacitâncias e resistências.
+
+		No modelo de grafo $I(C, R)$ proposto, o conjunto dos vértices, ou capacitores $C$, é composto pelos nodos internos da interconexão, ou capacitores, juntamente com seus valores de capacitâncias. As arestas do grafo representam os resistores, onde cada resistor conecta dois capacitores com um valor de resistência. Sendo assim:
+		\begin{equation}
+			C = \{((u, c) | c > 0\}.
+		\end{equation}
+		\begin{equation}
+			R = \{((u_1, c_1), (u_2, c_2), r) | (u_1, c_1), (u_2, c_2) \in C \land c1, c2, r > 0\}.
+		\end{equation}
+
+		
+		\begin{figure}[ht]
+		\begin{center}% TRIM = L D R U
+		\includegraphics[width=1 \linewidth, trim=0cm 15cm 0 0]{imagens/grafo_interconexao.pdf}
+		\caption{a) Uma interconexão com três capacitores, \textit{u1:o, u1:1 e u2:a}, e dois resistores, \textit{r1 e r2}, ligando duas portas lógicas, \textit{u1 e u2}; b) O grafo correspondente, com três vértices e duas arestas.}
+		\label{fig:grafo_interconexao}
+		\end{center}
+		\end{figure}
+
+
+		\section{Técnica de Elmore} 
+		% \afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
+
+		A técnica de \citeonline{Elmore48}, amplamente conhecida na literatura é de fácil implementação. O algoritmo para cálculo do atraso de Elmore (Algorítmo \ref{algo:elmore}) recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais ($c_{tot_i}$) de cada nodo interno. Em ordem topológica reversa, os nodos são inicializados da seguinte maneira:
+		
+		\begin{equation}
+			 c_{tot_i} = \left\{
+			\begin{array}{l l}
+				c_i & \quad \text{se $(u_i, c_i)$ é um capacitor terminal} \\
+				\sum_{j \in filhos(i)} c_{tot_j} & \quad \text{caso contrário}
+			\end{array} \right. 
+		\end{equation}
+
+		Onde o conjunto $filhos(i)$ é o conjunto de capacitores que estão interligados diretamente com o capacitor ($u_i, c_i$) através de um resistor $r$, que tenham um nível topológico maior que este. Analogamente, o $pai(i)$ é um capacitor que precede ($u_i, c_i$) e se conecta com ele, também, através de um resistor.
+
+		A função $r(i, j)$ retorna o valor da resistência que liga dois capacitores $(u_i, c_i)$ e $(u_j, c_j) \in C$. O atributo $c_{tot_i}$ é a capacitância total de um nodo $u_i$, obtida a partir da soma de todas as capacitâncias a partir do capacitor $(u_i, c_i)$.
+
+		Para determinar os atrasos da interconexão utilizando o modelo de Elmore, basta obter os valores T = \{$\tau_i | u_i$ que é um nodo terminal da árvore RC\}.
+
+		\begin{algorithm}[H]
+		\Entrada{Árvore RC $I(C, R)$}
+
+		$\tau_1 = 0$
+
+		\Para{todo $(u_i, c_i) \in C\ |\ i > 1$ em ordem topológica}{
+			$\tau_i = \tau_{pai(i)} + r(pai(i), i) * c_{tot_i}$
+		}
+		\label{algo:elmore}
+		\caption{Atraso de Elmore}
+		\end{algorithm}
+
+		\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
+
+\section{Cálculo da Capacitância Efetiva e Degradação do \textit{Slew}}
+		Para simular a interdependência entre o \textit{slew} e a Capacitância Efetiva, o \textit{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
+
+		Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \textit{driver} uma porta combinacional \textit{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \textit{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \textit{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
+
+		O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \cite{PURI02}, se dá em 5 passos:
+
+		\begin{enumerate}
+
+			\item Inicialização
+
+				\begin{enumerate}
+
+					\item A Capacitância Efetiva $C_{eff_i}$ de cada nodo da Árvore RC com o somatório de todas as Capacitâncias \textit{Downstream} $C_{tot_i}$
+
+					\item O \textit{slew} no nodo fonte da Árvore RC $S_0$ é calculado diretamente, utilizando a Capacitância Concentrada da Árvore RC: $S_0 = f(C_{tot_0})$
+
+				\end{enumerate}
+
+			\item Em ordem topológica com origem no nodo fonte  \label{enum:algo_net_timing:1}
+
+				\begin{enumerate}
+
+					\item Atraso $T_{0-i}$ do nodo fonte $0$ para cada nodo $i$ da árvore é calculado utilizando o Atraso de Elmore, com a Capacitância Igual a Capacitância Efetiva de $i$.
+
+					\begin{equation}
+						T_{0-i} = \sum_{\forall \  nodos \ k} R_{k,i} \ C_{eff_i}
+					\end{equation}
+
+
+					\item A degradação do \textit{slew} em cada nodo $i$ é computada como
+					\begin{equation}
+						S_{i} = \frac{S_{i-1}}{1-\frac{R_i\ C_{eff_i}}{S_{i-1}} (1-e^{-\frac{S_{i-1}}{R_i\ C_{eff_i}}})}
+					\end{equation}
+
+				\end{enumerate}
+
+			\item Em ordem topológica reversa com origem no nodo terminal
+				\begin{enumerate}
+
+					\item A Capacitância Efetiva ($C_{eff_i}$) de cada nodo é calculada como a soma da capacitância do nodo $C_i$ e todas as capacitâncias dos nodos filhos:
+
+					\begin{equation}
+						C_{eff_i}=C_i + \sum_{\forall\ filhos\ j}\ K_j \times C_{tot_j}
+					\end{equation}
+
+					Onde o fator de \textit{shielding} é definido por
+
+					\begin{equation}
+						K_j=1-\frac{2R_jC_{eff_j}}{S_i}(1-e^{-\frac{S_i}{2R_jC_{eff_j}}})
+					\end{equation}
+
+				\end{enumerate}
+
+
+			\item O \textit{slew} no nodo fonte é calculado diretamente, utilizando o $C_{eff_0}$ atual  \label{enum:algo_net_timing:2}
+
+			\item Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $S_0$ convirja, dada uma precisão $\epsilon$
+
+		\end{enumerate}
+
+		Após a execução do algoritmo, pode-se obter a degradação de \textit{slew} e de atraso do \textit{driver} em todos os \textit{fanouts} da interconexão em questão.
 
 \chapter{Análise de \textit{Timing} Estática}
 
@@ -676,11 +853,11 @@ arrival time, slack, required, slack negativo, pior slack, caminho crítico
 		% \item Arquivos \textit{.spef} que descrevem as características parasitas desses circuitos;
 		% \item Arquivos \textit{.sdc} que definem as restrições de projeto impostas, tais como atrasos de entrada, capacitância de saída, ou desempenho esperado.
 
-\chapter{Implementação da Ferramenta de Análise de Timing}
+\section{Implementação da Ferramenta de STA}
 	
 	Este capítulo apresentará as estratégias utilizadas para o desenvolvimento da ferramenta de análise de \textit{timing}. Serão ilustradas as principais estruturas de dados, modelos de grafo, e serão apresentados também, os algoritmos implementados na ferramenta desenvolvida.
 
-	\section{O Modelo de Grafo Adotado}
+	\subsection{O Modelo de Grafo Adotado}
 
 		Na ferramenta implementada neste trabalho, foi necessário definir um modelo de grafo condizente com a realidade e que possibilite um desempenho razoável para as rotinas de atualização das informações de \textit{timing}.
 
@@ -724,7 +901,7 @@ arrival time, slack, required, slack negativo, pior slack, caminho crítico
 
 	% , onde V é o conjunto dos pinos do circuito, ou \textit{timing points}. Um par de vértices, ou pinos, $v_i$ e $v_j \in V$, são conectados por uma aresta direcionada $(v_i,v_j) \in A$ se existe uma interconexão que liga $v_i$ em $v_j$, sendo que $v_i$ é um pino de saída de uma porta lógica e $v_j$ é o pino de entrada de outra porta lógica.
 
-	\section{Algoritmo de Análise de Timing Estática}
+	\subsection{Algoritmo de Análise de Timing Estática}
 	
 		\afazer{
 		
@@ -832,137 +1009,13 @@ arrival time, slack, required, slack negativo, pior slack, caminho crítico
 		% \caption{ANÁLISE\_DE\_TIMING\_ESTATICA}\label{alg:STA}
 		% \end{algorithm}
 
-	\section{Técnica Utilizada para Cálculo da \emph{Ceff}, Degradação de Slew e Atraso de Interconexão}
 	
-		\afazer{
-			\cite{PURI02}		
-		
-		}
-	
-	\subsection{Atraso das Interconexões}
-		% \label{cap:atraso}
-		% \afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
-
-		Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) é utilizado para representar o fio em relação a suas capacitâncias e resistências.
-
-		No modelo de grafo $I(C, R)$ proposto, o conjunto dos vértices, ou capacitores $C$, é composto pelos nodos internos da interconexão, ou capacitores, juntamente com seus valores de capacitâncias. As arestas do grafo representam os resistores, onde cada resistor conecta dois capacitores com um valor de resistência. Sendo assim:
-		\begin{equation}
-			C = \{((u, c) | c > 0\}.
-		\end{equation}
-		\begin{equation}
-			R = \{((u_1, c_1), (u_2, c_2), r) | (u_1, c_1), (u_2, c_2) \in C \land c1, c2, r > 0\}.
-		\end{equation}
-
-		
-		\begin{figure}[ht]
-		\begin{center}% TRIM = L D R U
-		\includegraphics[width=1 \linewidth, trim=0cm 15cm 0 0]{imagens/grafo_interconexao.pdf}
-		\caption{a) Uma interconexão com três capacitores, \textit{u1:o, u1:1 e u2:a}, e dois resistores, \textit{r1 e r2}, ligando duas portas lógicas, \textit{u1 e u2}; b) O grafo correspondente, com três vértices e duas arestas.}
-		\label{fig:grafo_interconexao}
-		\end{center}
-		\end{figure}
 
 
-%		\subsubsection{Técnica de Elmore} 
-%		% \afazer{Nesta seção, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso de Elmore utilizado neste trabalho.}
-%
-%		A técnica de \citeonline{Elmore48}, amplamente conhecida na literatura é de fácil implementação. O algoritmo para cálculo do atraso de Elmore (Algorítmo \ref{algo:elmore}) recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais ($c_{tot_i}$) de cada nodo interno. Em ordem topológica reversa, os nodos são inicializados da seguinte maneira:
-%		
-%		\begin{equation}
-%			 c_{tot_i} = \left\{
-%			\begin{array}{l l}
-%				c_i & \quad \text{se $(u_i, c_i)$ é um capacitor terminal} \\
-%				\sum_{j \in filhos(i)} c_{tot_j} & \quad \text{caso contrário}
-%			\end{array} \right. 
-%		\end{equation}
-%
-%		Onde o conjunto $filhos(i)$ é o conjunto de capacitores que estão interligados diretamente com o capacitor ($u_i, c_i$) através de um resistor $r$, que tenham um nível topológico maior que este. Analogamente, o $pai(i)$ é um capacitor que precede ($u_i, c_i$) e se conecta com ele, também, através de um resistor.
-%
-%		A função $r(i, j)$ retorna o valor da resistência que liga dois capacitores $(u_i, c_i)$ e $(u_j, c_j) \in C$. O atributo $c_{tot_i}$ é a capacitância total de um nodo $u_i$, obtida a partir da soma de todas as capacitâncias a partir do capacitor $(u_i, c_i)$.
-%
-%		Para determinar os atrasos da interconexão utilizando o modelo de Elmore, basta obter os valores T = \{$\tau_i | u_i$ que é um nodo terminal da árvore RC\}.
-%
-%		\begin{algorithm}[H]
-%		\Entrada{Árvore RC $I(C, R)$}
-%
-%		$\tau_1 = 0$
-%
-%		\Para{todo $(u_i, c_i) \in C\ |\ i > 1$ em ordem topológica}{
-%			$\tau_i = \tau_{pai(i)} + r(pai(i), i) * c_{tot_i}$
-%		}
-%		\label{algo:elmore}
-%		\caption{Atraso de Elmore}
-%		\end{algorithm}
-
-		\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citeonline{PURI02}, que será implementado neste trabalho.}
-
-		Para simular a interdependência entre o \textit{slew} e a Capacitância Efetiva, o \textit{slew} no nodo fonte da Árvore RC é refinado iterativamente, para obtenção de seus atrasos.
-
-		Dada uma Árvore RC | com os nodos enumerados em ordem topológica de $0$ até $n$, onde $0$ é o nodo fonte e $n$ é o nodo terminal | o nodo fonte tem como \textit{driver} uma porta combinacional \textit{CMOS}, de modo em que $S_{driver}$  é função da carga capacitiva da porta lógica. A capacitância \textit{downstream} total em um nodo $i$ é denotada por $C_{tot_i}$; o \textit{slew} em um nodo $i$, expresso por $S_i$; e a capacitância efetiva no mesmo nodo, por $C_{eff_i}$.
-
-		O algoritmo para cálculo iterativo da Capacitância Efetiva de uma Árvore RC, como descrito em \cite{PURI02}, se dá em 5 passos:
-
-		\begin{enumerate}
-
-			\item Inicialização
-
-				\begin{enumerate}
-
-					\item A Capacitância Efetiva $C_{eff_i}$ de cada nodo da Árvore RC com o somatório de todas as Capacitâncias \textit{Downstream} $C_{tot_i}$
-
-					\item O \textit{slew} no nodo fonte da Árvore RC $S_0$ é calculado diretamente, utilizando a Capacitância Concentrada da Árvore RC: $S_0 = f(C_{tot_0})$
-
-				\end{enumerate}
-
-			\item Em ordem topológica com origem no nodo fonte  \label{enum:algo_net_timing:1}
-
-				\begin{enumerate}
-
-					\item Atraso $T_{0-i}$ do nodo fonte $0$ para cada nodo $i$ da árvore é calculado utilizando o Atraso de Elmore, com a Capacitância Igual a Capacitância Efetiva de $i$.
-
-					\begin{equation}
-						T_{0-i} = \sum_{\forall \  nodos \ k} R_{k,i} \ C_{eff_i}
-					\end{equation}
-
-
-					\item A degradação do \textit{slew} em cada nodo $i$ é computada como
-					\begin{equation}
-						S_{i} = \frac{S_{i-1}}{1-\frac{R_i\ C_{eff_i}}{S_{i-1}} (1-e^{-\frac{S_{i-1}}{R_i\ C_{eff_i}}})}
-					\end{equation}
-
-				\end{enumerate}
-
-			\item Em ordem topológica reversa com origem no nodo terminal
-				\begin{enumerate}
-
-					\item A Capacitância Efetiva ($C_{eff_i}$) de cada nodo é calculada como a soma da capacitância do nodo $C_i$ e todas as capacitâncias dos nodos filhos:
-
-					\begin{equation}
-						C_{eff_i}=C_i + \sum_{\forall\ filhos\ j}\ K_j \times C_{tot_j}
-					\end{equation}
-
-					Onde o fator de \textit{shielding} é definido por
-
-					\begin{equation}
-						K_j=1-\frac{2R_jC_{eff_j}}{S_i}(1-e^{-\frac{S_i}{2R_jC_{eff_j}}})
-					\end{equation}
-
-				\end{enumerate}
-
-
-			\item O \textit{slew} no nodo fonte é calculado diretamente, utilizando o $C_{eff_0}$ atual  \label{enum:algo_net_timing:2}
-
-			\item Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $S_0$ convirja, dada uma precisão $\epsilon$
-
-		\end{enumerate}
-
-		Após a execução do algoritmo, pode-se obter a degradação de \textit{slew} e de atraso do \textit{driver} em todos os \textit{fanouts} da interconexão em questão.
-
-
-\section{Experimentos}
+\chapter{Experimentos}
 		\afazer{Este capítulo apresentará como foram realizados os experimentos, e como foram validados.}
 
-	\subsection{Validação da Ferramenta de STA Perante uma Ferramenta Industrial}
+	\section{Validação da Ferramenta de STA Perante uma Ferramenta Industrial}
 			\afazer{Nesta seção, os resultados obtidos pelas técnicas implementadas, descritas no Capítulo \ref{cap:atraso}, serão comparadas com uma ferramenta industrial. Os parâmetros utilizados para comparação serão: \textit{runtime} e precisão dos resultados.}
 
 
