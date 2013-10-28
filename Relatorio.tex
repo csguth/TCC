@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portuguese, lined,boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
 \usepackage{float}
 
 
@@ -435,15 +435,25 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 			
 Conforme explicado anteriormente, o impacto local de uma interconexão no seu \textit{driver} se dá pela contribuição no valor da capacitância vista pelo mesmo. Nesta capacitância são incluídos também, o impacto causado pelos pinos de destino da interconexão \footnote{Um pino de destino de uma interconexão é um pino que se liga na interconexão, que não é o pino \textit{driver}. Por exemplo, na Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, os pinos de destino da interconexão são o segundo pino de entrada da porta $u2$, o pino de entrada da porta $u3$ e o pino $d$ do \textit{flip-flop} f1.}.
 
-Para se realizar os cálculos de atrasos com precisão e eficiência, modelos são utilizados para o \textit{driver}, para a interconexão e para os destinos. Como é conhecido, cada arco de \textit{timing} é modelado de modo a fazer com que os atrasos correspondam com a simulação elétrica. A interconexão, da mesma maneira, é modelada geralmente com modelos simplificados, que capturam o comportamento elétrico da descrição original da Árvore RC.
+Para se realizar os cálculos de atrasos com precisão e eficiência, modelos são utilizados para o \textit{driver}, para a interconexão e para os destinos. Cada arco de \textit{timing} é modelado de modo a fazer com que os atrasos correspondam com a simulação elétrica. A interconexão, da mesma maneira, é modelada geralmente com modelos simplificados, que capturam o comportamento elétrico da descrição original da Árvore RC.
 
 Na Figura \ref{fig:circuito_exemplo_modelagem_interconnect} é mostrado um circuito de exemplo composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e a interconexão que liga a saída de $u1$ nas entradas de $u2$, $u3$ e $f1$. Na Figura \ref{fig:circuito_exemplo_modelagem_interconnect2} é ilustrada a modelagem deste circuito de exemplo.
 
-Existem algumas maneiras conhecidas de estimar o valor de capacitância visto na saída do \textit{driver}. Na fase \textit{pre-layout}, essa estimativa é realizada somando a capacitância total da interconexão com a capacitância de cada pino de destino dela. Porém, ao se tratar de interconexões com característica resistiva, o uso da abordagem de capacitância concentrada é impreciso. Para que os modelos de atraso não-lineares fornecidos pelas bibliotecas \textit{standard cell} sejam utilizados para os \textit{drivers} diretamente, o uso de uma abordagem conhecida como ``Capacitância Efetiva'' é necessário.
+Existem algumas maneiras conhecidas de estimar o valor de capacitância visto na saída do \textit{driver}. Na fase \textit{pre-layout}, essa estimativa é realizada somando a capacitância total da interconexão com a capacitância de cada pino de destino dela. Porém, ao se tratar de interconexões com característica resistiva, o uso da abordagem de capacitância concentrada é impreciso. Para que os modelos de atraso não-lineares, que dependem do valor de capacitância de saída, sejam utilizados para os \textit{drivers} diretamente, o uso de uma abordagem conhecida como ``Capacitância Efetiva'' é necessário.
 
 A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância que pode ser utilizado como carga equivalente em termos de \textit{timing} para a saída do \textit{driver}. Essa capacitância equivalente é chamada de \textbf{Capacitância Efetiva} \cite{BhaskerChadha09}.
 
 A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que algumas resistências na interconexão alteram o tempo que certas capacitâncias são carregadas ou descarregadas, este efeito é chamado de \textit{resistive shielding}. Considerando a interconexão da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, no caso extremo em que $R4 = \infty$, o capacitor $C4$ nunca seria carregado, portanto a capacitância efetiva não deveria levar em consideração seu valor de capacitância, diminuindo assim, o \textit{delay} e o \textit{slew} do \textit{driver}. Note que na abordagem de capacitância concentrada, o valor de $C4$ ainda seria considerado, mesmo que o capacitor $C4$ nunca fosse carregado ou descarregado.
+
+A Figura \ref{fig:effective_capacitance_vs_actual_vs_total} mostra formas de onda na saída de uma porta lógica que é \textit{driver} de uma interconexão. Pode se observar que para o valor escolhido de capacitância efetiva, no ponto médio da curva (\textit{$V_{dd} = 50\%$}), este valor é igual ao valor de capacitância real, obtido por simulação. Note a diferença neste ponto em relação à curva de capacitância concentrada, mostrando a imprecisão de se utilizar este modelo em certos casos.
+
+\begin{figure}[ht]
+\begin{center} % TRIM = L D R U
+\includegraphics[width=\linewidth]{imagens/effective_capacitance_vs_actual_vs_total.png} 
+\caption{Formas de onda na saída de uma porta lógica em função da abordagem utilizada para cálculo da capacitância. Adaptada (\afazer{Passar para português}) de \cite{BhaskerChadha09}.}
+\label{fig:effective_capacitance_vs_actual_vs_total}
+\end{center}
+\end{figure}
 
 Diversas técnicas são utilizadas para cálculo da Capacitância Efetiva \cite{Kashyap00} \cite{Qian1994}, em especial \cite{PURI02} que será abordada neste trabalho.
 
@@ -473,7 +483,8 @@ Citar outros modelos (citar second moment, third moment)
 
 %descrever o elmore em cima de uma RC tree
 }
-		
+
+
 Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de \citeonline{Elmore48} (\textit{Elmore Delay}), pela simplicidade e razoável correlação com os atrasos reais. Esta técnica é bastante utilizada, pois além de ser de fácil implementação, fornece uma análise rápida e garante um \textit{upper-bound} para o valor do atraso \cite{Gupta97}.
 		
 Em um nodo $i$ da Árvore RC, o atraso de Elmore ($\tau_{Di}$) pode ser facilmente calculado como:
@@ -649,13 +660,6 @@ Porém, \cite{Kashyap00} não tratava \textit{driver} da interconexão como sendo u
 		Após a execução do algoritmo, pode-se obter a degradação de \textit{slew} e de atraso do \textit{driver} em todos os \textit{fanouts} da interconexão em questão.
 
 \chapter{Análise de \textit{Timing} Estática}
-
-	\afazer{
-
-Definir Caminho $\to$ Pra poder falar de Caminho Crítico
-	
-	}
-
 	\label{cap:sta}
 Análise de \textit{Timing}, ou \textit{Timing Analysis} \cite{Guntzel00} \cite{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar atrasos das células e interconexões em circuitos digitais. A Análise de \textit{Timing} é chamada de estática (\textit{STA: Static Timing Analysis}), quando não depende dos valores aplicados nas entradas primárias do circuito, ou seja, apenas considera o comportamento estático das portas lógicas e interconexões. É um processo completo e exaustivo \cite{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
 
@@ -913,6 +917,49 @@ Após todos os \textit{arrival times} serem calculados, as folgas são obtidas pro
 
 	\section{Validação da Ferramenta de STA Perante uma Ferramenta Industrial}
 			\afazer{Nesta seção, os resultados obtidos pelas técnicas implementadas, descritas no Capítulo \ref{cap:atraso}, serão comparadas com uma ferramenta industrial. Os parâmetros utilizados para comparação serão: \textit{runtime} e precisão dos resultados.}
+			
+\begin{figure}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/comparacoes/primetime.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{fig:comparacoes_primetime}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=0.65 \linewidth, trim=4.5cm 20cm 9cm 2cm]{imagens/comparacoes/lump_elmore_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{fig:lump_elmore_slew}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/comparacoes/lump_elmore_no_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{fig:lump_elmore_no_slew}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/comparacoes/ceff_elmore_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{fig:ceff_elmore_slew}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\linewidth, trim=0cm 10cm 2 0]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{fig:ceff_elmore_no_slew}
+\end{center}
+\end{figure}
+
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt dapibus mattis. Fusce sit amet dui in turpis aliquam feugiat in in dolor. Vestibulum hendrerit lacinia aliquam. Cras eleifend leo eget erat ultrices, vitae mattis neque consequat. Nullam eget laoreet mauris, sit amet lacinia diam. Phasellus id scelerisque quam. Mauris sollicitudin tincidunt accumsan. Mauris ipsum leo, eleifend nec aliquet ut, volutpat ut lectus. Donec eleifend magna nunc, tristique elementum justo condimentum eu. Curabitur vel nisl et massa euismod sollicitudin et sit amet enim. Quisque cursus porttitor pharetra. Donec non arcu nec ligula interdum luctus sit amet a turpis. Quisque porttitor, dui vitae euismod euismod, est elit suscipit ligula, et interdum mi elit ac dolor. Cras porttitor leo nisl, vel vulputate dolor vestibulum ut. Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget. Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget.  Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget.
 
 
 \chapter{Conclusão}
