@@ -73,13 +73,13 @@ Análise de \textit{Timing} Estática (\textit{STA: Static Timing Analysis}) é a t
 \capa  
 \folhaderosto[comficha] % Se nao quiser imprimir a ficha, é só não usar o parâmetro
 \folhaaprovacao
-% \paginadedicatoria
-% \paginaagradecimento
+\paginadedicatoria
+\paginaagradecimento
 % \paginaepigrafe
 \paginaresumo
 \paginaabstract
 \listadefiguras
-% \listadetabelas 
+\listadetabelas 
 % \listadeabreviaturas
 % \listadesimbolos
 \sumario
@@ -93,9 +93,9 @@ Este capítulo tem por objetivo, apresentar uma visão geral sobre o fluxo de proj
 
 Com o crescimento na dimensão dos circuitos digitais contemporâneos\footnote{Um processador para \textit{desktop} desenvolvido no ano de 2008 tem cerca de 731 milhões de transistores, excluindo a área de memória \cite{Intel08}.} e a necessidade de um tempo de entrega ao mercado (\textit{time-to-market}) curto faz com que esses projetos adotem o fluxo de projeto \textit{standard cell}.
 
-No fluxo \textit{standard cell} as portas lógicas são desenvolvidas e verificadas previamente em uma dada tecnologia. Essas células, ou implementações disponíveis para as portas lógicas, são catalogadas com suas diversas características elétricas e tabelas (\textit{lookup tables}) de atraso em uma biblioteca de células, sendo reutilizadas em diversos projetos na mesma tecnologia. O reuso amortiza o custo dos projetos inseridos neste nodo tecnológico e \afazer{possibilta} um \textit{time-to-market} mais curto.
+No fluxo \textit{standard cell} as células são desenvolvidas e verificadas previamente em uma dada tecnologia. Essas células \footnote{Célula é a instância de uma porta lógica.} são registradas com suas diversas características elétricas e tabelas (\textit{lookup tables}) de atraso em uma biblioteca de células, sendo reutilizadas em diversos projetos na mesma tecnologia. O reuso amortiza o custo dos projetos inseridos neste nodo tecnológico e possibilita um \textit{time-to-market} mais curto.
 
-Os projetos de circuitos digitais no fluxo \textit{standard cell} são realizados visando, além das funcionalidades do projeto, a operação em uma frequência especificada. Por isso, diversas otimizações são efetuadas ao longo do fluxo, para que todos os recursos e tarefas do dispositivo consigam ser concluídas na frequência definida. Nas primeiras etapas de um projeto no fluxo \textit{standard cell}, apenas as questões relacionadas à funcionalidade do \textit{design} são verificadas, pois ainda, não se tem com precisão, as informações de atraso e informações elétricas necessárias, para realizar uma avaliação precisa de desempenho. 
+Os projetos de circuitos digitais no fluxo \textit{standard cell} são realizados visando, além das funcionalidades do projeto, a operação em uma frequência especificada. Por isso, diversas otimizações são efetuadas ao longo do fluxo, para que todos os recursos e tarefas do dispositivo consigam ser concluídas na frequência definida. Nas primeiras etapas de um projeto no fluxo \textit{standard cell}, apenas as questões relacionadas à funcionalidade do projeto são verificadas, pois ainda, não se tem com precisão, as informações de atraso e informações elétricas necessárias, para realizar uma avaliação precisa de desempenho. 
 
 		
 
@@ -110,8 +110,13 @@ Os projetos de circuitos digitais no fluxo \textit{standard cell} são realizados
 
 
 \section{Motivação}
-		
-No fluxo \textit{standard cell}, a partir do nível de transferência entre registradores (\textit{RTL: Register Transfer Level}), diversas otimizações como \textit{gate sizing} \cite{Livramento13} \cite{Hu12} \cite{Mohammad12} e \textit{Placement} \cite{Shahookar91} são realizadas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais. Nas etapas iniciais, a análise de \textit{timing} pode ser requisitada milhares de vezes, demandando um baixo tempo de execução por parte desta. \afazer{\textbf{MUITO RUIM ISSO AQUI: }Por outro lado, devido ao fato de que as informações físicas do circuito, como de posicionamento, ainda são muito vagas, não espera-se que a qualidade dos resultados seja realista. Já nas etapas finais, mais próximas da síntese física, é necessário que a avaliação de \textit{Timing} considere o circuito no maior grau de detalhe possível, para que informações precisas sejam fornecidas. Essa demanda de precisão faz com que o tempo de simulação seja maior, o que já era esperado.}
+%otimizações		como \textit{gate sizing} \cite{Livramento13} \cite{Hu12} \cite{Mohammad12}
+% \textit{Placement} \cite{Shahookar91} 
+No fluxo \textit{standard cell}, a partir do nível de transferência entre registradores (\textit{RTL: Register Transfer Level}), uma série otimizações são realizadas ao decorrer de suas etapas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais.
+
+Durante as otimizações nas etapas iniciais do fluxo (\textit{pre-layout}), a análise de \textit{timing} é requisitada milhares de vezes, assim, é necessário que a ferramenta de análise de \textit{timing} realize a análise de \textit{timing} com o melhor desempenho possível. Como as informações relacionadas ao aspecto físico do circuito, como posicionamento \afazer{CITAR} e roteamento \afazer{CITAR} ainda não são definidas com precisão nas etapas iniciais, essas informações são aproximadas e a ferramenta de análise de \textit{timing} fornece dados pessimistas sobre o \textit{timing} do circuito.
+
+Já nas etapas finais (\textit{pos-layout}), mais próximas da síntese física, a análise de \textit{timing} precisa ser a mais precisa possível, porém, a modelagem dos elementos dos circuitos digitais torna-se mais complexa, diminuindo o desempenho da ferramenta.
 
 Como as informações \textit{timing} precisam ser avaliadas centenas ou milhares de vezes durante os processos de otimização, ferramentas de análise de \textit{timing} eficientes e escaláveis precisam ser desenvolvidas e aperfeiçoadas para acompanhar a evolução da tecnologia \textit{CMOS} (\textit{Complementary Metal-Oxide Semiconductor}).
 		
@@ -300,13 +305,13 @@ Esta seção tem por objetivo, apresentar alguns modelos de representação de inter
 
 	\subsection{Modelo RC Distribuído (\textit{Distributed RC Model})}
 
-Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}). Uma linha é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um $r$ e um $c$. Assim, a resistência e a capacitância total da interconexão é $r \times \Delta L$ e $c \times \Delta L$, respectivamente. O cálculo dos atrasos em um Modelo RC Distribuido reflete na resolução de equações diferenciais, que por sua vez, não possuem fórmula fechada. Essa complexidade, faz com que, modelos mais simples de interconexões sejam adotados.
+Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}). Uma linha é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um $r$ e um $c$. Assim, a resistência e a capacitância total da interconexão é $r \times \Delta L$ e $c \times \Delta L$, respectivamente. O cálculo dos atrasos em um Modelo RC Distribuido reflete na resolução de equações diferenciais, que por sua vez, não possuem fórmula fechada. Isto resulta em um custo computacional muito elevado, não tornando viável sua adoção em fluxo \textit{standard cell}. Para tal objetivo, utilizam-se modelos de interconexão simplificados.
 
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=0.8 \linewidth]{imagens/distributed_rc.png}
 % \includegraphics{sta.png}
-\caption{Modelo RC Distribuído (a) e seu símbolo de esquemático (b) \cite{Rabaey08}.}
+\caption{(a) Modelo RC Distribuído; (b) Seu símbolo de esquemático. Obtida de \cite{Rabaey08}.}
 \label{fig:distributed_rc}
 \end{center}
 \end{figure}
@@ -321,14 +326,14 @@ Quando a resistência da interconexão é despresível, devido o fato de que a resis
 \begin{center}
 \includegraphics[width=0.8 \linewidth]{imagens/lumped_model.jpg}
 % \includegraphics{sta.png}
-\caption{Modelo de Capacitância Concentrada (\textit{Lumped C Model}) \cite{Rabaey08}.}
+\caption{Modelo de Capacitância Concentrada (\textit{Lumped C Model}). Obtida de \cite{Rabaey08}.}
 \label{fig:lumped_model}
 \end{center}
 \end{figure}
 
 	\subsection{Modelo RC Concentrado (\textit{Lumped RC Model})}
 
-		No modelo RC concentrado (\textit{lumped RC model}), concentra-se toda a resistência de cada segmento da interconexão em um resistor $R$ e similarmente combina-se a capacitância total em um único capacitor $C$. A rede resistor-capacitor é representada como uma árvore RC (Figura \ref{fig:rc_tree}). De acordo com \citeonline{Rabaey08}, uma árvore RC possui as seguintes propriedades:
+		No modelo RC concentrado (\textit{lumped RC model}), concentra-se toda a resistência de cada segmento da interconexão em um único resistor $R$ e similarmente combina-se a capacitância total em um único capacitor $C$. A rede resistor-capacitor é representada como uma árvore RC (Figura \ref{fig:rc_tree}). De acordo com \citeonline{Rabaey08}, uma árvore RC possui as seguintes propriedades:
 		
 \begin{itemize}
 \item A rede tem apenas um nodo de entrada, chamado de \textbf{fonte} (\textit{source});
@@ -341,7 +346,7 @@ Quando a resistência da interconexão é despresível, devido o fato de que a resis
 \begin{center}
 \includegraphics[width=0.7 \linewidth]{imagens/rc_tree.jpg}
 % \includegraphics{sta.png}
-\caption{Uma árvore RC obtida de \cite{Rabaey08}.}
+\caption{Uma árvore RC. Obtida de \cite{Rabaey08}.}
 \label{fig:rc_tree}
 \end{center}
 \end{figure}
@@ -359,14 +364,7 @@ Quando a resistência da interconexão é despresível, devido o fato de que a resis
 
 Quando se tem as informações de capacitância e resistência totais de uma interconexão, $C_{wire}$ e $R_{wire}$ respectivamente, em uma fase de \textit{pre-layout}, é necessário criar uma topologia para este fio, uma vez que o atraso da interconexão depende de como ela está estruturada. Existem três topologias (Figura \ref{fig:interconnect_tree}) que podem ser utilizadas a fim de representar a interconexão \cite{BhaskerChadha09}:
 
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[width=0.8 \linewidth]{imagens/interconnect_tree.png}
-% \includegraphics{sta.png}
-\caption{Representações utilizadas para as árvores RC em um contexto de \textit{pre-layout} \cite{BhaskerChadha09}.}
-\label{fig:interconnect_tree}
-\end{center}
-\end{figure}
+
 
 \begin{itemize}
 \item \textbf{Árvore de melhor caso (\textit{Best-case tree}): } (Figura \ref{fig:interconnect_tree}-a) Assume-se que cada pino de destino é fisicamente adjacente ao \textit{driver}. Assim, nenhuma resistência estará no caminho entre \textit{driver} e destino, e todos os pinos de destino atuarão como \textit{load} na saída da interconexão.
@@ -375,6 +373,15 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 
 \item \textbf{Árvore de pior caso (\textit{Worst-case tree}): } (Figura \ref{fig:interconnect_tree}-c) Neste caso, todos os destinos se encontram no fim da interconexão. Assim, cada pino de destino vê a resistência e a capacitância total da interconexão.
 \end{itemize}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.8 \linewidth]{imagens/interconnect_tree.png}
+% \includegraphics{sta.png}
+\caption{Representações utilizadas para as árvores RC em um contexto de \textit{pre-layout}. Obtida de \cite{BhaskerChadha09}.}
+\label{fig:interconnect_tree}
+\end{center}
+\end{figure}
 
 		Em projetos de circuitos digitais, as capacitâncias parasitas são geralmente descritas no formato SPEF \footnote{Existem outros formatos como SPF (\textit{standard parasitic format}), DSPF (\textit{detailed standard parasitic format}), RSPF (\textit{reduced standard parasitic format}) e SBPF (\textit{Synopsys binary parasitic format})} (\textit{Standard Parasitic Exchange Format}) do \textit{IEEE} (\textit{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de Automação de Projeto Eletrônica (\textit{EDA}). Os parasitas podem ser representados em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de Árvores RC.
 
@@ -663,9 +670,7 @@ Porém, \cite{Kashyap00} não tratava \textit{driver} da interconexão como sendo u
 	\label{cap:sta}
 Análise de \textit{Timing}, ou \textit{Timing Analysis} \cite{Guntzel00} \cite{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar atrasos das células e interconexões em circuitos digitais. A Análise de \textit{Timing} é chamada de estática (\textit{STA: Static Timing Analysis}), quando não depende dos valores aplicados nas entradas primárias do circuito, ou seja, apenas considera o comportamento estático das portas lógicas e interconexões. É um processo completo e exaustivo \cite{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
 
-No fluxo \textit{Standard Cell}, as bibliotecas de célula restringem ao projetista, o uso de um número limitado de opções de implementação, para cada porta lógica do circuito. Também são impostos tempos máximos de transição e de capacitância que um pino de saída de uma porta pode carregar.
-
-Dado um design de entrada, descrito em uma linguagem de descrição de hardware (\textit{HDL: Hardware description language}), restrições de projeto e uma biblioteca de células, o objetivo da Análise de \textit{Timing} é apresentar informações temporais em todos os pontos do circuito, e apontar suas possíveis violações (Figura \ref{fig:STA}). Essas informações são utilizadas para validar se o projeto sob verificação pode operar no desempenho estipulado, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
+Dado um \textit{design} de entrada, descrito em uma linguagem de descrição de hardware (\textit{HDL: Hardware description language}), restrições de projeto e uma biblioteca de células, o objetivo da Análise de \textit{Timing} é apresentar informações temporais em todos os pontos do circuito, e apontar suas possíveis violações (Figura \ref{fig:STA}). Essas informações são utilizadas para validar se o projeto sob verificação pode operar no desempenho estipulado, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
 
 	O fluxo básico de uma ferramenta de análise de \textit{timing} é:
 
@@ -760,11 +765,11 @@ Em um contexto de projeto em fluxo \textit{standard cell}, é interessante que o 
 
 \begin{itemize}
 
-\item V  = \{ $v_i | v_i$ é um \textit{timing point} (pino de \textit{timing}), que pode ser um pino, uma entrada ou uma saída primária do circuito \}
+\item V  = \{ $v_i | v_i$ é um \textit{timing point} (pino de \textit{timing}), que pode ser a entrada ou saída de uma porta lógica, aqui referenciado como pino. Um \textit{timing point} pode representar uma entrada ou saída primária do circuito. \}
 
-\item I = \{ $(v_i, v_j) | v_i, v_j \in V \land (v_i, v_j)$ é uma interconexão do circuito, que conecta $v_i$ em $v_j$. $v_i$ é um pino de saída de uma porta lógica ou uma entrada primária, e $v_j$, pode ser a entrada de uma porta lógica ou uma saída primária. \}
+\item I = \{ $(v_i, v_j) | v_i, v_j \in V$ e $(v_i, v_j)$ é uma interconexão do circuito, que conecta $v_i$ em $v_j$. $v_i$ é um pino de saída de uma porta lógica ou uma entrada primária, e $v_j$ pode ser a entrada de uma porta lógica ou uma saída primária. \}
 
-\item A = \{ $(v_i, v_j) | v_i, v_j \in V \land (v_i, v_j)$ é um \textit{timing arc}. Portanto, $v_i$ e $v_j$ são pinos de entrada e saída (respectivamente) de uma mesma porta lógica. \}
+\item A = \{ $(v_i, v_j) | v_i, v_j \in V$ e $(v_i, v_j)$ é um \textit{timing arc}. Portanto, $v_i$ e $v_j$ são pinos de entrada e saída (respectivamente) de uma mesma porta lógica. \}
 
 \item Por fim, o conjunto das arestas E = I $\cup$ A.
 
@@ -913,51 +918,125 @@ Após todos os \textit{arrival times} serem calculados, as folgas são obtidas pro
 
 
 \chapter{Experimentos}
-		\afazer{Este capítulo apresentará como foram realizados os experimentos, e como foram validados.}
 
 	\section{Validação da Ferramenta de STA Perante uma Ferramenta Industrial}
-			\afazer{Nesta seção, os resultados obtidos pelas técnicas implementadas, descritas no Capítulo \ref{cap:atraso}, serão comparadas com uma ferramenta industrial. Os parâmetros utilizados para comparação serão: \textit{runtime} e precisão dos resultados.}
+
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth, trim=2cm 20cm 5cm 3cm]{imagens/comparacoes/lumped_capacitance_vs_primetime.pdf}
+\caption{Comparação dos das informações de \textit{timing} obtidas com a ferramenta \textit{vs.} informações fornecidas pelo \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada. O erro relativo é calculado utilizando a seguinte fórmula: $erro = \frac{|x - x*|}{\max(|x|, |x*|)}$, onde $x$ é a informação obtida pela ferramenta, e $x*$ é a informação fornecida pelo PrimeTime. \afazer{Falar no texto que é arrival, slack e slew.}}
+\label{tab:lumped_capacitance_vs_primetime}
+\end{center}
+\end{table}
+
+\textbf{Justificativa para o erro alto no benchmark \textit{cordic}:}
+
+Nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando $erro = \frac{|0.00397127 - 0.004517|}{\max(|0.00397127|, |0.004517|)}$, obtém-se $erro = 0.1208169139$, porém com $|0.00397127 - 0.004517|$, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, pelo menos.
+
 			
-\begin{figure}[ht]
+\begin{table}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/comparacoes/primetime.pdf}
+\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/primetime.pdf}
 \caption{XXXXXXXXXXXXXXXXXXXX}
-\label{fig:comparacoes_primetime}
+\label{tab:comparacoes_primetime}
 \end{center}
-\end{figure}
+\end{table}
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/lump_elmore_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{tab:lump_elmore_slew}
+\end{center}
+\end{table}
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/lump_elmore_no_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{tab:lump_elmore_no_slew}
+\end{center}
+\end{table}
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/ceff_elmore_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{tab:ceff_elmore_slew}
+\end{center}
+\end{table}
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
+\caption{XXXXXXXXXXXXXXXXXXXX}
+\label{tab:ceff_elmore_no_slew}
+\end{center}
+\end{table}
+
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt dapibus mattis. Fusce sit amet dui in turpis aliquam feugiat in in dolor. Vestibulum hendrerit lacinia aliquam. Cras eleifend leo eget erat ultrices, vitae mattis neque consequat. Nullam eget laoreet mauris, sit amet lacinia diam. Phasellus id scelerisque quam. Mauris sollicitudin tincidunt accumsan. Mauris ipsum leo, eleifend nec aliquet ut, volutpat ut lectus. Donec eleifend magna nunc, tristique elementum justo condimentum eu. Curabitur vel nisl et massa euismod sollicitudin et sit amet enim. Quisque cursus porttitor pharetra. Donec non arcu nec ligula interdum luctus sit amet a turpis. Quisque porttitor, dui vitae euismod euismod, est elit suscipit ligula, et interdum mi elit ac dolor. Cras porttitor leo nisl, vel vulputate dolor vestibulum ut. Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget. Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget.  Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget.
 
 \begin{figure}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=0.65 \linewidth, trim=4.5cm 20cm 9cm 2cm]{imagens/comparacoes/lump_elmore_slew.pdf}
-\caption{XXXXXXXXXXXXXXXXXXXX}
-\label{fig:lump_elmore_slew}
-\end{center}
+%\begin{center}% TRIM = L D R U
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_slew_full.pdf}
+\label{fig:pci_bridge32_slew_full}
+}
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_slew_zoom.pdf}
+\label{fig:pci_bridge32_slew_zoom}
+}
+\caption{$pci\_bridge32$ \textit{slew}}
 \end{figure}
 
 \begin{figure}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/comparacoes/lump_elmore_no_slew.pdf}
-\caption{XXXXXXXXXXXXXXXXXXXX}
-\label{fig:lump_elmore_no_slew}
-\end{center}
+%\begin{center}% TRIM = L D R U
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_resistance_full.pdf}
+\label{fig:pci_bridge32_resistance_full}
+}
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_resistance_zoom.pdf}
+\label{fig:pci_bridge32_resistance_zoom}
+}
+\caption{$pci\_bridge32$ resistance}
 \end{figure}
 
 \begin{figure}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/comparacoes/ceff_elmore_slew.pdf}
-\caption{XXXXXXXXXXXXXXXXXXXX}
-\label{fig:ceff_elmore_slew}
-\end{center}
+%\begin{center}% TRIM = L D R U
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_slew_full.pdf}
+\label{fig:matrix_mult_slew_full}
+}
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_slew_zoom.pdf}
+\label{fig:matrix_mult_slew_zoom}
+}
+\caption{$matrix\_mult$ \textit{slew}}
 \end{figure}
 
-\begin{figure}[H]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0cm 10cm 2 0]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
-\caption{XXXXXXXXXXXXXXXXXXXX}
-\label{fig:ceff_elmore_no_slew}
-\end{center}
+\begin{figure}[ht]
+%\begin{center}% TRIM = L D R U
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_resistance_full.pdf}
+\label{fig:matrix_mult_resistance_full}
+}
+\subfigure[]
+{
+\includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_resistance_zoom.pdf}
+\label{fig:matrix_mult_resistance_zoom}
+}
+\caption{$matrix\_mult$ resistance}
 \end{figure}
-
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt dapibus mattis. Fusce sit amet dui in turpis aliquam feugiat in in dolor. Vestibulum hendrerit lacinia aliquam. Cras eleifend leo eget erat ultrices, vitae mattis neque consequat. Nullam eget laoreet mauris, sit amet lacinia diam. Phasellus id scelerisque quam. Mauris sollicitudin tincidunt accumsan. Mauris ipsum leo, eleifend nec aliquet ut, volutpat ut lectus. Donec eleifend magna nunc, tristique elementum justo condimentum eu. Curabitur vel nisl et massa euismod sollicitudin et sit amet enim. Quisque cursus porttitor pharetra. Donec non arcu nec ligula interdum luctus sit amet a turpis. Quisque porttitor, dui vitae euismod euismod, est elit suscipit ligula, et interdum mi elit ac dolor. Cras porttitor leo nisl, vel vulputate dolor vestibulum ut. Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget. Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget.  Cras tincidunt quam at ante posuere rutrum non a dolor. Sed aliquam porttitor velit, vitae vestibulum justo tincidunt eget.
 
