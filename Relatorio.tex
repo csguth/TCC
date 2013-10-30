@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portugues, lined,boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portuguese, lined,boxed,ruled,commentsnumbered]{algorithm2e}
 \usepackage{float}
 
 
@@ -91,30 +91,43 @@ Este capítulo tem por objetivo, apresentar uma visão geral sobre o fluxo de proj
 
 \section{Fluxo de Projeto \textit{Standard Cell}}
 
-Com o crescimento na dimensão dos circuitos digitais contemporâneos\footnote{Um processador para \textit{desktop} desenvolvido no ano de 2008 tem cerca de 731 milhões de transistores, excluindo a área de memória \cite{Intel08}.} e a necessidade de um tempo de entrega ao mercado (\textit{time-to-market}) curto faz com que esses projetos adotem o fluxo de projeto \textit{standard cell}.
+Com o crescimento na dimensão dos circuitos digitais contemporâneos\footnote{Um processador para \textit{desktop} desenvolvido no ano de 2008 tem cerca de 731 milhões de transistores, excluindo a área de memória \cite{Intel08}.} e a necessidade de um tempo de entrega ao mercado (\textit{time-to-market}) curto faz com que esses projetos adotem o fluxo de projeto \textit{standard cell} (Figura \ref{fig:fluxo_standard_cell}).
 
 No fluxo \textit{standard cell} as células são desenvolvidas e verificadas previamente em uma dada tecnologia. Essas células \footnote{Célula é a instância de uma porta lógica.} são registradas com suas diversas características elétricas e tabelas (\textit{lookup tables}) de atraso em uma biblioteca de células, sendo reutilizadas em diversos projetos na mesma tecnologia. O reuso amortiza o custo dos projetos inseridos neste nodo tecnológico e possibilita um \textit{time-to-market} mais curto.
 
-Os projetos de circuitos digitais no fluxo \textit{standard cell} são realizados visando, além das funcionalidades do projeto, a operação em uma frequência especificada. Por isso, diversas otimizações são efetuadas ao longo do fluxo, para que todos os recursos e tarefas do dispositivo consigam ser concluídas na frequência definida. Nas primeiras etapas de um projeto no fluxo \textit{standard cell}, apenas as questões relacionadas à funcionalidade do projeto são verificadas, pois ainda, não se tem com precisão, as informações de atraso e informações elétricas necessárias, para realizar uma avaliação precisa de desempenho. 
+O fluxo \textit{standard cell} pode ser subdividido em etapas, e ao decorrer dessas etapas, a análise de \textit{timing} pode ser requisitada milhares de vezes. De acordo com \citeonline{BhaskerChadha09}, essas são algumas das etapas importantes no fluxo:
 
-		
 
-		% \begin{figure}[ht]
-		% \begin{center}
-		% \includegraphics[width=\linewidth]{imagens/cmos_design_flow.png}
-		% % \includegraphics{sta.png}
-		% \caption{Fluxo de projeto \textit{Standard Cell} \cite{BhaskerChadha09}}
-		% \label{fig:cmos_flow}
-		% \end{center}
-		% \end{figure}
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\linewidth]{imagens/fluxo_standard_cell.pdf}
+\caption{Fluxo de projeto \textit{Standard Cell}. Adaptado de \cite{BhaskerChadha09}.}
+\label{fig:fluxo_standard_cell}
+\end{center}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Síntese: } Responsável por criar uma representação em nível de portas lógicas, a partir de uma descrição no nível de transferência entre registradores (\textit{RTL: Register Transfer Level}). A partir desta etapa, a análise de \textit{timing} estática (\textit{STA: Static Timing Analysis}) é utilizada, para apurar as informações \textit{temporais} do circuito;
+
+\item \textbf{Otimização Lógica: } Responsável por minimizar a lógica do circuito sintetizado. A análise de \textit{timing} estática pode ser realizada antes desta etapa, para verificar os piores caminhos ou os caminhos críticos. Se a análise de \textit{timing} for realizada depois desta etapa, o objetivo é identificar quais caminhos ainda precisam ser otimizados ou identificar os caminhos críticos;
+
+\item \textbf{Posicionamento: } Define a localização espacial dos \textit{layouts} das células. Antes dessa etapa, modelos de interconexão ideais são adotados, pois ainda não se possui as informações necessárias de posicionamento. Uma maneira alternativa para se modelar as interconexões, é utilizar um modelo de \textit{wireload}, que estima o tamanho das interconexões de acordo com o seu número de destinos, ou \textit{fanouts};
+
+\item \textbf{Síntese da Árvore de Relógio: } No início da síntese física, as árvores dos relógios são consideradas como ideal, ou seja, não possuem atraso de propagação. O objetivo desta etapa é minimizar o \textit{clock skew}, que é a diferença entre os tempos de chegada nas entradas dos registradores. A análise de \textit{timing} estática é importante nesta etapa, para avaliar essas diferenças nos tempos de chegada.
+
+\item \textbf{Roteamento: } Responsável por criar as conexões entre as diferentes células incluídas no projeto, utilizando as diferentes camadas de metal. Antes desta etapa, o tamanho das conexões, ou \textit{vias} são estimadas para obter os parasitas em forma de capacitâncias e resistências.
+\end{itemize}
+
+Os projetos de circuitos digitais no fluxo \textit{standard cell} são realizados visando, além das funcionalidades do projeto, a operação em uma frequência especificada. Por isso, diversas otimizações são efetuadas ao longo do fluxo, para que todos os recursos e tarefas do dispositivo consigam ser concluídas na frequência definida. Nas primeiras etapas de um projeto no fluxo \textit{standard cell}, apenas as questões relacionadas à funcionalidade do projeto são verificadas, pois ainda, não se tem com precisão, as informações de atraso e informações elétricas necessárias, para realizar uma avaliação precisa de desempenho.
+
 
 
 \section{Motivação}
 %otimizações		como \textit{gate sizing} \cite{Livramento13} \cite{Hu12} \cite{Mohammad12}
 % \textit{Placement} \cite{Shahookar91} 
-No fluxo \textit{standard cell}, a partir do nível de transferência entre registradores (\textit{RTL: Register Transfer Level}), uma série otimizações são realizadas ao decorrer de suas etapas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais.
+No fluxo \textit{standard cell}, a partir do RTL, uma série otimizações são realizadas ao decorrer de suas etapas. Como consequência dessas otimizações, as topologias das interconexões se alteram, necessitando ao decorrer do fluxo, diversas avaliações de suas informações temporais.
 
-Durante as otimizações nas etapas iniciais do fluxo (\textit{pre-layout}), a análise de \textit{timing} é requisitada milhares de vezes, assim, é necessário que a ferramenta de análise de \textit{timing} realize a análise de \textit{timing} com o melhor desempenho possível. Como as informações relacionadas ao aspecto físico do circuito, como posicionamento \afazer{CITAR} e roteamento \afazer{CITAR} ainda não são definidas com precisão nas etapas iniciais, essas informações são aproximadas e a ferramenta de análise de \textit{timing} fornece dados pessimistas sobre o \textit{timing} do circuito.
+Durante as otimizações nas etapas iniciais do fluxo (\textit{pre-layout}), a análise de \textit{timing} é requisitada milhares de vezes, sendo assim necessário, que a ferramenta de análise de \textit{timing} tenha o melhor desempenho possível. Como as informações relacionadas ao aspecto físico do circuito, como posicionamento \afazer{CITAR} e roteamento \afazer{CITAR} ainda não são definidas com precisão nas etapas iniciais, essas informações são aproximadas e a ferramenta de análise de \textit{timing} fornece dados pessimistas sobre o \textit{timing} do circuito.
 
 Já nas etapas finais (\textit{pos-layout}), mais próximas da síntese física, a análise de \textit{timing} precisa ser a mais precisa possível, porém, a modelagem dos elementos dos circuitos digitais torna-se mais complexa, diminuindo o desempenho da ferramenta.
 
@@ -930,9 +943,7 @@ Após todos os \textit{arrival times} serem calculados, as folgas são obtidas pro
 \end{center}
 \end{table}
 
-\textbf{Justificativa para o erro alto no benchmark \textit{cordic}:}
-
-Nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando $erro = \frac{|0.00397127 - 0.004517|}{\max(|0.00397127|, |0.004517|)}$, obtém-se $erro = 0.1208169139$, porém com $|0.00397127 - 0.004517|$, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, pelo menos.
+\textbf{Justificativa para o erro alto no benchmark \textit{cordic}:} Nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando $erro = \frac{|0.00397127 - 0.004517|}{\max(|0.00397127|, |0.004517|)}$, obtém-se $erro = 0.1208169139$, porém com $|0.00397127 - 0.004517|$, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, pelo menos.
 
 			
 \begin{table}[ht]
