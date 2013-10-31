@@ -217,7 +217,7 @@ As características temporais do circuito são derivadas das caracteristicas tempo
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=3cm 8cm 0 0]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
+\includegraphics[width=\linewidth, trim=3cm 8cm 3cm 0, clip=true]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
 \caption{Acima: Uma porta lógica \textit{CMOS} $u1$, de função \textbf{não-e}, com duas entradas é \textit{driver} da interconexão \textit{n1}. Abaixo: As características temporais (\textit{delay} e \textit{slew}) da porta lógica $u1$.}
 \label{fig:informacoes_temporais_porta_logica}
 \end{center}
@@ -280,13 +280,6 @@ Uma interconexão tem sua contribuição para o desempenho do circuito atribuida a 
 %
 %Na Figura \ref{fig:modelos_driver_interconexao}-a é apresentado um circuito combinacional simples, com as portas lógicas $u1$ e $u2$, seus respectivos \textit{Timing Arcs} e a interconexão que liga a saída da porta $u1$ na entrada da porta $u2$. Na Figura \ref{fig:modelos_driver_interconexao}-b, é mostrada em blocos, a modelagem utilizada para o circuito da Figura \ref{fig:modelos_driver_interconexao}-a. Neste caso, a interconexão é representada na forma de uma capacitância, que é vista pelos \textit{Timing Arc} de $u1$. O cálculo dessa capacitância pode ser realizado de diversas maneiras, que serão apresentadas na Seção \ref{sec:calculo_capacitancia}. Esta informação, juntamente com os \textit{slews} de entrada correspondente aos pinos $a$ e $b$, são utilizadas para calcular o \textit{delay} e o \textit{slew} através dos arcos de $u1$. Por exemplo, o cálculo de atraso no arco $b\to o$ da porta lógica $u1$, é realizado com base na sua \textit{Lookup Table}, em função do \textit{slew} aplicado em $b$ (vindo da entrada primária $inp2$) e da carga de saída ($load$), a qual foi obtida na modelagem da interconexão.
 %
-%\begin{figure}[ht]
-%\begin{center}% TRIM = L D R U
-%\includegraphics[width=\linewidth, trim=0 7cm 0 0]{imagens/modelos_driver_interconexao.pdf}
-%\caption{XXXXXXXXXXXXXXxx}
-%\label{fig:modelos_driver_interconexao}
-%\end{center}
-%\end{figure}
 
 
 
@@ -414,21 +407,21 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 
 		O valor *END (linha 14) é utilizado para determinar o fim da descrição de uma interconexão.
 
-		\begin{figure}[ht]
-		\begin{center}
-		\includegraphics[clip=true, trim=2cm 7cm 2cm 6cm, scale=0.35]{imagens/spef_example}
-		\caption{Interconexão RC}
-		\label{fig:spef_example}
-		\end{center}
-		\end{figure}
-
-		\begin{figure}[ht]
-		\begin{center} % TRIM = L D R U
-		\includegraphics[scale=0.25, trim=0 5cm 0 5cm]{recursos/spef_example_code.pdf}
-		\caption{SPEF referente à Figura \ref{fig:spef_example}.}
-		\label{fig:spef_example_code}
-		\end{center}
-		\end{figure}
+\begin{figure}[ht!]
+\begin{center}
+\subfigure[]
+{
+\includegraphics[trim=0 8cm 0 0, clip=true, width=0.8 \linewidth]{imagens/spef_example}
+\label{fig:spef_example}
+}
+\subfigure[]
+{
+\includegraphics[width=0.4 \linewidth, trim=0 4cm 0 0, clip=true]{recursos/spef_example_code.pdf}
+\label{fig:spef_example_code}
+}
+\end{center}
+\caption{(a) Interconexão RC obtida do circuito $simple$ da competição de \textit{sizing} do ISPD \cite{Contest2013}. (b) SPEF referente à Figura \ref{fig:spef_example}.}
+\end{figure}
 		
 
 
@@ -470,7 +463,7 @@ A Figura \ref{fig:effective_capacitance_vs_actual_vs_total} mostra formas de ond
 \begin{figure}[ht]
 \begin{center} % TRIM = L D R U
 \includegraphics[width=\linewidth]{imagens/effective_capacitance_vs_actual_vs_total.png} 
-\caption{Formas de onda na saída de uma porta lógica em função da abordagem utilizada para cálculo da capacitância. Adaptada (\afazer{Passar para português}) de \cite{BhaskerChadha09}.}
+\caption{Formas de onda na saída de uma porta lógica em função da abordagem utilizada para cálculo da capacitância. Obtida de \cite{BhaskerChadha09}.}
 \label{fig:effective_capacitance_vs_actual_vs_total}
 \end{center}
 \end{figure}
@@ -478,17 +471,17 @@ A Figura \ref{fig:effective_capacitance_vs_actual_vs_total} mostra formas de ond
 Diversas técnicas são utilizadas para cálculo da Capacitância Efetiva \cite{Kashyap00} \cite{Qian1994}, em especial \cite{PURI02} que será abordada neste trabalho.
 
 		
-\begin{figure}[H]
+\begin{figure}[ht!]
 \begin{center} % TRIM = L D R U
-\includegraphics[width=0.8 \linewidth]{imagens/circuito_exemplo_modelagem_interconnect.png} 
+\includegraphics[width=0.7 \linewidth]{imagens/circuito_exemplo_modelagem_interconnect.png} 
 \caption{Um circuito composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e a interconexão, em forma de Árvore RC, que liga a saída de $u1$ nas entradas de $u2$, $u3$ e $f1$}
 \label{fig:circuito_exemplo_modelagem_interconnect}
 \end{center}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[ht!]
 \begin{center} % TRIM = L D R U
-\includegraphics[width=0.8 \linewidth]{imagens/circuito_exemplo_modelagem_interconnect2.png} 
+\includegraphics[width=0.7 \linewidth]{imagens/circuito_exemplo_modelagem_interconnect2.png} 
 \caption{Modelagem para o circuito da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}. Em amarelo, são mostrados os \textit{Timing Arcs} da porta lógica u1; Em azul, o modelo da interconexão é abstraído, recebendo um valor de capacitância efetiva; Em verde, cada destino da interconexão, representado como um valor de capacitância de seus pinos de entrada.}
 \label{fig:circuito_exemplo_modelagem_interconnect2}
 \end{center}
@@ -542,7 +535,7 @@ mostrar que acontece a degradacao no slew
 \afazer{todos os conceitos abordados neste capitulo sao caracteristicas temporais locais}
 
 \chapter{Técnica Utilizada para Cálculo das Características Temporais da Interconexão}
-	
+\label{cap:tecnica}
 		\afazer{
 			\cite{PURI02}		
 		
@@ -565,7 +558,7 @@ mostrar que acontece a degradacao no slew
 		
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
-		\includegraphics[width=1 \linewidth, trim=0cm 15cm 0 0]{imagens/grafo_interconexao.pdf}
+		\includegraphics[width=1 \linewidth, trim=0cm 15cm 0 0, clip=true]{imagens/grafo_interconexao.pdf}
 		\caption{a) Uma interconexão com três capacitores, \textit{u1:o, u1:1 e u2:a}, e dois resistores, \textit{r1 e r2}, ligando duas portas lógicas, \textit{u1 e u2}; b) O grafo correspondente, com três vértices e duas arestas.}
 		\label{fig:grafo_interconexao}
 		\end{center}
@@ -732,7 +725,7 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 16cm 0 0]{imagens/exemplo_circuito_simple.pdf}
+\includegraphics[width=\linewidth, trim=0 16cm 0 0, clip=true]{imagens/exemplo_circuito_simple.pdf}
 \caption{Circuito \textit{simple} retirado do banco de \textit{benchmarks} da competição de \textit{sizing} \cite{Contest2013}.}
 \label{fig:exemplo_circuito_simple}
 \end{center}
@@ -740,7 +733,7 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 
 		\begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 17cm 0 0]{imagens/exemplo_grafo_simple.pdf}
+\includegraphics[width=\linewidth, trim=0 17cm 0 0, clip=true]{imagens/exemplo_grafo_simple.pdf}
 \caption{Grafo correspondente ao circuito da Figura \ref{fig:exemplo_circuito_simple}.}
 \label{fig:exemplo_grafo_simple}
 \end{center}
@@ -754,7 +747,7 @@ Um circuito que consiste de células combinacionais e sequenciais (\textit{flip-f
 
 \begin{figure}[H]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 13cm 0 0]{imagens/subcircuitos.pdf}
+\includegraphics[width=\linewidth, trim=0 13cm 0 0, clip=true]{imagens/subcircuitos.pdf}
 \caption{Grafo de timing dividido em dois subcircuitos devido a existência de uma célula sequencial.}
 \label{fig:subcircuitos}
 \end{center}
@@ -762,7 +755,7 @@ Um circuito que consiste de células combinacionais e sequenciais (\textit{flip-f
 
 \begin{figure}[H]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 13cm 0 0]{imagens/grafo_refinado.pdf}
+\includegraphics[width=\linewidth, trim=0 13cm 0 0, clip=true]{imagens/grafo_refinado.pdf}
 \caption{Grafo de \textit{timing} com célula sequencial atuando como entrada e saída primária do circuito.}
 \label{fig:grafo_refinado}
 \end{center}
@@ -790,7 +783,7 @@ Em um contexto de projeto em fluxo \textit{standard cell}, é interessante que o 
 
 \begin{figure}[H]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=1.1 \linewidth, trim=2cm 13cm 0 0]{imagens/grafo_timing_points.pdf}
+\includegraphics[width=1.1 \linewidth, trim=2cm 13cm 0 0, clip=true]{imagens/grafo_timing_points.pdf}
 % \includegraphics{sta.png}
 \caption{Grafo de \textit{timing} com representação dos \textit{timing points}, \textit{timing arcs} e \textit{timing nets}.}
 \label{fig:grafo_timing_points}
@@ -899,7 +892,7 @@ As estruturas de dados utilizadas para armazenar os elementos do grafo são essen
 
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
-		\includegraphics[width=1.1 \linewidth, trim=2cm 10cm 0 0]{imagens/grafo_lista_nivel_logico.pdf}
+		\includegraphics[trim=1cm 9cm 1cm 0, width=\linewidth, clip=true]{imagens/grafo_lista_nivel_logico.pdf}
 		\caption{Na lista ordenada, observando o elemento \textit{u1:o}, os elementos de menor nível lógico (\textit{fonte, inp1:a, inp1, inp2:a, inp2, f1:ck, f1:q, u1:a, u1:b, u2:a}) se encontram à esquerda, e os de maior (\textit{u2:o, f1:d, out, terminal}) se encontram à esquerda.}
 		\label{fig:grafo_lista_nivel_logico}
 		\end{center}
@@ -934,33 +927,41 @@ Após todos os \textit{arrival times} serem calculados, as folgas são obtidas pro
 
 Esse capítulo tem por objetivo apresentar os experimentos realizados, bem como os resultados obtidos por estes. Como parte dos experimentos é realizada comparando as informações calculadas pela ferramenta implementada com as informações reportadas pelo \textit{PrimeTime}, a seção \ref{sec:erro} apresentará a métrica para cálculo dos erros que foi utilizada no presente trabalho. Na seção  \ref{sec:validacao_lumped}, é apresentado o primeiro experimento, que trata da validação da ferramenta perante o \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada. Na seção \ref{sec:sta_industrial} será apresentada a maneira como o \textit{PrimeTime} modela o circuito, e como as informações de \textit{timing} são calculadas. A seção \ref{sec:validacao_ceff} tem por objetivo mostrar os resultados obtidos com a técnica de cálculo de capacitância efetiva e degradação do \textit{slew} implementadas neste trabalho. E por fim, serão apresentados os resultados obtidos utilizando algumas variações nos modelos de atraso.
 
-	\section{Erro Relativo}
+	\section{Métrica Utilizada na Comparação dos Valores}
 	\label{sec:erro}
 	
-	O erro relativo foi adotado como métrica para a qualidade das informações de \textit{timing} reportadas, pela ferramenta implementada neste trabalho, usando os valores reportados pelo \textit{PrimeTime} como referência.
+	O erro relativo percentual foi adotado, como métrica para a qualidade das informações de \textit{timing} reportadas pela ferramenta implementada neste trabalho. O $Erro\ Percentual$ (Equação \ref{eq:erro_relativo}) de $a$ e $b$ é o valor percentual da relação entre erro absoluto de $a$ e $b$, e o valor do maior valor absoluto entre $a$ e $b$, valendo 100\% quando o erro é o maior possível ($a = 0$ ou $b = 0$), e 0\% quando o erro é o menor possível ($a = b$). O erro absoluto entre $a$ e $b$ é o valor absoluto $a - b$, denotado por $|a - b|$.
+	
+	Como $a$ e $b$ se tratam de números em ponto flutuante, não é possível computacionamente, obter se $a = b$, sendo necessário o uso de um valor $\epsilon$ para a precisão. Assim, $a$ e $b$ são considerados iguais se o erro relativo percentual é menor ou igual a $\epsilon$.
 	
 \begin{equation}
 \label{eq:erro_relativo}
-Erro Relativo = \frac{|x - x^*|}{max(|x|, |x^*|)}
+\frac{Erro\ Percentual}{100} = \frac{|a - b|}{max(|a|, |b|)}
 \end{equation}
 
-O erro relativo, expresso pela equação \ref{eq:erro_relativo}, é  magnitude da diferença entre o valor exato ($x$) e o valor aproximado ($x^*$) dividido pela magnitude do maior valor. Nas seguintes comparações, a solução fornecida pelo \textit{PrimeTime} é adotada como a solução exata, e a obtida pela ferramenta implementada no trabalho, a aproximada.
+Neste trabalho, esta métrica  foi utilizada, para comparar diretamente dois valores $a$ e $b$, em ponto flutuante, sendo $a$, a informação de \textit{timing} calculada pela ferramenta apresentada neste trabalho e $b$, a informação de \textit{timing} reportada pelo \textit{PrimeTime}, para cada \textit{timing point} do circuito. 
 
-O erro percentual, é obtido multiplicando o erro relativo por $100$. Por exemplo, supondo que $x = 3.12534$ e $x^* = 3.12566$, aplicando a equação \ref{eq:erro_relativo}, obtemos $Erro Relativo = 0.000102378$ refletindo em um erro percentual de $0.0102378\%$.
+Por exemplo, supondo que $a = 3.12534$ e $b = 3.12566$, aplicando a equação \ref{eq:erro_relativo}, obtemos $Erro\ Percentual = 0.0102378\%$. Se $\epsilon = 0.1$, $a$ e $b$ são considerados iguais.
+
+
 
 
 	\section{Validação do Modelo de Capacitância Concentrada Perante Ferramenta Industrial}
 	\label{sec:validacao_lumped}
 
-Neste experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD} \cite{Contest2013}. Esses valores comparados podem ser visualizados na tabela \ref{tab:lumped_capacitance_vs_primetime}. Nesta tabela, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização neste contexto se refere ao tempo de leitura dos arquivos de entrada, e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}.
+Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. No experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD} \cite{Contest2013}. Na Tabela \ref{tab:lumped_capacitance_vs_primetime}, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização neste contexto se refere ao tempo de leitura dos arquivos de entrada, e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}.
+
+
 
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth, trim=2cm 20cm 5cm 1cm]{imagens/comparacoes/lumped_capacitance_vs_primetime.pdf}
+\includegraphics[width=\textwidth, trim=2cm 20cm 5cm 1cm, clip=true]{imagens/comparacoes/lumped_capacitance_vs_primetime.pdf}
 \caption{Comparação das informações de \textit{timing} calculadas pela ferramenta implementada \textit{versus} informações fornecidas pelo \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada.}
 \label{tab:lumped_capacitance_vs_primetime}
 \end{center}
 \end{table}
+
+Os erros apresentados na tabela \ref{tab:lumped_capacitance_vs_primetime} foram calculados sobre o \textit{arrival time}, \textit{slew} e \textit{slack} para cada \textit{timing point} do circuito, em relação às informações reportadas pelo \textit{PrimeTime}.
 
 Note que na tabela \ref{tab:lumped_capacitance_vs_primetime}, os erros estão muito próximos de $0$, exceto no circuito $cordic$, onde o erro de $12\%$ se justifica por se tratar de valores muito pequenos, quando comparados, podem apresentar um erro relativo muito grande \footnote{No circuito $cordic$, nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando a equação \ref{eq:erro_relativo}, obtém-se $erro = 0.1208169139$. Porém, ao avaliar o erro absoluto, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, sendo uma precisão aceitável neste contexto.}.
 
@@ -969,46 +970,88 @@ A partir das informações de \textit{runtime} obtidas na tabela \ref{tab:lumped_c
 
 	\section{Análise de \textit{Timing} Estática em Ferramenta Industrial}
 	\label{sec:sta_industrial}
-			
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc erat odio, commodo tincidunt vehicula a, aliquam non dui. Vestibulum in pretium sapien, sit amet mollis neque. Duis ullamcorper, mauris at iaculis scelerisque, diam eros lobortis sapien, at luctus nisi dolor ac ligula. Mauris blandit ut sem vitae suscipit. Etiam at sem eu purus fringilla congue. Cras hendrerit dolor non sem ullamcorper elementum. In non magna interdum, malesuada dui a, cursus mi. Duis ut dui lectus. Nullam euismod eget lectus nec eleifend.			
-			
-\begin{table}[ht]
+	
+Esta seção tem por objetivo apresentar o modelo utilizado para cálculo do desempenho na ferramenta industrial \textit{PrimeTime} e apresentar algumas informações de \textit{timing} relevantes, obtidas para cada circuito da competição de \textit{sizing} do ISPD \cite{Contest2013}.
+
+\begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/primetime.pdf}
-\caption{XXXXXXXXXXXXXXXXXXXX}
+\includegraphics[width=\textwidth]{imagens/modelo_primetime.png} 
+\caption{Modelagem utilizada no \textit{PrimeTime} para o \textit{driver}, interconexão e destinos. Obtida de \cite{Ptug13}.}
+\label{tab:comparacoes_primetime}
+\end{center}
+\end{figure}
+
+
+\subsection{Modelagem de \textit{Driver} (\textit{Driver model})}
+
+No \textit{PrimeTime}, o \textit{driver} é modelado utilizando uma rampa de tensão em série com um resistor (um modelo Thevenin). O resistor ajuda a suavizar a rampa de tensão, para que a forma de onda resultada seja similar à forma de onda do \textit{driver} real, que está conectado na interconexão.
+
+De acordo com \cite{Ptug13}, o modelo de \textit{driver} tem três parâmetros: 
+\begin{itemize}
+\item A resistência do \textit{driver} $R_d$;
+\item O tempo de início da rampa $t_Z$;
+\item A duração da rampa $\Delta t$.
+\end{itemize}
+
+ O \textit{PrimeTime} escolhe os parâmetros de modo que a forma de onda de saída seja o mais próximo possível da simulação. O modelo de \textit{driver} simplificado é construído para cada \textit{timing arc} de cada porta lógica do circuito.
+
+\subsection{Modelagem do Destino (\textit{Receiver model})}
+Cada destino da interconexão é representado como um valor de capacitância, que corresponde à capacitância do pino em que a interconexão está ligada.
+
+\subsection{Modelagem da Interconexão (\textit{Reduced-order network model})}
+
+Um modelo reduzido de interconexão, é uma representação simplificada de uma interconexão, que possui as mesmas características de resposta que a interconexão original, que pode ter centenas de capacitâncias e resistências. O \textit{PrimeTime} utiliza a redução de Arnoldi \cite{Odabasioglu1997} \cite{Silveira1999} para criar um modelo reduzido. Através do modelo reduzido, a ferramenta escolhe valores para a $C_{eff}$, de modo que o atraso do \textit{driver} seja igual ao atraso do \textit{driver} ligado à interconexão original. Por falta de fontes na bibliografia, não foi possível implementar este método de ajuste da $C_{eff}$, impossibilitando uma comparação mais justa.
+
+\subsubsection{Cálculo do atraso das interconexões}
+
+A partir da modelagem do \textit{driver}, dos destinos e da interconexão, com um modelo reduzido, o atraso na interconexão do \textit{driver} até cada destino é calculado utilizando a técnica de Elmore. Caso o atraso de \textit{Elmore} for significativo \footnote{De acordo com \cite{Ptug13}, um atraso significativo na interconexão é mais de 20\% que o \textit{slew} do \textit{driver}.}, o \textit{slew} é degradado conforme apresentado em \cite{Friedman1997}.
+
+
+\subsection{Resultados Obtidos}
+
+A tabela \ref{tab:comparacoes_primetime} mostra os valores obtidos pelo \textit{PrimeTime}, para cada um dos seis circuitos da competição de \textit{sizing} do ISPD \cite{Contest2013}. As informações obtidas no experimento foram:
+\begin{itemize}
+\item \textbf{\textit{TNS (Total Negative Slack)}: } O somatório de \textit{slack} negativo nas saídas primárias.
+
+\item \textbf{\textit{Violating POs: }} Número de saídas primárias violando a restrição de desempenho mínimo.
+
+\item \textbf{\textit{Runtime (s): }} Tempo de execução em segundos para realizar uma análise de \textit{timing} em um circuito.
+
+\item \textbf{\textit{Worst Slack: }} Valor do pior \textit{slack} entre as saídas primárias. O valor de pior \textit{slack} é obtido subtraindo o valor do período do valor do caminho crítico obtido.
+\end{itemize}
+
+A última linha apresenta a média dos valores calculados para cada coluna da tabela. Esses valores de média serão comparados em experimentos futuros.
+
+\begin{table}[ht!]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth, trim=1.8cm 21cm 7cm 1cm, clip=true]{imagens/comparacoes/primetime.pdf}
+\caption{Valores obtidos pelo \textit{PrimeTime} nos circuitos da competição de \textit{sizing} do ISPD \cite{Contest2013}.}
 \label{tab:comparacoes_primetime}
 \end{center}
 \end{table}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc erat odio, commodo tincidunt vehicula a, aliquam non dui. Vestibulum in pretium sapien, sit amet mollis neque. Duis ullamcorper, mauris at iaculis scelerisque, diam eros lobortis sapien, at luctus nisi dolor ac ligula. Mauris blandit ut sem vitae suscipit. Etiam at sem eu purus fringilla congue. Cras hendrerit dolor non sem ullamcorper elementum. In non magna interdum, malesuada dui a, cursus mi. Duis ut dui lectus. Nullam euismod eget lectus nec eleifend.
 
 	\section{Validação da Técnica Implementada Perante Ferramenta Industrial}
 	\label{sec:validacao_ceff}
+	
+Esta seção tem por objetivo, comparar a qualidade das informaçoes de \textit{timing} obtidas pela ferramenta de análise de \textit{timing} implementada neste trabalho com  as informações reportadas pelo \textit{PrimeTime}. Utilizando a técnica de cálculo de capacitância efetiva, atraso de interconexões e degradação de \textit{slew} apresentadas no capítulo \ref{cap:tecnica}, a análise de \textit{timing} estática foi aplicada nos seis circuitos da competição de \textit{sizing} do ISPD \cite{Contest2013}, e suas soluções foram comparadas com o \textit{PrimeTime} utilizando a métrica apresentada na seção \ref{eq:erro_relativo}.
+
+A tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos seis circuitos da competição de \textit{sizing} do ISPD \cite{Contest2013}. 
+
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/ceff_elmore_slew.pdf}
-\caption{XXXXXXXXXXXXXXXXXXXX}
+\includegraphics[width=\textwidth, trim=1.8cm 20.5cm 7cm 1cm, clip=true]{imagens/comparacoes/ceff_elmore_slew.pdf}
+\caption{Valores obtidos pela ferramenta implementada neste trabalho nos circuitos da competição de \textit{sizing} do ISPD \cite{Contest2013}.}
 \label{tab:ceff_elmore_slew}
 \end{center}
 \end{table}
 
-\begin{figure}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth]{imagens/matrix_mult_logic-level_x_relative-error.pdf}
-\caption{Erro relativo dos \textit{arrival times} em relação aos resultados obtidos pelo \textit{PrimeTime}, ao decorrer dos níveis lógicos, no \textit{benchmark} $matrix\_mult$. O \textit{arrival time} utilizado na comparação é o \textit{arrival time} no \textit{timing point} de saída de cada porta lógica. Em azul, cada ponto representa uma porta lógica. Em vermelho, é a curva referente às portas lógicas pertencentes ao caminho crítico. A curva em verde, é referente às portas lógicas pertencentes ao maior caminho, ou seja, ao caminho com maior número de portas.}
-\label{tab:matrix_mult_logic-level_x_relative-error}
-\end{center}
-\end{figure}
+A penúltima linha apresenta a média dos valores de cada coluna, e a última linha apresenta os erros, calculados com a métrica apresentada na seção \ref{sec:erro}, em relação às médias obtidas pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}. É possível observar que o \textit{runtime} da análise de \textit{timing} no \textit{PrimeTime} é muito alto, sendo inviável o seu uso em uma técnica de otimização que necessita avaliar as informações temporais milhares de vezes. Porém, devido a diferença na implementação dos modelos de atraso, os valores de \textit{TNS} obtidos na ferramenta implementada são bem maiores que os obtidos pelo \textit{PrimeTime}, mostrando que a ferramenta implementada é pessimista, ao tomar as soluções do \textit{PrimeTime} como sendo reais.
 
-\begin{figure}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth]{imagens/pci_bridge32_logic-level_x_relative-error.pdf}
-\caption{Erro relativo dos \textit{arrival times} em relação aos resultados obtidos pelo \textit{PrimeTime}, ao decorrer dos níveis lógicos, no \textit{benchmark} $pci\_bridge32$. O \textit{arrival time} utilizado na comparação é o \textit{arrival time} no \textit{timing point} de saída de cada porta lógica. Em azul, cada ponto representa uma porta lógica. Em vermelho, é a curva referente às portas lógicas pertencentes ao caminho crítico. A curva em verde, é referente às portas lógicas pertencentes ao maior caminho, ou seja, ao caminho com maior número de portas.}
-\label{tab:pci_bridge32_logic-level_x_relative-error}
-\end{center}
-\end{figure}
+\subsection{Relação entre $C_{eff}$ e $C_{total}$}
 
-A Figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da relação $C_{eff}/C_{total}$ de cada interconexão no circuito $pci\_bridge32$. Os dois gráficos representam o mesmo conjunto de dados, sendo que no gráfico da letra (a) todos os valores de frequência são mostrados, e no gráfico da letra (b), o valor de frequência é limitado em 100. Cada gráfico é dividido em três partes, sendo que na primeira, em verde, é mostra a distribuição de frequências para o primeiro \textit{terço} das interconexões, ordendadas pelo \textit{slew} de entrada, ou seja, as interconexões com os menores valores de \textit{slew} na saída de seus \textit{drivers}. A segunda parte, em vermelho, mostra a distribuição de frequências para segundo terço das interconexões. E a última parte, em azul, mostra as frequências para o terceiro terço, ou seja, das interconexões com os maiores valores de \textit{slew} na saída de seus \textit{drivers}.
+Neste experimento, foram obtidas as relações $C_{eff}/C_{total}$ para todas as interconexões dos circuitos $pci\_bridge32$ e $matrix\_mult$ e os histogramas com as distribuições de frequências para estas relações são apresentados nas figuras \ref{fig:pci_bridge32_slew}, \ref{fig:pci_bridge32_resistance}, \ref{fig:matrix_mult_slew} e \ref{fig:matrix_mult_resistance}.
+
 
 \begin{figure}[ht]
 %\begin{center}% TRIM = L D R U
@@ -1023,10 +1066,12 @@ A Figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da re
 \label{fig:pci_bridge32_slew_zoom}
 }
 
-\caption{}
+\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $pci\_bridge32$. Na primeira parte, as frequências são das interconexões com os menores valores de \textit{slew} de entrada, na segunda parte, das com \textit{slew} médio e na terceira, das com maiores \textit{slews}.}
 \label{fig:pci_bridge32_slew}
-
 \end{figure}
+
+A figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da relação $C_{eff}/C_{total}$ de cada interconexão no circuito $pci\_bridge32$. Os dois gráficos representam o mesmo conjunto de dados, sendo que no gráfico da letra (a) todos os valores de frequência são mostrados, e no gráfico da letra (b), o valor de frequência é limitado em 100. Cada gráfico é dividido em três partes, sendo que na primeira, em verde, é mostrada a distribuição de frequências para o primeiro \textit{terço} das interconexões, ordendadas pelo \textit{slew} de entrada, ou seja, as interconexões com os menores valores de \textit{slew} na saída de seus \textit{drivers}. A segunda parte, em vermelho, mostra a distribuição de frequências para segundo terço das interconexões. E a última parte, em azul, mostra as frequências para o terceiro terço, ou seja, das interconexões com os maiores valores de \textit{slew} na saída de seus \textit{drivers}.
+
 
 \begin{figure}[ht]
 %\begin{center}% TRIM = L D R U
@@ -1040,8 +1085,14 @@ A Figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da re
 \includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_resistance_zoom.pdf}
 \label{fig:pci_bridge32_resistance_zoom}
 }
-\caption{$pci\_bridge32$ resistance}
+\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $pci\_bridge32$. Na primeira parte, as frequências são das interconexões com menor valor de resistência total, na segunda parte, das com valor de resistência total médio, e na terceira, das com maiores valores de resistência total.}
+\label{fig:pci_bridge32_resistance}
+
 \end{figure}
+
+Semelhante ao experimento ilustrado na figura \ref{fig:pci_bridge32_slew}, o experimento apresentado na  Figura \ref{fig:pci_bridge32_resistance} mostra a relação $C_{eff}/C_{total}$ nas interconexões do circuito $pci\_bridge32$ e é dividido em três partes. A primeira em verde, apresenta as frequências das relações $C_{eff}/C_{total}$ nas interconexões com menor valor de resistência; a segunda parte, em vermelho, mostra a distribuição das frequências nas interconexões com valor médio de resistência; e a última parte, em azul, mostra as frequências para a última parte das interconexões, ou seja, as com maior valor de resistência total. Note que na figura \ref{fig:pci_bridge32_resistance_full} todos os valores de frequência são mostrados, e na figura \ref{fig:pci_bridge32_resistance_zoom}, apenas os valores de frequência menores que 200 são mostrados.
+
+Os mesmos experimentos apresentados nas figuras \ref{fig:pci_bridge32_slew} e \ref{fig:pci_bridge32_resistance} foram também realizados para o circuito $matrix\_mult$ e seus resultados podem ser visualizados nas figuras \ref{fig:matrix_mult_slew} e \ref{fig:matrix_mult_resistance}.
 
 \begin{figure}[ht]
 %\begin{center}% TRIM = L D R U
@@ -1055,7 +1106,9 @@ A Figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da re
 \includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_slew_zoom.pdf}
 \label{fig:matrix_mult_slew_zoom}
 }
-\caption{$matrix\_mult$ \textit{slew}}
+\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $matrix\_mult$. Na primeira parte, as frequências são das interconexões com os menores valores de \textit{slew} de entrada, na segunda parte, das com \textit{slew} médio e na terceira, das com maiores \textit{slews}.}
+\label{fig:matrix_mult_slew}
+
 \end{figure}
 
 \begin{figure}[ht]
@@ -1070,31 +1123,62 @@ A Figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da re
 \includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_resistance_zoom.pdf}
 \label{fig:matrix_mult_resistance_zoom}
 }
-\caption{$matrix\_mult$ resistance}
+\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $matrix\_mult$. Na primeira parte, as frequências são das interconexões com menor valor de resistência total, na segunda parte, das com valor de resistência total médio, e na terceira, das com maiores valores de resistência total.}
+\label{fig:matrix_mult_resistance}
+
 \end{figure}
+
+
+\subsection{Nível Lógico \textit{versus} Erro Relativo}
+
+Neste experimento os erros relativos percentuais foram obtidos para os \textit{arrival times} de saída de cada porta lógica dos circuitos $pci\_bridge32$ e $matrix\_mult$, em relação aos \textit{arrival times} reportados pelo \textit{PrimeTime}.
+
+As figuras \ref{tab:pci_bridge32_logic-level_x_relative-error} e \ref{tab:matrix_mult_logic-level_x_relative-error} mostram os erros distribuídos pelos níveis lógicos nos circuitos $pci\_bridge32$ e $matrix\_mult$, respectivamente. Em azul, estão apresentados os pontos de cada \textit{arrival time} de saída. Na curva em vermelho, são mostrados os erros para os \textit{arrival times} de saída das portas pertencentes ao caminho crítico. Na curva em verde, são mostrados os erros referente às portas pertencentes ao caminho com o maior número de portas.
+
+\begin{figure}[h!]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{imagens/pci_bridge32_logic-level_x_relative-error.pdf}
+\caption{Erro relativo dos \textit{arrival times} em relação aos resultados obtidos pelo \textit{PrimeTime}, ao decorrer dos níveis lógicos, no \textit{benchmark} $pci\_bridge32$. O \textit{arrival time} utilizado na comparação é o \textit{arrival time} no \textit{timing point} de saída de cada porta lógica. Em azul, cada ponto representa uma porta lógica. Em vermelho, é a curva referente às portas lógicas pertencentes ao caminho crítico. A curva em verde, é referente às portas lógicas pertencentes ao maior caminho, ou seja, ao caminho com maior número de portas.}
+\label{tab:pci_bridge32_logic-level_x_relative-error}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{imagens/matrix_mult_logic-level_x_relative-error.pdf}
+\caption{Erro relativo dos \textit{arrival times} em relação aos resultados obtidos pelo \textit{PrimeTime}, ao decorrer dos níveis lógicos, no \textit{benchmark} $matrix\_mult$. O \textit{arrival time} utilizado na comparação é o \textit{arrival time} no \textit{timing point} de saída de cada porta lógica. Em azul, cada ponto representa uma porta lógica. Em vermelho, é a curva referente às portas lógicas pertencentes ao caminho crítico. A curva em verde, é referente às portas lógicas pertencentes ao maior caminho, ou seja, ao caminho com maior número de portas.}
+\label{tab:matrix_mult_logic-level_x_relative-error}
+\end{center}
+\end{figure}
+
+
+
+
+
+
 
 	\section{Variações no Modelo de Atraso Comparadas à Ferramenta Industrial}
 
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/lump_elmore_slew.pdf}
+\includegraphics[width=\textwidth, trim=1.8cm 20.5cm 7cm 1cm, clip=true]{imagens/comparacoes/lump_elmore_slew.pdf}
 \caption{XXXXXXXXXXXXXXXXXXXX}
 \label{tab:lump_elmore_slew}
 \end{center}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[h]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/lump_elmore_no_slew.pdf}
+\includegraphics[width=\textwidth, trim=1.8cm 20.5cm 7cm 1cm, clip=true]{imagens/comparacoes/lump_elmore_no_slew.pdf}
 \caption{XXXXXXXXXXXXXXXXXXXX}
 \label{tab:lump_elmore_no_slew}
 \end{center}
 \end{table}
 
 
-\begin{table}[ht]
+\begin{table}[h]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth, trim=1.8cm 20cm 7cm 1cm]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
+\includegraphics[width=\textwidth, trim=1.8cm 20.5cm 7cm 1cm, clip=true]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
 \caption{XXXXXXXXXXXXXXXXXXXX}
 \label{tab:ceff_elmore_no_slew}
 \end{center}
