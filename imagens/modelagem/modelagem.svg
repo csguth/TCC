@@ -22,17 +22,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="463.40302"
-     inkscape:cy="664.31262"
+     inkscape:zoom="4"
+     inkscape:cx="382.04749"
+     inkscape:cy="442.60738"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="svg2"
      showgrid="false"
      inkscape:snap-page="false"
-     inkscape:window-width="1280"
-     inkscape:window-height="750"
+     inkscape:window-width="1920"
+     inkscape:window-height="1004"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <defs
      id="defs4">
@@ -531,7 +531,7 @@
        id="tspan7009"
        x="178.40334"
        y="29.552071"
-       style="font-size:31.09990311px">Atraso de Propagação</tspan></text>
+       style="font-size:31.09990311px">Atraso da Interconexão</tspan></text>
   <path
      style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Lend)"
      d="m 124.1373,643.46033 466.69046,0"
@@ -548,7 +548,7 @@
        id="tspan7009-0"
        x="193.51503"
        y="627.60687"
-       style="font-size:31.09990311px">Degradação no <tspan
+       style="font-size:31.09990311px">Degradação do <tspan
    style="font-style:italic;-inkscape-font-specification:DejaVu Serif Italic"
    id="tspan7041">Slew</tspan></tspan></text>
 </svg>
