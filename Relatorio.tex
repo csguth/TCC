@@ -570,7 +570,7 @@ A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que a 
 
 \begin{figure}[ht]
 \begin{center} % TRIM = L D R U
-\includegraphics[width=\linewidth]{imagens/effective_capacitance_vs_actual_vs_total.png} 
+\includegraphics[width=\linewidth]{imagens/effective_capacitance_vs_actual_vs_total.pdf} 
 \caption{Formas de onda na saída de uma porta lógica em função da abordagem utilizada para cálculo da capacitância. Obtida de \citacaoAzul{BhaskerChadha09}.}
 \label{fig:effective_capacitance_vs_actual_vs_total}
 \end{center}
@@ -801,12 +801,12 @@ Na seção \ref{sec:representacao_circuitos_sta} será apresentado o modelo de graf
 \begin{center}
 \subfigure[]
 {
-\includegraphics[width=\linewidth, trim=0 14cm 0 0, clip=true]{imagens/exemplo_circuito_simple.pdf}
+\includegraphics[width=\linewidth]{imagens/exemplo_circuito_simple.pdf}
 \label{fig:exemplo_circuito_simple}
 }
 \subfigure[]
 {
-\includegraphics[width=\linewidth, trim=0 17cm 0 0, clip=true]{imagens/exemplo_grafo_simple.pdf}
+\includegraphics[width=\linewidth]{imagens/exemplo_grafo_simple.pdf}
 \label{fig:exemplo_grafo_simple}
 }
 \caption{(a) Circuito \textit{simple} retirado do banco de \textit{benchmarks} da competição de \textit{sizing} do ISPD; (b) Grafo correspondente ao circuito da letra (a).}
@@ -825,7 +825,7 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 13cm 0 0, clip=true]{imagens/subcircuitos.pdf}
+\includegraphics[width=\linewidth]{imagens/subcircuitos.pdf}
 \caption{Grafo de \textit{timing} dividido em dois sub-circuitos devido à existência de uma célula sequencial.}
 \label{fig:subcircuitos}
 \end{center}
@@ -833,7 +833,7 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=0 13cm 0 0, clip=true]{imagens/grafo_refinado.pdf}
+\includegraphics[width=\linewidth]{imagens/grafo_refinado.pdf}
 \caption{Grafo de \textit{timing} com célula sequencial atuando como entrada e saída primária do circuito.}
 \label{fig:grafo_refinado}
 \end{center}
@@ -863,7 +863,7 @@ Em um contexto de projeto com o fluxo \textit{standard cell}, é interessante que
 
 \begin{figure}[H]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=1.1 \linewidth, trim=2cm 13cm 0 0, clip=true]{imagens/grafo_timing_points.pdf}
+\includegraphics[width=\linewidth]{imagens/grafo_timing_points.pdf}
 % \includegraphics{sta.png}
 \caption{Grafo de \textit{timing} com representação dos \textit{timing points}, \textit{timing arcs} e interconexões.}
 \label{fig:grafo_timing_points}
@@ -955,8 +955,8 @@ As estruturas de dados utilizadas para armazenar os elementos do grafo são essen
 
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
-		\includegraphics[trim=1cm 9cm 1cm 0, width=\linewidth, clip=true]{imagens/grafo_lista_nivel_logico.pdf}
-		\caption{Na lista ordenada, observando o elemento \textit{u1:o}, os elementos de menor nível lógico (\textit{fonte, inp1:a, inp1, inp2:a, inp2, f1:ck, f1:q, u1:a, u1:b, u2:a}) se encontram à esquerda, e os de maior (\textit{u2:o, f1:d, out, terminal}) se encontram à esquerda.}
+		\includegraphics[width=\linewidth]{imagens/grafo_lista_nivel_logico.pdf}
+		\caption{Na lista ordenada, observando o elemento \textit{u1:o}, os elementos de menor nível lógico (\textit{fonte, inp1, inp2, f1:q, u1:a, u1:b, u2:a}) se encontram à esquerda, e os de maior (\textit{u2:o, f1:d, out, terminal}) se encontram à direita.}
 		\label{fig:grafo_lista_nivel_logico}
 		\end{center}
 		\end{figure}

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="740.62067"
+   height="365.61441"
+   id="svg4353"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="effective_capacitance_vs_actual_vs_total.pdf">
+  <defs
+     id="defs4355">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3863"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4328"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4330"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="460.57057"
+     inkscape:cy="140.89322"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1280"
+     inkscape:window-height="750"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4358">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-4.0644656,-2.6034288)">
+    <text
+       xml:space="preserve"
+       style="font-size:19.56668472px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="3.0708449"
+       y="30.958061"
+       id="text2987"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2989"
+         x="3.0708449"
+         y="30.958061"><tspan
+   style="font-style:italic;-inkscape-font-specification:DejaVu Serif Italic"
+   id="tspan3022">Voltage</tspan>(V)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.67662621px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="32.179928"
+       y="191.20262"
+       id="text2987-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2989-8"
+         x="32.179928"
+         y="191.20262">0.5V<tspan
+   style="font-size:13.43999577px;baseline-shift:sub"
+   id="tspan3012">dd</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18.23668289px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="646.07147"
+       y="365.37726"
+       id="text3014"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3016"
+         x="646.07147"
+         y="365.37726"><tspan
+   style="font-style:italic;-inkscape-font-specification:DejaVu Serif Italic"
+   id="tspan3024">Time</tspan>(ns)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:17.56114388px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="334.37039"
+       y="112.84463"
+       id="text3018"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3020"
+         x="334.37039"
+         y="112.84463"
+         style="font-style:italic;-inkscape-font-specification:DejaVu Serif Italic">Total capacitance</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:17.56114388px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="598.0788"
+       y="252.16701"
+       id="text3018-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3020-9"
+         x="598.0788"
+         y="252.16701"
+         style="font-style:italic;-inkscape-font-specification:DejaVu Serif Italic">Actual load</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:17.56114388px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="130.77127"
+       y="215.05037"
+       id="text3018-8-2"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3020-9-4"
+         x="130.77127"
+         y="215.05037"
+         style="font-style:italic;-inkscape-font-specification:DejaVu Serif Italic">Effective capacitance</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.75352877px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 109.73093,340.63533 0,-336.7749504"
+       id="path3068"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.03341305px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 109.54673,341.61072 633.41457,0"
+       id="path3068-4"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#4d4d4d;stroke:#000000;stroke-width:0.75352877;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.52083333;stroke-dasharray:9.04234551, 9.04234551;stroke-dashoffset:0"
+       d="m 109.73093,193.50065 599.43763,0"
+       id="path4306"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.76689506;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 110.54797,49.919043 c 0,0 161.87567,-41.5315599 275.94912,140.988727 114.07345,182.52031 197.72731,146.45343 320.49206,143.17461"
+       id="path4308"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.744344;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:44.93212778, 44.93212778;stroke-dashoffset:0"
+       d="m 112.98894,50.714424 c 0,0 121.62788,-41.4193459 188.36178,85.018656 66.73388,126.43802 129.16234,140.6078 186.20905,146.05772 57.04671,5.44991 139.92588,26.15958 177.59823,26.15958 37.67236,0 52.74129,0 52.74129,0"
+       id="path4310"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.75667357;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:3.75667376, 7.51334751;stroke-dashoffset:0"
+       d="m 488.39247,341.15643 c 0,0 -85.57281,-3.86414 -93.97727,-10.81958 -8.40448,-6.95544 -24.44938,13.13806 -48.89875,-97.37617 C 321.06709,122.44646 301.20197,108.53558 272.93239,86.896423 244.6628,65.257273 199.58427,31.252892 112.48339,50.573567"
+       id="path4314"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
