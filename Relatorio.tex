@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portugues, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portuguese, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
 \usepackage{float}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
@@ -148,7 +148,7 @@ Como as informações de \textit{timing} precisam ser avaliadas centenas ou milhar
 
 	\section{Justificativa}
 
-Diversas otimizações são realizadas no decorrer do fuxo de projeto \textit{standard cell} e o uso de ferramentas para a automação de projeto eletrônico (\textit{EDA: Electronic design automation}) é indispensável em suas diferentes etapas. A inexistência de ferramentas de análise de \textit{timing} estática precisas de domínio público e a restrição no acesso à ferramentas industriais (devido ao alto custo de suas licenças), resulta em um problema de infraestrutura de pesquisa. Assim, este trabalho terá como resultado uma alternativa de ferramenta de análise de \textit{timing} para projetistas de circuitos digitais, bem como uma infraestrutura realista e precisa para desenvolvedores de ferramentas, que necessitam da análise de \textit{timing}, em alguma etapa do fluxo de projeto \textit{standard cell}.
+Diversas otimizações são realizadas no decorrer do fluxo de projeto \textit{standard cell} e o uso de ferramentas para a automação de projeto eletrônico (\textit{EDA: Electronic design automation}) é indispensável em suas diferentes etapas. A inexistência de ferramentas de análise de \textit{timing} estática precisas de domínio público e a restrição no acesso à ferramentas industriais (devido ao alto custo de suas licenças), resulta em um problema de infraestrutura de pesquisa. Assim, este trabalho terá como resultado uma alternativa de ferramenta de análise de \textit{timing} para projetistas de circuitos digitais, bem como uma infraestrutura realista e precisa para desenvolvedores de ferramentas, que necessitam da análise de \textit{timing}, em alguma etapa do fluxo de projeto \textit{standard cell}.
 
 \section{Objetivos}
 
@@ -172,7 +172,7 @@ Este trabalho tem por objetivo o projeto, avaliação, validação e documentação de
 
 \section{Escopo}
 
-Este trabalho aborda o problema da análise de \textit{timing} estática utilizando técnicas para estimação dos atrasos das interconexões. A análise de \textit{timing} é realizada propagando os atrasos de cada porta lógica em ordem topológica, a fim de estimar o desempenho do circuito. Os modelos de \textit{delay} e \textit{slew} utilizados neste trabalho são os mesmos utilizados no \textit{fluxo standard-cell}\footnote{O cálculo dos atrasos das portas lógicas será melhor apresentado na seção \ref{sec:caracteristicas_temporais_portas_logicas}.}.
+Este trabalho aborda o problema da análise de \textit{timing} estática utilizando técnicas para estimação dos atrasos das interconexões. A análise de \textit{timing} é realizada propagando os atrasos de cada porta lógica em ordem topológica, a fim de estimar o desempenho do circuito. Os modelos de \textit{delay} e \textit{slew} utilizados neste trabalho são os mesmos utilizados no \textit{fluxo standard cell}\footnote{O cálculo dos atrasos das portas lógicas será melhor apresentado na seção \ref{sec:caracteristicas_temporais_portas_logicas}.}.
 
 As interconexões serão modeladas de duas formas:
 \begin{itemize}
@@ -214,25 +214,25 @@ Este capítulo apresenta os conceitos básicos relacionados à temporização e model
 \section{Características Temporais das Portas Lógicas}
 \label{sec:caracteristicas_temporais_portas_logicas}
 
-As características temporais do circuito são derivadas das caracteristicas temporais de suas partes, ou seja, as portas lógicas e as interconexões que o compõem. Para as portas lógicas, as informações a seguir são relevantes \citacaoAzul{Livramento2013}:
+As características temporais do circuito são derivadas das características temporais de suas partes, ou seja, as portas lógicas e as interconexões que o compõem. Para as portas lógicas, as informações a seguir são relevantes \citacaoAzul{Livramento2013}:
 
 \begin{itemize}
-\item \textbf{\textit{Timing Arc} (Arco de Tempo):} é um conceito utilizado para associar um pino de entrada de uma porta com a saída dessa mesma porta. Uma porta \textit{NAND} de duas entradas, como a apresentada na Figura \ref{fig:informacoes_temporais_porta_logica} possui dois \textit{timing arcs}, um entre a entrada $a$ e a saída ($a \to o$) e outro entre a entrada $b$ e a saída ($b \to o$). Para elementos sequenciais, como os \textit{flip-flops}, normalmente consideram-se como \textit{timing arcs} as conexões entre o sinal de relógio e as saídas. O arco é chamado \textit{positive unate}, se uma transição de subida (descida) na entrada causa uma transição de subida (descida) na saída. Se uma transição de subida (descida) da entrada causa uma transição de descida (subida) na saída, o arco é chamado \textit{negative unate} \citacaoAzul{BhaskerChadha09}.
+\item \textbf{\textit{Timing Arc} (Arco de Tempo):} é um conceito utilizado para associar um pino de entrada de uma porta com a saída dessa mesma porta. Uma porta \textit{NAND} de duas entradas, como a apresentada na Figura \ref{fig:informacoes_temporais_porta_logica} possui dois \textit{timing arcs}: um entre a entrada $a$ e a saída ($a \to o$) e outro entre a entrada $b$ e a saída ($b \to o$). Para elementos sequenciais, como os \textit{flip-flops}, normalmente consideram-se como \textit{timing arcs} as conexões entre o sinal de relógio e as saídas. O arco é chamado \textit{positive unate} se uma transição de subida (descida) na entrada causa uma transição de subida (descida) na saída. Se uma transição de subida (descida) da entrada causa uma transição de descida (subida) na saída, o arco é chamado \textit{negative unate} \citacaoAzul{BhaskerChadha09}.
 
-	\item \textbf{\textit{Delay} (Atraso de Propagação): } é o tempo que o sinal em um pino de saída $o$ leva para atingir um limiar\footnote{Este limiar geralmente é definido nas bibliotecas de célula como sendo 50\% do $Vdd$.} de sua transição total, devido a uma mudança no sinal em um pino de entrada $a$. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}) (Figura \ref{fig:informacoes_temporais_porta_logica}).
+	\item \textbf{\textit{Delay} (Atraso de Propagação): } é o tempo que o sinal em um pino de saída $o$ leva para atingir um limiar\footnote{Este limiar geralmente é definido nas bibliotecas de célula como sendo 50\% do $Vdd$.} de sua transição total, devido a uma mudança no sinal em um pino de entrada. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}) (Figura \ref{fig:informacoes_temporais_porta_logica}).
 	
-	\item \textbf{\textit{Slew} (Tempo de Transição): } é o tempo que o sinal leva para transicionar de uma porcentagem do valor de referência ($V_{dd}$) à outra \citacaoAzul{BhaskerChadha09}\footnote{Geralmente essas porcentagens são definidas nas bibliotecas de célula, como por exemplo, 10\% e 90\%}. Se for uma mudança positiva, a transição é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}) (Figura \ref{fig:informacoes_temporais_porta_logica}). 
+	\item \textbf{\textit{Slew} (Tempo de Transição): } é o tempo que um sinal leva para transicionar de uma porcentagem do valor de referência ($V_{dd}$) à outra \citacaoAzul{BhaskerChadha09}\footnote{Nas bibliotecas de células, essas porcentagens geralmente são definidas como 10\% e 90\%}. Se a transição for de um valor for de uma porcentagem menor para uma maior, ela é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}) (Figura \ref{fig:informacoes_temporais_porta_logica}).
 	
-	\item \textbf{Propagação do \textit{Slew: }} é a política utilizada para propagação dos \textit{slews} dentro das portas lógicas. A estratégia utilizada geralmente adotada é de propagar o maior \textit{slew} dentre os \textit{slews} dos \textit{timing arcs}, para o pino de saída da porta lógica.
+	\item \textbf{Propagação do \textit{Slew: }} é a política utilizada para propagação dos \textit{slews} das entradas até as saídas das portas lógicas. A estratégia geralmente adotada é a de propagar o maior tempo de transição dentre os \textit{timing arcs}, para o pino de saída da porta lógica.
 	
-	\item \textbf{\textit{Driver:} } é a porta lógica, ou o pino que está ligado imediatamente na entrada de uma interconexão.
+	\item \textbf{\textit{Driver:} } é a porta lógica (ou o pino de saída de uma porta lógica) que está ligado a uma interconexão. Cada interconexão possui apenas um \textit{driver}.
 	
 \end{itemize}
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
 \includegraphics[width=\linewidth, trim=1.5cm 8cm 3cm 0, clip=true]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
-\caption{Acima: Uma porta lógica \textit{CMOS} $u1$, de função \textbf{não-e}, com duas entradas é \textit{driver} da interconexão \textit{n1}. Abaixo: As características temporais (\textit{delay} e \textit{slew}) da porta lógica $u1$.}
+\caption{Acima: Uma porta lógica \textit{CMOS} $u1$, de função \textbf{NAND}, com duas entradas é \textit{driver} da interconexão \textit{n1}. Abaixo: As características temporais (\textit{delay} e \textit{slew}) da porta lógica $u1$.}
 \label{fig:informacoes_temporais_porta_logica}
 \end{center}
 \end{figure}
@@ -255,7 +255,7 @@ As características temporais do circuito são derivadas das caracteristicas tempo
 
 
 
-Nas bibliotecas de \textit{standard cell} atuais, modelos de atrasos não-lineares são fornecidos para os \textit{timing arcs} das células disponíveis. Esses modelos, que geralmente são obtidos através de simulações em nível elétrico, são registrados na forma de \textit{lookup tables}, como a da Figura \ref{fig:lookup_table}. Uma \textit{lookup table} descreve o \textit{delay} ou o \textit{slew} de um \textit{timing arc} em função de dois fatores: o \textit{slew} na entrada do arco (colunas), e a capacitância vista na saída (\textit{load}) (linhas).
+Nas bibliotecas \textit{standard cell} atuais, modelos de atrasos não-lineares são fornecidos para os \textit{timing arcs} das células disponíveis. Esses modelos, que geralmente são obtidos através de simulações em nível elétrico, são armazenados na forma de \textit{lookup tables}, como a da Figura \ref{fig:lookup_table}. Uma \textit{lookup table} descreve o \textit{delay} ou o \textit{slew} de uma porta lógica em função de dois fatores: o \textit{slew} na entrada do \textit{timing arc} (colunas), e a capacitância de saída (\textit{load}) (linhas).
 
 \begin{figure}
 \lstset{basicstyle=\footnotesize}
@@ -274,7 +274,7 @@ rise_delay (delay_table) {
   );
 }
 \end{lstlisting}
-\caption{Uma \textit{lookup table} para atraso de subida (\textit{rise delay}) de um arco de \textit{timing}. As linhas são endereçadas por \textit{load} (capacitância vista pelo \textit{timing arc}) e as colunas por \textit{input slew} (\textit{slew} aplicado na entrada do \textit{timing arc}). Adaptada de \citacaoAzul{Contest2013}.}
+\caption{Uma \textit{lookup table} para atraso de subida (\textit{rise delay}) de um arco de \textit{timing}. As linhas são endereçadas por \textit{load} (capacitância de saída da porta lógica) e as colunas por \textit{input slew} (\textit{slew} aplicado na entrada do \textit{timing arc}). Adaptada de \citacaoAzul{Contest2013}.}
 \label{fig:lookup_table}
 \end{figure}
 
@@ -289,7 +289,7 @@ Utilizando a \textit{lookup table} da Figura \ref{fig:lookup_table} para estimar
 
 Modelos de interconexão devem ser adotados de acordo com a etapa que o projeto se encontra no fluxo. Nas etapas iniciais, ou de \textit{pre-layout}, as informações de posicionamento e roteamento ainda não foram obtidas. Assim, as interconexões recebem modelos simplistas, possibilitando que as otimizações necessárias sejam realizadas, sem degradação no desempenho, para que as informações reais dos parasitas sejam apuradas. Nas etapas mais próximas da síntese física, ou \textit{pos-layout}, as interconexões são modeladas em função de suas capacitâncias e resistências, com o intuito de fornecer uma simulação mais precisa possível.
 
-Esta seção tem por objetivo, apresentar alguns modelos de representação de interconexões, suas vantagens e desvantagens. Também será apresentado, o formato de representação de parasitas mais utilizado no projeto de circuitos digitais.
+Esta seção tem por objetivo, apresentar alguns modelos de representação de interconexões, suas vantagens e desvantagens. Também será apresentado o formato de representação de parasitas mais utilizado no projeto de circuitos digitais.
 
 %	\subsection{Modelo de Interconexão Ideal}
 %
@@ -301,7 +301,7 @@ Esta seção tem por objetivo, apresentar alguns modelos de representação de inter
 
 	\subsection{Modelo RC Distribuído (\textit{Distributed RC Model})}
 
-Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}). Uma linha é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um valor de resistência $r$ e um valor de capacitância $c$. Assim, a resistência e a capacitância total da interconexão são $r \times \Delta L$ e $c \times \Delta L$, respectivamente. O cálculo dos atrasos em um Modelo RC Distribuido reflete na resolução de equações diferenciais, que por sua vez, não possuem fórmula fechada. Isto resulta em um custo computacional muito elevado, não tornando viável sua adoção em fluxo \textit{standard cell}. Para tal objetivo, utilizam-se modelos de interconexão simplificados.
+Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}). Uma linha é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um valor de resistência $r$ e um valor de capacitância $c$. Assim, a resistência e a capacitância total da interconexão são $r \times L$ e $c \times L$, respectivamente. O cálculo dos atrasos em um modelo RC distribuído implica na resolução de equações diferenciais, que por sua vez, não possuem fórmula fechada. Uma solução numérica seria realista, a qual resulta em um custo computacional muito elevado, não tornando viável sua adoção em fluxo \textit{standard cell}. Para tal objetivo, utilizam-se modelos de interconexão simplificados.
 
 \begin{figure}[ht]
 \begin{center}
@@ -316,7 +316,7 @@ Uma interconexão pode ser representada idealmente como uma linha distribuída (Fi
 	\subsection{Modelo de Capacitância Concentrada (\textit{Lumped C Model})}
 	
 		O Modelo de capacitância concentrada foi amplamente utilizado, pois se trata de um modelo simples e fácil de simular.
-Quando a resistência da interconexão é despresível, devido o fato de que a resistência do \textit{driver} é substancialmente maior, ou quando as informações parasitas ainda não foram obtidas com detalhe, o fio pode ser representado como um capacitor $C$, que corresponde à capacitância total da interconexão. Seu atraso de propagação é desconsiderado, já que o fio não possui resistências. Seu único impacto no desempenho é a sua contribuição na capacitância vista pelo \textit{driver} \citacaoAzul{Rabaey08}.
+Quando a resistência da interconexão é desprezível, devido o fato de que a resistência do \textit{driver} é substancialmente maior que a resistência total da interconexão, ou quando as informações parasitas ainda não foram obtidas com detalhe, o fio pode ser representado como um capacitor $C$, que corresponde à capacitância total da interconexão. Seu atraso de propagação é desconsiderado, já que o fio não possui resistências. Seu único impacto no desempenho é a sua contribuição na capacitância vista pelo \textit{driver} \citacaoAzul{Rabaey08}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -329,9 +329,7 @@ Quando a resistência da interconexão é despresível, devido o fato de que a resis
 
 	\subsection{Modelo RC Concentrado (\textit{Lumped RC Model})}
 
-O modelo RC concentrado é amplamente adotado no fluxo \textit{standard cell} para modelagem das interconexões, e geralmente pode ser chamado de modelo RC distribuído, como na competição de \textit{sizing} do \textit{ISPD}.
-
-No modelo RC concentrado (\textit{lumped RC model}), concentra-se toda a resistência de cada segmento da interconexão em um único resistor $R$ e similarmente combina-se a capacitância total em um único capacitor $C$. A rede resistor-capacitor é representada como uma árvore RC (Figura \ref{fig:rc_tree}). De acordo com \citacaoInline{Rabaey08}, uma árvore RC possui as seguintes propriedades:
+O modelo RC concentrado é amplamente adotado no fluxo \textit{standard cell} para modelagem das interconexões. No modelo RC concentrado (\textit{lumped RC model}), concentra-se toda a resistência de cada segmento da interconexão em um único resistor $R$ e similarmente combina-se a capacitância total em um único capacitor $C$. A rede resistor-capacitor é representada como uma árvore RC (Figura \ref{fig:rc_tree}). De acordo com \citacaoInline{Rabaey08}, uma árvore RC possui as seguintes propriedades:
 		
 \begin{itemize}
 \item A rede tem apenas um nodo de entrada, chamado de \textbf{fonte} (\textit{source});
@@ -360,7 +358,7 @@ No modelo RC concentrado (\textit{lumped RC model}), concentra-se toda a resistê
 
 \subsection{Extração de Elementos Parasitas no Projeto de Circuitos Digitais}
 
-Quando se tem as informações de capacitância e resistência totais de uma interconexão, $C_{wire}$ e $R_{wire}$ respectivamente, em uma fase de \textit{pre-layout}, é necessário criar uma topologia para este fio, uma vez que o atraso da interconexão depende de como ela está estruturada. Existem três topologias (Figura \ref{fig:interconnect_tree}) que podem ser utilizadas a fim de representar a interconexão \citacaoAzul{BhaskerChadha09}:
+Quando se tem as informações de capacitância e resistência totais de uma interconexão, $C_{wire}$ e $R_{wire}$ respectivamente, em uma fase de \textit{pré-layout}, é necessário criar uma topologia para este fio, uma vez que o atraso da interconexão depende de como ela está estruturada. Existem três topologias (Figura \ref{fig:interconnect_tree}) que podem ser utilizadas a fim de representar a interconexão \citacaoAzul{BhaskerChadha09}:
 
 
 
@@ -381,23 +379,23 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 \end{center}
 \end{figure}
 
-		Em projetos de circuitos digitais, as capacitâncias parasitas são geralmente descritas no formato SPEF \footnote{Existem outros formatos como SPF (\textit{standard parasitic format}), DSPF (\textit{detailed standard parasitic format}), RSPF (\textit{reduced standard parasitic format}) e SBPF (\textit{Synopsys binary parasitic format})} (\textit{Standard Parasitic Exchange Format}) do \textit{IEEE} (\textit{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de Automação de Projeto Eletrônica (\textit{EDA}). Os parasitas podem ser representados em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de Árvores RC.
+		Em projetos de circuitos digitais, as capacitâncias parasitas são geralmente descritas no formato SPEF \footnote{Existem outros formatos como SPF (\textit{standard parasitic format}), DSPF (\textit{detailed standard parasitic format}), RSPF (\textit{reduced standard parasitic format}) e SBPF (\textit{Synopsys binary parasitic format})} (\textit{Standard Parasitic Exchange Format}) do \textit{IEEE} (\textit{Institute of Electrical and Electronics Engineers}). O formato SPEF é um padrão feito para garantir a interoperabilidade entre ferramentas de automação de projeto eletrônico (\textit{EDA: Electronic Design Automation}). Os parasitas podem ser representados em diferentes níveis de sofisticação, desde o simplista modelo de capacitância concentrada, até uma representação mais precisa de Árvores RC.
 
-		Um exemplo de interconexão descrita no formato SPEF \citacaoAzul{IEEE99} pode ser visualizado nas Figuras \ref{fig:spef_example} e \ref{fig:spef_example_code}. A linha 1 no código SPEF da Figura \ref{fig:spef_example_code} apresenta o nome da interconexão (inp1) e o valor de sua capacitância total (5.4). As linhas 2, 3 e 4 indicam que existe uma conexão entre uma entrada primária \textit{inp1}, indicado por \textit{*P inp1 I}, e a entrada de um pino interno \textit{a} da porta \textit{u1}, indicado por \textit{*I u1:a I}. Da linha 6 até a linha 9 são representadas as capacitâncias da Árvore RC.
+		Um exemplo de interconexão descrita no formato SPEF \citacaoAzul{IEEE99} pode ser visualizado nas Figuras \ref{fig:spef_example} e \ref{fig:spef_example_code}. A linha 1 no código SPEF da Figura \ref{fig:spef_example_code} apresenta o nome da interconexão ($inp1$) e o valor de sua capacitância total ($5.4$). As linhas 2, 3 e 4 indicam que existe uma conexão entre uma entrada primária $inp1$, indicado por $*P inp1 I$, e a entrada de um pino interno \textit{a} da porta \textit{u1}, indicado por $*I u1:a I$. Da linha 6 até a linha 9 são representadas as capacitâncias da árvore RC.
 
-		A representação um capacitor num arquivo SPEF se dá pelo formato:
+		A representação de um capacitor num arquivo SPEF se dá pelo formato:
 
 		\begin{verbatim}
 		[Número] [Nome] [Capacitância]
 		\end{verbatim}
 
-		De maneira semelhante, os resistores, como pode ser visto nas linhas 11 até 13, são descritas no formato:
+		De maneira semelhante, os resistores, como pode ser visto nas linhas 11 até 13, são descritos no formato:
 
 		\begin{verbatim}
 		[Número] [Capacitor Fonte] [Capacitor Destino] [Resistência]
 		\end{verbatim}
 
-		O valor *END (linha 14) é utilizado para determinar o fim da descrição de uma interconexão.
+		O valor $*END$ (linha 14) é utilizado para determinar o fim da descrição de uma interconexão.
 
 \begin{figure}[ht!]
 \begin{center}
@@ -433,20 +431,20 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 \label{fig:circuito_exemplo_modelagem_interconnect2}
 
 }
-\caption{(a) Um circuito composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e a interconexão, em forma de Árvore RC, que liga a saída de $u1$ nas entradas de $u2$, $u3$ e $f1$; (b) Modelagem para o circuito (a). Em amarelo, são mostrados os \textit{Timing Arcs} da porta lógica $u1$; Em azul, o modelo da interconexão é abstraído, recebendo um valor de capacitância efetiva; Em verde, cada destino da interconexão, representado como um valor de capacitância de seus pinos de entrada. As setas indicam que a interconexão oferece um atraso e uma degradação no \textit{slew}.}
+\caption{(a) Um circuito composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e uma interconexão em forma de árvore RC, que liga a saída de $u1$ às entradas de $u2$, $u3$ e $f1$; (b) São apresentadas as modelagens para os \textit{timing arcs} da porta lógica $u1$; O modelo da interconexão é abstraído, recebendo um valor de capacitância efetiva. As setas indicam que a interconexão oferece um atraso e uma degradação no \textit{slew}.; Cada destino da interconexão é representado como um valor de capacitância de seus pinos de entrada. }
 
 \end{center}
 \end{figure}
 
-Uma interconexão tem sua contribuição para o desempenho do circuito atribuida a três fatores:
+Uma interconexão tem sua contribuição para o desempenho do circuito atribuída a três fatores:
 \begin{itemize}
-	\item \textbf{Capacitância Vista Pelo \textit{Driver}: } É necessário se modelar a carga capacitiva a ser carregada pelo \textit{driver} da interconexão com o objetivo de se obter a informação de \textit{load}, a qual é utilizada no cálculo do \textit{delay} e \textit{slew} dos \textit{timing arcs} das portas lógicas, como visto anteriormente. Nesta capacitância são incluídos também, o impacto causado pelos pinos de destino da interconexão \footnote{Um pino de destino de uma interconexão é um pino que se liga na interconexão, que não é o pino \textit{driver}. Por exemplo, na Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, os pinos de destino da interconexão são o segundo pino de entrada da porta $u2$, o pino de entrada da porta $u3$ e o pino $d$ do \textit{flip-flop} f1.}. Na fase \textit{pre-layout}, essa estimativa é realizada somando a capacitância total da interconexão com a capacitância de cada pino de destino dela. Porém, ao se tratar de interconexões com característica resistiva, o uso da abordagem de capacitância concentrada é impreciso. Para que os modelos de atraso não-lineares, que dependem do valor de capacitância de saída, sejam utilizados para os \textit{drivers} diretamente, o uso de uma abordagem conhecida como ``Capacitância Efetiva'' é necessário.
+	\item \textbf{Capacitância Vista Pelo \textit{Driver}: } É necessário modelar a carga capacitiva a ser carregada pelo \textit{driver} da interconexão com o objetivo de se obter a informação de \textit{load}, a qual é utilizada no cálculo do \textit{delay} e \textit{slew} dos \textit{timing arcs} das portas lógicas, como visto anteriormente. Nesta capacitância é incluído também, o impacto causado pelos pinos de destino da interconexão \footnote{Um pino de destino de uma interconexão é um pino que se liga na interconexão, que não é o pino \textit{driver}. Por exemplo, na Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, os pinos de destino da interconexão são o segundo pino de entrada da porta $u2$, o pino de entrada da porta $u3$ e o pino $d$ do \textit{flip-flop} $f1$.}. Na fase \textit{pré-layout}, essa estimativa é realizada somando a capacitância total da interconexão com a capacitância de cada pino de destino dela. Porém, ao se tratar de interconexões com característica resistiva, o uso da abordagem de capacitância concentrada é impreciso. Para que os modelos de atraso não-lineares, que dependem do valor de capacitância de saída, sejam utilizados para os \textit{drivers} diretamente, é necessário o uso de uma abordagem conhecida como ``Capacitância Efetiva''.
 
-A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância que pode ser utilizado como carga equivalente em termos de \textit{timing} para a saída do \textit{driver}. Essa capacitância equivalente é chamada de \textbf{Capacitância Efetiva} ($C_{eff}$) \citacaoAzul{BhaskerChadha09}.
+A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância que pode ser utilizado como carga equivalente, em termos de \textit{timing}, para a saída do \textit{driver}. Essa capacitância equivalente é chamada de \textbf{Capacitância Efetiva} ($C_{eff}$) \citacaoAzul{BhaskerChadha09}.
 
-	\item \textbf{Atraso da Interconexão: } Além do impacto local nos \textit{delays} e \textit{slews} dos \textit{timing arcs} de seus \textit{drivers}, as interconexões exercem impacto global no circuito, com seu próprio atraso de propagação, devido sua característica resistiva. Com a alta frequência de operação dos circuitos digitais atuais e o dimensionamento dos transistores para escalas nanométricas, os atrasos das interconexões que antes não eram significativos, hoje chegam consumir de 50 a 70\% do ciclo dos relógios, e esta percentagem tende a aumentar na medida que os transistores diminuem \citacaoAzul{Cong96}. Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de Elmore (\textit{Elmore Delay}) \citacaoAzul{Elmore48}, pela simplicidade e razoável correlação com os atrasos reais. Esta técnica será apresentada com mais detalhes na seção \ref{sec:calculo_elmore}.
+	\item \textbf{Atraso da Interconexão: } Além do impacto local nos \textit{delays} e \textit{slews} de seus \textit{drivers}, as interconexões exercem impacto global no circuito, com seu próprio atraso de propagação, devido a sua característica resistiva. Com a alta frequência de operação dos circuitos digitais atuais e o dimensionamento dos transistores para escalas nanométricas, os atrasos das interconexões, que antes não eram significativos, hoje chegam consumir de 50\% a 70\% do ciclo do relógio, e esta porcentagem tende a aumentar na medida que os transistores diminuem \citacaoAzul{Cong96}. Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de Elmore (\textit{Elmore Delay}) \citacaoAzul{Elmore48}, pela simplicidade e razoável correlação com os atrasos reais. Esta técnica será apresentada com mais detalhes na seção \ref{sec:calculo_elmore}.
 	
-	\item \textbf{Degradação do \textit{Slew}: } O cálculo do \textit{slew} é crucial para determinar a precisão de uma avaliação de \textit{timing} em um circuito digital \citacaoAzul{Zhou2007}. Os \textit{delays} dos \textit{timing arcs} dependem do \textit{slew} de entrada e o \textit{slew} de saída, ao se propagar em uma interconexão, sofre uma degradação, devido ao efeito resistivo desta (figura \ref{fig:circuito_exemplo_modelagem_interconnect2}). A não-modelagem desta degradação pela interconexão, acarreta em erros de até 50\% \citacaoAzul{Sheehan2002}.
+	\item \textbf{Degradação do \textit{Slew}: } O cálculo do \textit{slew} é crucial para determinar a precisão de uma avaliação de \textit{timing} em um circuito digital \citacaoAzul{Zhou2007}. Os \textit{delays} dos \textit{timing arcs} dependem do \textit{slew} de entrada e do \textit{slew} de saída. Quando um sinal se propaga por uma interconexão, seu \textit{slew} (i.e. sua declividade) sofre uma degradação devido ao efeito resistivo da mesma (figura \ref{fig:circuito_exemplo_modelagem_interconnect2}). A não-modelagem desta degradação pela interconexão, acarreta em erros de até 50\% \citacaoAzul{Sheehan2002}.
 \end{itemize}
 		
 		
@@ -469,14 +467,14 @@ A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância
 \chapter{Técnica Utilizada para Cálculo das Características Temporais da Interconexão}
 \label{cap:tecnica}
 		
-		Este capítulo tem por objetivo, apresentar uma técnica utilizada para o cálculo das características temporais das interconexões, necessário para a estimativa de \textit{timing} global dos circuitos digitais. Na seção \ref{sec:representacao_interconexoes_puri} será apresentada uma maneira utilizada para se modelar computacionalmente as interconexões. A seção \ref{sec:calculo_elmore} apresentará a técnica de Elmore, que é muito utilizada no cálculo do atraso das interconexões. Finalmente, a técnica utilizada neste trabalho para o cálculo das características temporais das interconexões será apresentada na seção \ref{sec:calculo_ceff_degradacao}.
+		Este capítulo tem por objetivo, apresentar uma técnica utilizada para o cálculo das características temporais das interconexões, necessário para a estimativa de \textit{timing} global dos circuitos digitais. Na seção \ref{sec:representacao_interconexoes_puri} será apresentado um modelo computacional para as interconexões. A seção \ref{sec:calculo_elmore} apresentará a técnica de Elmore, que é muito utilizada no cálculo do atraso das interconexões. Finalmente, a técnica utilizada neste trabalho para o cálculo das características temporais das interconexões será apresentada na seção \ref{sec:calculo_ceff_degradacao}.
 	
 \section{Representação das Interconexões}
 \label{sec:representacao_interconexoes_puri}
 		% \label{cap:atraso}
 		% \afazer{Neste capítulo, serão apresentados detalhes sobre a implementação dos modelos de atrasos de interconexões, complementando a informação já obtida no Capítulo \ref{cap:sta}.}
 
-		Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) é utilizado para representar o fio em relação a suas capacitâncias e resistências.
+		Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) é utilizado para representar o fio em termos de capacitâncias e resistências.
 
 		No modelo de grafo $I(C, R)$ utilizado, o conjunto dos vértices é composto pelos nodos internos da interconexão, que representam cada capacitor. As arestas do grafo modelam os resistores, e cada resistor conecta um par de capacitores. Sendo assim:
 		\begin{itemize}
@@ -496,14 +494,14 @@ A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância
 		\section{Cálculo do Atraso das Interconexões} 
 		\label{sec:calculo_elmore}
 		
-A técnica de Elmore fornece uma análise rápida, já que se trata do primeiro momento de resposta ao impulso. Algumas outras técnicas conhecidas, como \citacaoAzul{AWE} que utiliza correspondência de momentos, são muito mais precisas, porém requerem um alto custo computacional. \citacaoAzul{Alpert2000} proprõe uma técnica que utiliza os dois primeiros momentos de resposta ao impulso, porém o custo computacional ainda é maior que o da técnica de Elmore.
+A técnica de Elmore fornece uma análise rápida, já que se trata do primeiro momento de resposta ao impulso. Algumas outras técnicas conhecidas, como a de \citacaoInline{Alpert2000} e \textit{AWE} \citacaoAzul{AWE}, utilizam momentos de maior ordem, porém requerem um alto custo computacional.
 		
-A alta complexidade computacional de se obter momentos de maior ordem, e a busca pelo compromisso entre técnicas rápidas e precisas para o cálculo do atraso em interconexões faz com que a técnica de Elmore seja, ainda, amplamente utilizada. A popularidade da técnica de Elmore se dá por alguns fatores:
+A alta complexidade computacional de se obter momentos de maior ordem e a busca pelo compromisso entre técnicas rápidas e precisas para o cálculo do atraso em interconexões fazem com que a técnica de Elmore ainda seja amplamente utilizada. A popularidade da técnica de Elmore deve-se aos fatores:
 		
 \begin{itemize}
-\item Boa correlação com os atrasos reais nos nodos mais longes do \textit{driver} \citacaoAzul{Kashyap00};
-\item É expressa por uma fórmula fechada, que envolve apenas as resistências e capacitâncias do circuito \citacaoAzul{Horowitz1983};
-\item É um \textit{upper-bound} provado para o atraso real de qualquer árvore RC \citacaoAzul{Gupta97};
+\item Boa correlação com os atrasos reais nos nodos mais afastados do \textit{driver} \citacaoAzul{Kashyap00};
+\item Utiliza uma fórmula fechada, que envolve apenas as resistências e capacitâncias do circuito \citacaoAzul{Horowitz1983};
+\item Provê um limite superior provado para o atraso real de qualquer árvore RC \citacaoAzul{Gupta97};
 \item É aditiva, ou seja, o atraso do nodo A até o nodo C passando pelo nodo B é a soma dos atrasos entre A e B e entre B e C \citacaoAzul{Kashyap00}.
 \end{itemize}
 		
@@ -516,23 +514,14 @@ De acordo com \citacaoInline{Rabaey08}, em um nodo $c_i$ da Árvore RC, o atraso 
 \end{equation}
 
 
-Onde $C_k$ é o valor de capacitância do nodo $c_k$ e $R_{ik}$ é a resistência compartilhada entre os caminhos desde o nodo fonte $s$ até os nodos $c_i$ e $c_k$. $R_{ik}$ é definida por:
+Onde $N$ é o número de capacitores da árvore RC, $C_k$ é o valor de capacitância do nodo $c_k$ e $R_{ik}$ é a resistência compartilhada entre os caminhos $s \to i$ e $s \to k$ ($s$ é o nodo fonte), ou seja:
 \begin{equation}
 R_{ik} = \sum R_j \Rightarrow (R_j \in [caminhos(s \to i)\cap caminhos(s \to k)])
 \label{eq:rik}
 \end{equation}
 
-Na topologia da figura \ref{fig:circuito_exemplo_modelagem_interconnect}, em particular, a resistência entre o nodo fonte $s$ e nodo $C4$ é dada por:
-\begin{equation}
-R_{44} = R_1 + R_4
-\end{equation}
+Na topologia da figura \ref{fig:circuito_exemplo_modelagem_interconnect}, $C0$ é o nodo fonte. Assim, o atraso de Elmore para o nodo $C4$ é:
 
-		E a resistência entre o nodo fonte $C0$ e os nodos $C2$ e $C4$:
-\begin{equation}
-R_{42} = R_1
-\end{equation}
-
-		Assim, utilizando o atraso de Elmore, o atraso no nodo $C4$ é equivalente a:
 \begin{equation}
 \tau_4 = C_1\ R_1 + C_2\ R_1 + C_3 \ R_1 + C_4(R_1+R_4) 
 \label{eq:delay_4}
@@ -540,7 +529,7 @@ R_{42} = R_1
 
 \subsubsection{Algoritmo Recursivo para o Atraso de Elmore}
 
-A técnica de \citacaoInline{Elmore48}, apresentada anteriormente pode ser implementada na sua forma recursiva. O algoritmo para cálculo do atraso de Elmore recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais \textit{downstream} ($C_{total_i}$) de cada nodo interno. 
+A técnica de \citacaoInline{Elmore48}, apresentada anteriormente, pode ser implementada na sua forma recursiva. O algoritmo para cálculo do atraso de Elmore recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais \textit{downstream} ($C_{total_i}$) de cada nodo interno. 
 		
 \begin{enumerate}
 
@@ -565,17 +554,17 @@ Sendo que $C_i$ é o valor de capacitância do nodo $c_i$. O conjunto $filhos(i)$ 
 
 A função $R(i, j)$ retorna o valor da resistência que liga dois capacitores $c_i$ e $c_j \in C$. O atributo $c_{total_i}$ é a capacitância total \textit{downstream} de um nodo $c_i$.
 
-Assim, o cálculo do atraso em cada nodo da interconexão, reflete no atraso da interconexão partindo do \textit{driver} até cada pino de destino.
+Assim, o cálculo do atraso em cada nodo da interconexão reflete no atraso da interconexão partindo do \textit{driver} até cada pino de destino.
 
 
 A técnica de Elmore para atraso de interconexões não considera o efeito conhecido como \textit{resistive shielding}. O efeito de \textit{resistive shielding} acontece devido ao fato de que as resistências alteram o tempo que as capacitâncias levam para serem carregadas ou descarregadas. Considerando a interconexão da figura \ref{fig:circuito_exemplo_modelagem_interconnect}, no caso extremo em que $R4 = \infty$, o capacitor $C4$ nunca seria carregado, portanto o atraso da interconexão não deveria levar em consideração o valor do capacitor $C4$.
 
-Algumas adaptações na técnica de Elmore foram propostas, para que o cálculo do atraso das interconexões capturem também, o efeito do \textit{resistive shielding}, utilizando a abordagem de capacitância efetiva em cada nodo da interconexão. Essas técnicas serão apresentadas na seção \ref{sec:calculo_ceff_degradacao}.
+Algumas adaptações na técnica de Elmore foram propostas, para que o cálculo do atraso das interconexões capturem também o efeito do \textit{resistive shielding} utilizando a abordagem de capacitância efetiva em cada nodo da interconexão. Essas técnicas serão apresentadas na seção \ref{sec:calculo_ceff_degradacao}.
 		
 \section{Cálculo da Capacitância Efetiva e Degradação do \textit{Slew}}
 \label{sec:calculo_ceff_degradacao}
 %\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citacaoInline{PURI02}, que será implementado neste trabalho.}	
-A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que a característica resistiva das interconexões alteram o tempo em que suas capacitâncias são carregadas ou descarregadas. Esse efeito, mais conhecido como \textit{resistive shielding}, faz com que o atraso do \textit{driver} de uma interconexão seja menor que o atraso dele considerando a capacitância total da interconexão.
+A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que a característica resistiva das interconexões altera o tempo em que suas capacitâncias são carregadas ou descarregadas. Esse efeito, mais conhecido como \textit{resistive shielding}, faz com que o atraso do \textit{driver} de uma interconexão seja menor que o atraso dele considerando a capacitância total da interconexão.
 
 
 
@@ -587,15 +576,13 @@ A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que a 
 \end{center}
 \end{figure}
 
-A figura \ref{fig:effective_capacitance_vs_actual_vs_total} mostra formas de onda na saída de uma porta lógica que é \textit{driver} de uma interconexão. A curva pontilhada (\textit{Effective capacitance}) representa o sinal na entrada da interconexão, ao modelá-la utilizando um valor de capacitância efetiva. A curva contínua (\textit{Total capacitance}) mostra a forma de onda utilizando o valor de capacitância total. E a curva tracejada (\textit{Actual load}), mostra a forma de onda, quando o \textit{driver} está ligado na árvore RC. Pode se observar que para o valor escolhido de capacitância efetiva, o sinal leva o mesmo tempo para atingir o ponto médio da curva (\textit{$V_{dd} = 50\%$}) que quando o \textit{driver} está conectado diretamente à árvore RC. Note a diferença neste ponto em relação à curva de capacitância concentrada, mostrando a imprecisão de se utilizar este modelo em certos casos.
+A figura \ref{fig:effective_capacitance_vs_actual_vs_total} mostra formas de onda na saída de uma porta lógica que é \textit{driver} de uma interconexão. A curva pontilhada (\textit{Effective capacitance}) representa o sinal na entrada da interconexão, ao modelá-la utilizando um valor de capacitância efetiva. A curva contínua (\textit{Total capacitance}) mostra a forma de onda utilizando o valor de capacitância concentrada. E a curva tracejada (\textit{Actual load}), mostra a forma de onda, quando o \textit{driver} está ligado na árvore RC. Pode-se observar que para o valor escolhido de capacitância efetiva, o sinal leva o mesmo tempo para atingir o ponto médio da curva (\textit{$V_{dd} = 50\%$}) que quando o \textit{driver} está conectado diretamente à árvore RC. Note a diferença neste ponto em relação à curva de capacitância concentrada, mostrando a imprecisão de se utilizar este modelo em certos casos.
 
-Como a abordagem de capacitância efetiva reflete na consideração do efeito de \textit{resistive shielding}, ao utilizá-la em cada segmento da interconexão, é possível de se obter um atraso na interconexão mais preciso que o da técnica de Elmore, sem considerar momentos de maior ordem da resposta ao impulso.
+Como a abordagem de capacitância efetiva está relacionada à consideração do efeito de \textit{resistive shielding}, ao utilizá-la em cada segmento da interconexão, é possível obter-se um atraso na interconexão mais preciso do que o atraso de Elmore, mesmo sem considerar momentos de maior ordem da resposta ao impulso.
 
 %Diversas técnicas são utilizadas para cálculo da capacitância efetiva. Em \citacaoAzul{Kashyap00}, o método proposto trata de calcular o valor de $C_{eff}$ da interconexão, aproximando o \textit{slew} na entrada da árvore RC, de modo a obter a capacitância efetiva. Porém, nos circuitos digitais, os \textit{drivers} das interconexões são portas lógicas \textit{CMOS} com função de \textit{slew} de saída conhecidas, e seus valores são dependentes do valor da capacitância efetiva, que por sua vez, depende do \textit{slew} aplicado na entrada. Para contornar o problema encontrado na técnica de \citacaoInline{Kashyap00}, em \citacaoAzul{PURI02} foi proposta uma técnica que calcula o \textit{slew} e a $C_{eff}$ iterativamente, até que seus valores convirjam, dado uma precisão estipulada. Esta técnica será apresentada no capítulo \ref{cap:tecnica} e será implementada na ferramenta abordada neste trabalho.
 
-\citacaoAzul{Kashyap00} propuseram uma técnica para calcular o atraso da interconexão, levando em conta o efeito de \textit{resistive shielding}. Com a mesma complexidade da técnica de Elmore, a técnica proposta para cálculo de atraso em uma árvore RC reflete no cálculo da capacitância efetiva. Porém, \citacaoAzul{Kashyap00} não tratava o \textit{driver} da interconexão como sendo uma porta lógica \textit{CMOS}. Sua aproximação para o \textit{slew} na entrada da árvore RC era imprecisa. Como o cálculo da capacitância efetiva de uma árvore depende do \textit{slew} que incide nesta, e o \textit{slew} depende da capacitância vista pelo \textit{driver}, em \citacaoAzul{PURI02} é proposta uma técnica, que leva em consideração o impacto da capacitância no \textit{slew} do driver, e também, do \textit{slew} no cálculo da capacitância efetiva.
-
-Para simular a interdependência entre o \textit{slew} e a capacitância efetiva, o \textit{slew} no nodo fonte da árvore RC é refinado iterativamente, a fim de obter com precisão os dois valores.
+\citacaoInline{Kashyap00} propuseram uma técnica para calcular o atraso da interconexão levando em conta o efeito de \textit{resistive shielding}. Com a mesma complexidade da técnica de Elmore, a técnica proposta para cálculo de atraso em uma árvore RC calcula também o valor de capacitância efetiva. Porém, \citacaoInline{Kashyap00} não tratava o \textit{driver} da interconexão como sendo uma porta lógica \textit{CMOS}. Sua aproximação para o \textit{slew} na entrada da árvore RC era imprecisa. Como o cálculo da capacitância efetiva de uma árvore depende do \textit{slew} que incide nesta, e o \textit{slew} depende da capacitância vista pelo \textit{driver}, \citacaoInline{PURI02} propuseram uma técnica que leva em consideração o impacto da capacitância no \textit{slew} do driver, e também, do \textit{slew} no cálculo da capacitância efetiva. Para simular a interdependência entre o \textit{slew} e a capacitância efetiva, o \textit{slew} no nodo fonte da árvore RC é refinado iterativamente, a fim de obter com precisão os dois valores.
 
 \subsection{Cálculo da Capacitância Efetiva}
 
@@ -607,7 +594,7 @@ Para simular a interdependência entre o \textit{slew} e a capacitância efetiva, 
 \end{center}
 \end{figure}
 
-Considerando uma rede $\pi$ $C_1 - R - C_2$ alimentada por uma fonte de tensão $V(t)$, como a ilustrada na figura \ref{fig:effective_ramp}. Seja $I(t)$ a corrente total fornecida pela fonte de tensão $V(t)$, $I_1(t)$ a corrente através de $C_1$ e $I_2(t)$ a corrente através de $R - C_2$. De acordo com \citacaoInline{PURI02}, realizando uma análise no domínio da frequência, obtemos que:
+Considere uma rede $\pi$ $C_1 - R - C_2$ alimentada por uma fonte de tensão $V(t)$, como a ilustrada na figura \ref{fig:effective_ramp}. Seja $I(t)$ a corrente total fornecida pela fonte de tensão $V(t)$, $I_1(t)$ a corrente através de $C_1$ e $I_2(t)$ a corrente através de $R - C_2$. De acordo com \citacaoInline{PURI02}, realizando uma análise no domínio da frequência, obtemos que:
 
 \begin{equation}
 I(s) = I_1(s) + I_2(s)
@@ -659,7 +646,7 @@ Substituindo a $V(s)$ da equação \ref{eq:ifreq} pela equação \ref{eq:vfreq} e vo
 I(t) = \frac{V_{dd}}{t_r}((C_1 + C_2) - C_2e^{-\frac{t}{RC_2}}) \quad \text{para $t < t_r$}
 \end{equation}
 
-Em termos de \textit{timing}, a capacitância efetiva é um a capacitância, em que a carga transferida $Q$ seja a mesma que da rede $\pi$, no ponto médio da curva (tempo que a curva atinge $50\% V_{dd}$). A carga transferida $Q$ é a integral da corrente $I(t)$ com o tempo indo de $0$ até $t_r/2$:
+Em termos de \textit{timing}, na capacitância efetiva, a carga transferida $Q$ é a mesma que da rede $\pi$, no ponto médio da curva (tempo que a curva atinge $50\% V_{dd}$). A carga transferida $Q$ é a integral da corrente $I(t)$ com o tempo indo de $0$ até $t_r/2$:
 
 \begin{equation}
 Q = \int_0^{t_r/2} I(t) \mathrm{d}t = \int_0^{t_r/2} \frac{V_{dd}}{t_r}((C_1 + C_2) - C_2e^{-\frac{t}{RC_2}}) \mathrm{d}t
@@ -710,7 +697,7 @@ Onde $t_r'$ é o \textit{slew} na saída. Substituindo $V_1$ da equação \ref{eq:sl
 t_r' = \frac{t_r}{1-x(1-e^{-\frac{1}{x}})} \quad \text{onde } x = \frac{RC_2}{t_r}
 \end{equation}
 
-Generalizando, e utilizando o valor de capacitância efetiva, o $slew_i$ no nodo $c_i$ é definido pela equação:
+Generalizando para uma árvore RC qualquer \footnote{Representada conforme apresentado na seção \ref{sec:representacao_interconexoes_puri}.} e utilizando o valor de capacitância efetiva, o $slew_i$ no nodo $c_i$ é definido pela equação:
 
 \begin{equation}
 slew_i = \frac{slew_j}{1-\frac{R_i\ C_{eff_i}}{slew_j} (1-e^{-\frac{slew_j}{R_i\ C_{eff_i}}})}
@@ -719,17 +706,12 @@ slew_i = \frac{slew_j}{1-\frac{R_i\ C_{eff_i}}{slew_j} (1-e^{-\frac{slew_j}{R_i\
 
 Onde $slew_j$ é o \textit{slew} na entrada de $v_i$, vindo pelo nodo pai $v_j$ e $R_i$ é o valor do resistor que conecta $c_i$ com $c_j$
 
-\subsection{O Algoritmo}
+\subsection{O Algoritmo de \citacaoInline{PURI02}}
 
-		Dado o grafo de uma árvore RC\footnote{Com os nodos numerados de $1$ a $n$ em ordem topológica onde $n$ é o tamanho do conjunto de vértices e o nodo $c_1$ é o nodo fonte da árvore RC.}, o algoritmo apresentado nessa seção calcula os valores de capacitância efetiva e \textit{slew} em cada nodo interno da interconexão. Para o atraso da interconexão, o método implementa a técnica de Elmore, utilizando os valores de capacitância efetiva ao invés dos valores de capacitância total \textit{downstream}, simulando o efeito de \textit{resistive shielding}.
+		Dado o grafo de uma árvore RC\footnote{Com os nodos numerados de $1$ a $n$ em ordem topológica, onde $n$ é o tamanho do conjunto de vértices e o nodo $c_1$ é o nodo fonte da árvore RC.}, o algoritmo apresentado nessa seção calcula os valores de capacitância efetiva e \textit{slew} em cada nodo interno da interconexão. Para o atraso da interconexão, o método implementa a técnica de Elmore, utilizando os valores de capacitância efetiva, ao invés dos valores de capacitância total \textit{downstream}, simulando o efeito de \textit{resistive shielding}.
 		
-		A capacitância efetiva é denotada em cada nodo $c_i$ por $C_{eff_i}$ e o \textit{slew} por $slew_i$. O valor do \textit{slew} aplicado no nodo fonte da árvore RC, denotado por $slew_1$, é exatamente o valor do \textit{slew} na saída do \textit{driver} desta interconexão, o qual é função do \textit{slew} na entrada da porta lógica \textit{driver} e da capacitância efetiva vista na saída.
+		A capacitância efetiva é denotada em cada nodo $c_i$ por $C_{eff_i}$ e o \textit{slew} por $slew_i$. O valor do \textit{slew} aplicado no nodo fonte da árvore RC, denotado por $slew_1$, é exatamente o valor do \textit{slew} na saída do \textit{driver} desta interconexão, o qual é função do \textit{slew} na entrada da porta lógica \textit{driver} e da capacitância efetiva vista na saída. Este valor de \textit{slew} será refinado iterativamente para se estimar o valor de capacitância efetiva da interconexão.
 		
-		
-				
-
-				
-				
 		O algoritmo para cálculo iterativo da capacitância efetiva de uma interconexão, bem como seu atraso e a degradação no \textit{slew}, conforme \citacaoAzul{PURI02}, ocorre em cinco passos:
 
 		\begin{enumerate}
@@ -740,7 +722,7 @@ Onde $slew_j$ é o \textit{slew} na entrada de $v_i$, vindo pelo nodo pai $v_j$ e
 
 					\item A capacitância efetiva $C_{eff_i}$ de cada nodo $c_i$ da Árvore RC é incializada com o valor de capacitância total \textit{downstream} de $c_i$, ou seja $C_{eff_i} = C_{total_i}$;
 					
-					\item O \textit{slew} no nodo fonte da árvore RC $slew_1$ é calculado utilizando o modelo de atraso da porta lógica \textit{driver}, considerando a capacitância concentrada da árvore RC: $slew_1 = f(C_{total_1})$.
+					\item O \textit{slew} no nodo fonte da árvore RC $slew_1$ é calculado utilizando o modelo de atraso da porta lógica \textit{driver}, considerando a capacitância concentrada da árvore RC (i.e. $\sum_{i=1}^N C_i$): $slew_1 = f(C_{total_1})$.
 
 				\end{enumerate}
 
@@ -783,11 +765,11 @@ Onde $slew_j$ é o \textit{slew} na entrada de $v_i$, vindo pelo nodo pai $v_j$ e
 
 Após a execução do algoritmo, pode-se obter a degradação de \textit{slew} e de atraso do \textit{driver} em todos os \textit{fanouts} da interconexão em questão.
 		
-Na implementação apresentada neste trabalho, o $\varepsilon$ foi definido como sendo $1\%$. Na maioria dos casos observados, cerca de $5$ iterações são necessárias para realizar o cálculo da capacitância efetiva no nodo fonte da árvore. Como cada iteração do algoritmo se trata de uma passada na lista de nodos, com complexidade linear, e são necessárias algumas iterações para a convergência, a complexidade do algoritmo é de $O(c . n)$, onde $c$ geralmente é menor que $5$, e $n$ é o número de nodos na árvore RC.
+Na implementação apresentada neste trabalho, o $\varepsilon$ foi definido como sendo $1\%$. Na maioria dos casos observados, cerca de $5$ iterações são necessárias para realizar o cálculo da capacitância efetiva no nodo fonte da árvore. Como cada iteração do algoritmo se trata de uma passagem na lista de nodos, com complexidade linear, e são necessárias algumas iterações para a convergência, a complexidade do algoritmo é de $O(c . n)$, onde $c$ geralmente é menor que $5$, e $n$ é o número de nodos na árvore RC.
 
 \chapter{Análise de \textit{Timing} Estática}
 \label{cap:sta}
-Análise de \textit{timing} estática, ou \textit{static timing analysis} \citacaoAzul{Guntzel00} \citacaoAzul{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar atrasos das células e interconexões em circuitos digitais. A análise de \textit{timing} é chamada de estática (\textit{STA: Static Timing Analysis}), quando não depende dos valores aplicados nas entradas primárias do circuito, ou seja, apenas considera o comportamento estático das portas lógicas e interconexões. É um processo completo e exaustivo \citacaoAzul{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
+Análise de \textit{timing} estática, ou \textit{static timing analysis} \citacaoAzul{Guntzel00} \citacaoAzul{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar o atraso crítico de circuitos digitais. A análise de \textit{timing} é chamada de estática (\textit{STA: Static Timing Analysis}) quando ela não realiza simulação e portanto, independe de estímulos de entrada, considerando apenas o comportamento estático das portas lógicas e interconexões. É um processo completo e exaustivo \citacaoAzul{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
@@ -798,19 +780,19 @@ Análise de \textit{timing} estática, ou \textit{static timing analysis} \citacao
 \end{center}
 \end{figure}
 
-Dado um \textit{design} de entrada, descrito em uma linguagem de descrição de hardware (\textit{HDL: Hardware description language}), restrições de projeto e uma biblioteca de células, o objetivo da análise de \textit{timing} é apresentar informações temporais em todos os pontos do circuito, e apontar suas possíveis violações (figura \ref{fig:STA}). Essas informações são utilizadas para validar se o projeto sob verificação pode operar no desempenho estipulado, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
+Dado a descrição do projeto usando alguma linguagem de descrição de hardware (\textit{HDL: Hardware Description Language}), restrições de projeto e uma biblioteca de células, o objetivo da análise de \textit{timing} é apresentar informações temporais em todos os pontos do circuito e apontar as possíveis violações (figura \ref{fig:STA}). Essas informações são utilizadas para validar se o projeto sob verificação pode operar na velocidade estipulada, ou seja, se o circuito final poderá funcionar, com segurança, na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
 
 O fluxo básico de uma ferramenta de análise de \textit{timing} é:
 
 \begin{enumerate}
-\item \textbf{Leitura dos arquivos de entrada:} Nesta etapa, os arquivos referentes às bibliotecas de célula, descrição do circuito juntamente com as restrições do projeto são lidos e suas informações são armazenadas em estruturas de dados, que serão consultadas na geração do modelo de grafo, e na atualização das informações temporais;
+\item \textbf{Leitura dos arquivos de entrada:} Nesta etapa, os arquivos referentes às bibliotecas de célula, descrição do circuito juntamente com as restrições do projeto são lidos e suas informações são armazenadas em estruturas de dados, que serão consultadas na geração do modelo de grafo e na atualização das informações temporais;
 
-\item \textbf{Geração do grafo de \textit{timing}:} Responsável por implementar o modelo de grafo de \textit{timing}. As estruturas de dados utilizadas na implementação do modelo de grafo implicam diretamente no desempenho da ferramenta de \textit{timing}.
+\item \textbf{Geração do grafo de \textit{timing}:} Responsável por implementar o modelo de grafo de \textit{timing}. As estruturas de dados utilizadas na implementação do modelo de grafo têm impacto direto no desempenho da ferramenta de \textit{timing}.
 
-\item \label{enum:etapa_sta} \textbf{Atualização de informações temporais: } Etapa onde o cálculo das informações temporais é realizado. A propagação dos atrasos através dos \textit{timing arcs}, bem como a avaliação do cumprimento ou não das restrições de desempenho. 
+\item \label{enum:etapa_sta} \textbf{Atualização de informações temporais: } Etapa onde a propagação dos atrasos através dos \textit{timing arcs}, bem como a avaliação do cumprimento ou não das restrições de desempenho são realizados. 
 \end{enumerate}
 
-Na seção \ref{sec:representacao_circuitos_sta} será apresentado o modelo de grafo, utilizado para modelar os circuitos digitais, na análise de \textit{timing}. A seção \ref{sec:calculo_desempenho} mostrará a nomenclatura utilizada para as diversas informações temporais relevantes na análise de \textit{timing} estática. E finalmente, informações particulares sobre a implementação da ferramenta construida neste trabalho serão apresentadas na seção \ref{sec:implementacao_sta}. 
+Na seção \ref{sec:representacao_circuitos_sta} será apresentado o modelo de grafo utilizado para modelar os circuitos digitais na análise de \textit{timing}. A seção \ref{sec:calculo_desempenho} mostrará a nomenclatura utilizada para as diversas informações temporais relevantes na análise de \textit{timing} estática. E finalmente, informações particulares sobre a implementação da ferramenta construída neste trabalho serão apresentadas na seção \ref{sec:implementacao_sta}. 
 
 \section{Representação de Circuitos Digitais}
 \label{sec:representacao_circuitos_sta}
@@ -832,7 +814,7 @@ Na seção \ref{sec:representacao_circuitos_sta} será apresentado o modelo de graf
 \end{center}
 \end{figure}
 
-Um circuito combinacional pode ser representado por um grafo de \textit{timing}. Neste grafo, as portas lógicas são os vértices e as interconexões são as arestas, como mostrado na figura \ref{fig:exemplo_simple_circuito_grafo} \citacaoAzul{BhaskerChadha09}.
+Um circuito combinacional pode ser representado por um grafo de \textit{timing}. Neste grafo, as portas lógicas e os pinos de entrada e saídas primárias são os vértices e as interconexões são as arestas, como mostrado na figura \ref{fig:exemplo_simple_circuito_grafo} \citacaoAzul{BhaskerChadha09}.
 
 
 
@@ -844,7 +826,7 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
 \includegraphics[width=\linewidth, trim=0 13cm 0 0, clip=true]{imagens/subcircuitos.pdf}
-\caption{Grafo de timing dividido em dois subcircuitos devido a existência de uma célula sequencial.}
+\caption{Grafo de \textit{timing} dividido em dois sub-circuitos devido à existência de uma célula sequencial.}
 \label{fig:subcircuitos}
 \end{center}
 \end{figure}
@@ -857,13 +839,9 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 \end{center}
 \end{figure}
 
-Um circuito que consiste de células combinacionais e sequenciais (\textit{flip-flops} e \textit{latches}) pode ser representado como um conjunto de blocos combinacionais, divididos pelos latches (Figura \ref{fig:subcircuitos}), assim, a entrada de uma célula sequencial pode ser tratada como uma saída primária do circuito, e a saída dessa pode ser tratada como uma entrada primária do circito (Figura \ref{fig:grafo_refinado}).
+Um circuito que consiste de células combinacionais e sequenciais (\textit{flip-flops} e \textit{latches}) pode ser representado como um conjunto de blocos combinacionais, divididos pelos \textit{latches} (figura \ref{fig:subcircuitos}), assim, a entrada de uma célula sequencial pode ser tratada como uma saída primária do circuito, e a saída dessa pode ser tratada como uma entrada primária de outro circuito (figura \ref{fig:grafo_refinado}).
 
-
-
-
-
-Em um contexto de projeto em fluxo \textit{standard cell}, é interessante que o grafo modele também os \textit{timing arcs} das portas lógicas. Assim, o grafo de \textit{timing} pode ser definido pelo conjunto de pinos dos circuitos (\textit{timing points}), entradas e saídas primárias, constituindo o conjunto dos vértices, e a união do conjunto das interconexões com o conjunto dos \textit{timing arcs}, formando assim, o conjunto das arestas.
+Em um contexto de projeto com o fluxo \textit{standard cell}, é interessante que o grafo modele também os \textit{timing arcs} das portas lógicas. Assim, alternativamente, os vértices do grafo de \textit{timing} são os pinos de entrada e saída das portas lógicas, entradas e saídas primárias e as arestas são definidas pelos \textit{timing arcs} e pelas interconexões.
 
 		As entradas primárias e registradores geralmente são mapeados para células presentes na biblioteca \textit{standard cell}, por isso é necessário criar \textit{timing points} também para os pinos de entrada e seus respectivos \textit{timing arcs}. Um grafo representando o modelo escolhido pode ser visualizado na figura \ref{fig:grafo_timing_points}.
 
@@ -873,7 +851,7 @@ Em um contexto de projeto em fluxo \textit{standard cell}, é interessante que o 
 
 \begin{itemize}
 
-\item V  = \{ $v_i | v_i$ é um \textit{timing point} (pino de \textit{timing}), que pode ser a entrada ou saída de uma porta lógica, aqui referenciado como pino. Um \textit{timing point} pode representar uma entrada ou saída primária do circuito. \}
+\item V  = \{ $v_i | v_i$ é um \textit{timing point} (pino de \textit{timing}), que pode ser a entrada ou saída de uma porta lógica, aqui referenciado como pino. Um \textit{timing point} pode também representar uma entrada ou saída primária do circuito. \}
 
 \item I = \{ $(v_i, v_j) | v_i, v_j \in V$ e $(v_i, v_j)$ é uma interconexão do circuito, que conecta $v_i$ em $v_j$. $v_i$ é um pino de saída de uma porta lógica ou uma entrada primária, e $v_j$ pode ser a entrada de uma porta lógica ou uma saída primária. \}
 
@@ -887,7 +865,7 @@ Em um contexto de projeto em fluxo \textit{standard cell}, é interessante que o 
 \begin{center}% TRIM = L D R U
 \includegraphics[width=1.1 \linewidth, trim=2cm 13cm 0 0, clip=true]{imagens/grafo_timing_points.pdf}
 % \includegraphics{sta.png}
-\caption{Grafo de \textit{timing} com representação dos \textit{timing points}, \textit{timing arcs} e \textit{timing nets}.}
+\caption{Grafo de \textit{timing} com representação dos \textit{timing points}, \textit{timing arcs} e interconexões.}
 \label{fig:grafo_timing_points}
 \end{center}
 \end{figure}
@@ -914,18 +892,18 @@ O cálculo do pior atraso do circuito é realizado propagando os \textit{arrival t
 
 \item \textbf{$slew_{j \to i}$}: o \textit{slew} do \textit{timing arc} que vai do pino $v_j$ até o pino $v_i$;
 
-\item \textbf{$iD_{j \to i}$}: o atraso de propagação na interconexão que liga o pino $v_j$ até o pino $v_i$. No modelo de capacitância concentrada, $iD_{j \to i} = 0$;
+\item \textbf{$iD_{i \to k}$}: o atraso de propagação na interconexão que liga o pino $v_i$ até o pino $v_k$. No modelo de capacitância concentrada, $iD_{i \to k} = 0$;
 
-\item \textbf{$iS_{j \to i}$}: degradação do \textit{slew} através da interconexão que liga $v_j$ em $v_i$;
+\item \textbf{$iS_{i \to k}$}: degradação do \textit{slew} através da interconexão que liga $v_i$ em $v_k$;
 
-\item \textbf{$fanouts(i)$}: conjunto dos pinos que são destino da interconexão que $v_i$ é \textit{driver};
+\item \textbf{$fanouts(i)$}: conjunto dos pinos que são destino da interconexão para qual $v_i$ é \textit{driver};
 
 \item \textbf{$r_i$}: é o \textit{required time} no \textit{timing point} $v_i$. O \textit{required time} é o tempo máximo que o valor de $a_i$ pode assumir para que a restrição de desempenho respeitada. Se $v_i$ é uma saída primária do circuito, então $r_i = T$, onde $f = \frac{1}{T}$ é a frequência mínima de operação do circuito digital;
 
-\item \textbf{$slack_i$}: folga de tempo no ponto $v_i$, ou seja, quanto o \textit{arrival time} pode atrasar neste ponto, para que o período máximo continue sendo respeitado. Se em um determinado ponto do circuito, o \textit{slack} é negativo, então o caminho em questão está violando a restrição de atraso máximo do sistema. 
+\item \textbf{$slack_i$}: folga de tempo no ponto $v_i$, ou seja, quanto o \textit{arrival time} pode atrasar neste ponto, de modo que o período máximo continue sendo respeitado. Se em um determinado ponto do circuito o \textit{slack} é negativo, então o caminho em questão está violando a restrição de atraso máximo do sistema. 
 \end{itemize}
 		
-Na análise de timing estática, os piores atrasos de cada porta lógica são propagados visitando o grafo direcionado em ordem topológica. Para cada $v_i \in V$ que são pinos de saída de portas lógicas, os \textit{arrival times}, bem como os \textit{slews} são determinados de modo a respeitar as seguintes restrições:
+Na análise de \textit{timing} estática, os piores atrasos de cada porta lógica são propagados visitando-se o grafo direcionado em ordem topológica. Para cada $v_i \in V$ que são pinos de saída de portas lógicas, os \textit{arrival times}, bem como os \textit{slews} são determinados de modo a respeitar as seguintes restrições:
 
 \begin{equation}
 a_i = \max_{\forall v_j \in inputs(i)}(a_j + d_{j \to i})
@@ -945,13 +923,13 @@ a_i = a_j + iD_{j \to i}
 slew_i = slew_j + iS_{j \to i}
 \end{equation}
 
-Após a propagação dos \textit{arrival times} em todos os pinos, é necessário realizar a propagação dos tempos requeridos em ordem topológica reversa, a fim de obter os valores dos \textit{slacks}. Em um pino de saída $v_i$ de uma porta lógica, o tempo requerido pode ser obtido facilmente, observando o menor dos tempos requeridos dentre os seus \textit{fanouts} e suas interconexões.
+Após a propagação dos \textit{arrival times} em todos os pinos, é necessário realizar a propagação dos tempos requeridos, o que é feito percorrendo-se o grafo em ordem topológica reversa, a fim de obterem-se os valores dos \textit{slacks}. Em um pino de saída $v_i$ de uma porta lógica, o tempo requerido pode ser obtido facilmente, observando o menor dos tempos requeridos dentre os seus \textit{fanouts} e suas interconexões, ou seja:
 
 \begin{equation}
 r_i = \min_{\forall v_j \in fanouts(i)}(r_j - iD_{i \to j})
 \end{equation}
 
-Para se propagar o \textit{required time} do pino $v_j$ de saída de uma porta lógica, para uma entrada $v_i$, utitliza-se o valor de \textit{delay} do arco que liga $v_i$ em $v_j$ que já foi calculado previamente:
+Para se propagar o \textit{required time} do pino $v_j$ de saída de uma porta lógica para uma entrada $v_i$, utiliza-se o valor de \textit{delay} do arco que liga $v_i$ em $v_j$, o qual já foi calculado previamente:
 
 \begin{equation}
 r_i = r_j - d_{i \to j}
@@ -965,15 +943,15 @@ slack_i = r_i - a_i
 
 Se em algum ponto $v_i$, $slack_i = 0$, então $v_i$ se encontra em um caminho crítico. Se $slack_i < 0$, então $v_i$ se encontra em um caminho que viola a restrição de desempenho.
 
-O \textbf{pior slack} é definido como o menor valor de \textit{slack} entre as saídas primárias. O valor de \textbf{total de slack negativo} é o somatório dos \textit{slacks} negativos das saídas primárias.
+O \textbf{pior slack} é definido como o menor valor de \textit{slack} entre as saídas primárias. O valor \textbf{total de slack negativo} é o somatório dos módulos dos \textit{slacks} negativos das saídas primárias.
 
 \section{Implementação da Ferramenta de STA}
 	\label{sec:implementacao_sta}
-	Este capítulo apresentará as estratégias utilizadas para o desenvolvimento da ferramenta de análise de \textit{timing}. Serão ilustradas as principais estruturas de dados, modelos de grafo, e serão apresentados também, os algoritmos implementados na ferramenta desenvolvida.
+	Esta seção apresentará as estratégias utilizadas para o desenvolvimento da ferramenta de análise de \textit{timing}. Serão ilustradas as principais estruturas de dados, modelos de grafo, e serão apresentados também os algoritmos implementados na ferramenta desenvolvida.
 
 	\subsection{O Modelo de Grafo Adotado}
 
-As estruturas de dados utilizadas para armazenar os elementos do grafo são essencialmente listas ordenadas topologicamente. Em uma lista ordenada topologicamente, à esquerda de um elemento, necessariamente se encontram os elementos de mesmo ou menor nível lógico, e à direita, de nível igual ao maior, como mostrado na figura \ref{fig:grafo_lista_nivel_logico}. Da mesma maneira, os \textit{timing arcs} e as interconexões também são ordenados topologicamente. Com essa escolha, o algoritmo de análise de timing estática passa a ser apenas de uma varredura em ordem, na lista de \textit{timing points}, atualizando a informação de \textit{timing} acumulada para cada vértice do grafo.
+As estruturas de dados utilizadas para armazenar os elementos do grafo são essencialmente listas ordenadas topologicamente. Em uma lista ordenada topologicamente, dado um elemento $i$, à esquerda necessariamente se encontram os elementos de mesmo ou menor nível lógico, e à direita, de nível igual ou maior, como mostrado na figura \ref{fig:grafo_lista_nivel_logico}. Da mesma maneira, os \textit{timing arcs} e as interconexões também são ordenados topologicamente, em suas respectivas listas. Com essa escolha, o algoritmo de análise de \textit{timing} estática passa a ser apenas de uma varredura em ordem, na lista de \textit{timing points}, atualizando a informação de \textit{timing} acumulada para cada vértice do grafo.
 
 		\begin{figure}[ht]
 		\begin{center}% TRIM = L D R U
@@ -987,31 +965,28 @@ As estruturas de dados utilizadas para armazenar os elementos do grafo são essen
 
 \subsection{Algoritmo de Análise de \textit{Timing} Estática}
 
-Com o modelo de grafo definido e implementado em suas devidas estruturas de dados, a análise de \textit{timing} estática é realizada atualizando as informações de \textit{timing} de cada nodo do grafo de \textit{timing}, em ordem topológica, como mostrado no algorítmo \ref{algo:sta}.
+Com o modelo de grafo definido e implementado em suas devidas estruturas de dados, a análise de \textit{timing} estática é realizada atualizando as informações de \textit{timing} de cada nodo do grafo de \textit{timing}, em ordem topológica, como mostrado no algoritmo \ref{algo:sta}.
 
 \begin{algorithm}[ht]
 \Entrada{Grafo de \textit{timing} $G(V, E)$}
 \Saida{Informações de \textit{timing} para os elementos do grafo (\textit{timing points}, interconexões e \textit{timing arcs})}
-\Para{ todos $v_i \in V$ em ordem topológica}{
+\Para{ cada $v_i \in V$ em ordem topológica}{
 	atualiza\_timing($v_i$)
 }
-\Para{ todos $v_i \in V$ em ordem topológica reversa}{
+\Para{ cada $v_i \in V$ em ordem topológica reversa}{
 	atualiza\_folgas($v_i$)
 }
 \caption{Análise de \textit{timing} estática}
 \label{algo:sta}
 \end{algorithm}
 
-Onde no procedimento $atualiza\_timing$ os \textit{slews} e \textit{arrival times} são propagados seguindo a política apresentada na seção \ref{sec:calculo_desempenho}.
-
-Após todos os \textit{arrival times} serem calculados, as folgas são obtidas propagando os \textit{required times} em ordem topológica reversa, como foi apresentado também na seção \ref{sec:calculo_desempenho}, e corresponde ao procedimento $atualiza\_folgas$.
+No procedimento $atualiza\_timing$, do algoritmo \ref{algo:sta}, os \textit{slews} e \textit{arrival times} são propagados seguindo a política apresentada na seção \ref{sec:calculo_desempenho} e após todos os \textit{arrival times} serem calculados, as folgas são obtidas propagando-se os \textit{required times} em ordem topológica reversa, como foi apresentado também na seção \ref{sec:calculo_desempenho} correspondendo ao procedimento $atualiza\_folgas$.
 
 
 \chapter{Experimentos}
 \label{cap:experimentos}
 
-Esse capítulo tem por objetivo apresentar os experimentos realizados, bem como os resultados obtidos por estes.
-Na seção \ref{sec:metodologia}, será apresentada a metodologia utilizada para realização dos experimentos. Na seção  \ref{sec:validacao_lumped}, é apresentado o primeiro experimento, que trata da validação da ferramenta perante o \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada. Na seção \ref{sec:sta_industrial} será apresentada a maneira como o \textit{PrimeTime} modela o circuito, e como as informações de \textit{timing} são calculadas. A seção \ref{sec:validacao_ceff} tem por objetivo mostrar os resultados obtidos com a técnica de cálculo de capacitância efetiva e degradação do \textit{slew} implementadas neste trabalho. E por fim, serão apresentados os resultados obtidos utilizando algumas variações nos modelos de atraso, na seção \ref{sec:variacoes}.
+Esse capítulo tem por objetivo descrever os experimentos realizados e apresentar os resultados obtidos. Na seção \ref{sec:metodologia}, será apresentada a metodologia utilizada para realização dos experimentos. Na seção  \ref{sec:validacao_lumped}, é apresentado o primeiro experimento, que trata da validação da ferramenta perante o \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada. Na seção \ref{sec:sta_industrial} será apresentada a maneira como o \textit{PrimeTime} modela o circuito, e como as informações de \textit{timing} são calculadas. A seção \ref{sec:validacao_ceff} tem por objetivo mostrar os resultados obtidos com a técnica de cálculo de capacitância efetiva e degradação do \textit{slew} implementadas neste trabalho. E por fim, serão apresentados os resultados obtidos utilizando algumas variações nos modelos de atraso, na seção \ref{sec:variacoes}.
 
 \section{Metodologia Experimental}
 \label{sec:metodologia}
@@ -1019,18 +994,18 @@ Na seção \ref{sec:metodologia}, será apresentada a metodologia utilizada para re
 
 Para realizar a avaliação das técnicas abordadas neste trabalho, uma ferramenta para análise de \textit{timing} na linguagem de programação C++ foi implementada. A ferramenta realiza a análise de \textit{timing} e considera dois possíveis modelos de interconexão: o modelo da capacitância concentrada e o modelo RC concentrado.
 
-Como parte dos experimentos é realizada comparando as informações calculadas pela ferramenta implementada com as informações reportadas pelo \textit{PrimeTime}, o erro relativo percentual foi adotado, como métrica para a qualidade das informações de \textit{timing} reportadas pela ferramenta implementada neste trabalho. O $Erro\ Percentual$ (equação \ref{eq:erro_relativo}) de $a$ e $b$ é o valor percentual da relação entre erro absoluto de $a$ e $b$, e o valor do maior valor absoluto entre $a$ e $b$, valendo 100\% quando o erro é o maior possível ($a = 0$ ou $b = 0$), e 0\% quando o erro é o menor possível ($a = b$). O erro absoluto entre $a$ e $b$ é o valor absoluto $a - b$, denotado por $|a - b|$.
+Como parte dos experimentos é realizada comparando as informações calculadas pela ferramenta implementada com as informações reportadas pelo \textit{PrimeTime}, o erro relativo percentual foi adotado como métrica para a qualidade das informações de \textit{timing} reportadas pela ferramenta implementada neste trabalho. O $Erro\ Percentual$ (equação \ref{eq:erro_relativo}) de $a$ e $b$ é o valor percentual da relação entre erro absoluto de $a$ e $b$, e o valor do maior valor absoluto entre $a$ e $b$, valendo 100\% quando o erro é o maior possível ($a = 0$ ou $b = 0$), e 0\% quando o erro é o menor possível ($a = b$). O erro absoluto entre $a$ e $b$ é o valor absoluto $a - b$, denotado por $|a - b|$.
 	
-	Como $a$ e $b$ se tratam de números em ponto flutuante, não é possível computacionamente, obter se $a = b$, sendo necessário o uso de um valor $\varepsilon$ para a precisão. Assim, $a$ e $b$ são considerados iguais se o erro relativo percentual é menor ou igual a $\varepsilon$.
+	Como $a$ e $b$ são números em ponto flutuante, pode não ser possível computacionalmente, obter-se $a = b$, sendo necessário o uso de um valor $\varepsilon$ para a precisão. Assim, $a$ e $b$ são considerados iguais se o erro relativo percentual é menor ou igual a $\varepsilon$.
 	
 \begin{equation}
 \label{eq:erro_relativo}
 \frac{Erro\ Percentual}{100} = \frac{|a - b|}{max(|a|, |b|)}
 \end{equation}
 
-Neste trabalho, esta métrica  foi utilizada, para comparar diretamente dois valores $a$ e $b$, em ponto flutuante, sendo $a$, a informação de \textit{timing} calculada pela ferramenta apresentada neste trabalho e $b$, a informação de \textit{timing} reportada pelo \textit{PrimeTime}, para cada \textit{timing point} do circuito. 
+Neste trabalho, esta métrica  foi utilizada para comparar diretamente dois valores $a$ e $b$, em ponto flutuante, sendo $a$ a informação de \textit{timing} calculada pela ferramenta apresentada neste trabalho e $b$, a informação de \textit{timing} reportada pelo \textit{PrimeTime}, para cada \textit{timing point} do circuito. 
 
-Por exemplo, supondo que $a = 3.12534$ e $b = 3.12566$, aplicando a equação \ref{eq:erro_relativo}, obtemos $Erro\ Percentual = 0.0102378\%$. Se $\varepsilon = 0.1$, $a$ e $b$ são considerados iguais.
+Por exemplo, supondo que $a = 3.12534$ e $b = 3.12566$, aplicando a equação \ref{eq:erro_relativo} obtemos $Erro\ Percentual = 0.0102378\%$. Se $\varepsilon = 0.1$, $a$ e $b$ são considerados iguais.
 
 
 \subsection{Infraestrutura Experimental}
@@ -1061,7 +1036,7 @@ Os circuitos são compostos por descrições no formato Verilog, capacitâncias para
 	\section{Validação do Modelo de Capacitância Concentrada Perante Ferramenta Industrial}
 	\label{sec:validacao_lumped}
 
-Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. No experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD}. Na Tabela \ref{tab:lumped_capacitance_vs_primetime}, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização neste contexto se refere ao tempo de leitura dos arquivos de entrada, e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}.
+Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. No experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD}. Na Tabela \ref{tab:lumped_capacitance_vs_primetime}, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização, neste contexto, se refere ao tempo de leitura dos arquivos de entrada e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}. Para tanto, utilizou-se um computador \textit{desktop} com processador Intel Core i7, de 4 núcleos, e 4GB de \textit{RAM}.
 
 
 
@@ -1080,7 +1055,7 @@ Note que na tabela \ref{tab:lumped_capacitance_vs_primetime}, os erros estão mui
 
 \subsection{Conclusão}
 
-A partir das informações de \textit{runtime} obtidas na tabela \ref{tab:lumped_capacitance_vs_primetime}, observa-se que a média dos \textit{runtimes} da ferramenta desenvolvida é de cerca de 50 vezes menor que a média dos \textit{runtimes} do \textit{PrimeTime}, sendo que no circuito $usb\_phy$, a diferença é de 20 vezes, e no circuito $fft$, a diferença chega a ser de aproximadamente 98 vezes.
+A partir das informações de \textit{runtime} obtidas na tabela \ref{tab:lumped_capacitance_vs_primetime}, observa-se que a média dos \textit{runtimes} da ferramenta desenvolvida é de cerca de 50 vezes menor que a média dos \textit{runtimes} do \textit{PrimeTime}, sendo que no circuito $usb\_phy$, a diferença é de 20 vezes, e no circuito $fft$, a diferença chega a ser de aproximadamente 98 vezes. Essa diferença nos \textit{runtimes} é justificável, já que a ferramenta da \textit{Synopsys} realiza o levantamento de diversas informações, além das abordadas neste trabalho.
 
 
 	\section{Análise de \textit{Timing} Estática em Ferramenta Industrial}
@@ -1099,7 +1074,7 @@ Esta seção tem por objetivo apresentar o modelo (Figura \ref{fig:modelagem_prime
 
 \subsection{Modelagem de \textit{Driver} (\textit{Driver model})}
 
-No \textit{PrimeTime}, o \textit{driver} é modelado utilizando uma rampa de tensão em série com um resistor (um modelo Thevenin). O resistor ajuda a suavizar a rampa de tensão, para que a forma de onda resultada seja similar à forma de onda do \textit{driver} real, que está conectado na interconexão.
+No \textit{PrimeTime}, o \textit{driver} é modelado utilizando uma rampa de tensão em série com um resistor (um modelo Thèvenin). O resistor ajuda a suavizar a rampa de tensão, para que a forma de onda resultada seja similar à forma de onda do \textit{driver} real, que está conectado na interconexão.
 
 De acordo com \citacaoAzul{Ptug13}, o modelo de \textit{driver} tem três parâmetros: 
 \begin{itemize}
@@ -1115,7 +1090,7 @@ Cada destino da interconexão é representado como um valor de capacitância, que c
 
 \subsection{Modelagem da Interconexão (\textit{Reduced-order network model})}
 
-Um modelo reduzido de interconexão, é uma representação simplificada de uma interconexão, que possui as mesmas características de resposta que a interconexão original, que pode ter centenas de capacitâncias e resistências. O \textit{PrimeTime} utiliza a redução de Arnoldi \citacaoAzul{Odabasioglu1997} \citacaoAzul{Silveira1999} para criar um modelo reduzido. Através do modelo reduzido, a ferramenta escolhe valores para a $C_{eff}$, de modo que o atraso do \textit{driver} seja igual ao atraso do \textit{driver} ligado à interconexão original. Por falta de fontes na bibliografia, não foi possível implementar este método de ajuste da $C_{eff}$, impossibilitando uma comparação mais justa.
+Um modelo reduzido de interconexão é uma representação simplificada de uma interconexão, com as mesmas características de resposta da interconexão original, a qual pode ter centenas de capacitâncias e resistências. O \textit{PrimeTime} utiliza a redução de Arnoldi \citacaoAzul{Odabasioglu1997} \citacaoAzul{Silveira1999} para criar um modelo reduzido. Através do modelo reduzido, a ferramenta escolhe valores para a $C_{eff}$, de modo que o atraso do \textit{driver} seja igual ao atraso do \textit{driver} ligado à interconexão original. Por falta de fontes na bibliografia, não foi possível implementar este método de ajuste da $C_{eff}$, impossibilitando uma comparação mais justa.
 
 \subsubsection{Cálculo do atraso das interconexões}
 
@@ -1130,7 +1105,7 @@ A tabela \ref{tab:comparacoes_primetime} mostra os valores obtidos pelo \textit{
 
 \item \textbf{\textit{Violating POs: }} Número de saídas primárias violando a restrição de desempenho mínimo.
 
-\item \textbf{\textit{Runtime (s): }} Tempo de execução em segundos para realizar uma análise de \textit{timing} em um circuito.
+\item \textbf{\textit{Runtime (s): }} Tempo de execução, em segundos, para realizar uma análise de \textit{timing} em um circuito.
 
 \item \textbf{\textit{Worst Slack: }} Valor do pior \textit{slack} entre as saídas primárias. O valor de pior \textit{slack} é obtido subtraindo o valor do período do valor do caminho crítico obtido.
 \end{itemize}
@@ -1149,7 +1124,7 @@ A última linha apresenta a média dos valores calculados para cada coluna da tabe
 \section{Validação da Técnica Implementada Perante Ferramenta Industrial}
 \label{sec:validacao_ceff}
 	
-Esta seção tem por objetivo, comparar a qualidade das informaçoes de \textit{timing} obtidas pela ferramenta de análise de \textit{timing} implementada neste trabalho com  as informações reportadas pelo \textit{PrimeTime}. Utilizando a técnica de cálculo de capacitância efetiva, atraso de interconexões e degradação de \textit{slew} apresentadas no capítulo \ref{cap:tecnica}. A análise de \textit{timing} estática foi aplicada nos seis circuitos da competição de \textit{sizing} do ISPD e suas soluções foram comparadas com o \textit{PrimeTime}, utilizando a métrica apresentada na seção \ref{sec:metodologia}.
+Esta seção tem por objetivo comparar a qualidade das informaçoes de \textit{timing} obtidas pela ferramenta de análise de \textit{timing} implementada neste trabalho com  as informações reportadas pelo \textit{PrimeTime}. Utilizando a técnica de cálculo de capacitância efetiva, atraso de interconexões e degradação de \textit{slew}, apresentada na seção \ref{sec:calculo_ceff_degradacao}. A análise de \textit{timing} estática foi aplicada nos sete circuitos da competição de \textit{sizing} do ISPD e suas soluções foram comparadas com o \textit{PrimeTime}, utilizando a métrica apresentada na seção \ref{sec:metodologia}.
 
 
 \begin{table}[ht]
@@ -1162,7 +1137,7 @@ Esta seção tem por objetivo, comparar a qualidade das informaçoes de \textit{tim
 
 A tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos seis circuitos da competição de \textit{sizing} do ISPD. A penúltima linha apresenta a média dos valores de cada coluna, e a última linha apresenta a média dos erros em relação aos valores reportados pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
 
-É possível observar que o \textit{runtime} da análise de \textit{timing} no \textit{PrimeTime} é muito alto, sendo inviável o seu uso em uma técnica de otimização que necessita avaliar as informações temporais milhares de vezes. Porém, devido a diferença na implementação dos modelos de atraso, os valores de \textit{TNS} obtidos na ferramenta implementada são bem maiores que os obtidos pelo \textit{PrimeTime}, mostrando que a ferramenta implementada é pessimista, ao tomar as soluções do \textit{PrimeTime} como sendo reais.
+É possível observar que o \textit{runtime} da análise de \textit{timing} no \textit{PrimeTime} é muito alto, sendo inviável o seu uso em uma técnica de otimização que necessita avaliar as informações temporais milhares de vezes. Porém, devido à diferença na implementação dos modelos de atraso, os valores de \textit{TNS} obtidos na ferramenta implementada são bem maiores que os obtidos pelo \textit{PrimeTime}, mostrando que a ferramenta implementada é pessimista, ao tomar as soluções do \textit{PrimeTime} como sendo reais.
 
 
 \subsection{Relação entre $C_{eff}$ e $C_{total}$}
@@ -1183,8 +1158,7 @@ Neste experimento, foram obtidas as relações $C_{eff}/C_{total}$ para todas as i
 \label{fig:pci_bridge32_slew_zoom}
 }
 
-\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $pci\_bridge32$. Na primeira parte, as frequências são das interconexões com os menores valores de \textit{slew} de entrada, na segunda parte, das com \textit{slew} médio e na terceira, das com maiores \textit{slews}.}
-\label{fig:pci_bridge32_slew}
+\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $pci\_bridge32$. (a) é a apresentação de todas as frequências no histograma e em (b) o eixo das frequências é limitado em 100 ocorrências. Cada gráfico é dividido em três partes: na primeira, as frequências são das interconexões com os menores valores de \textit{slew} de entrada; Na segunda parte, das com \textit{slew} médio. E na terceira, das com maiores \textit{slews}.}
 \end{figure}
 
 A figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da relação $C_{eff}/C_{total}$ de cada interconexão no circuito $pci\_bridge32$. Os dois gráficos representam o mesmo conjunto de dados, sendo que no gráfico da letra (a) todos os valores de frequência são mostrados, e no gráfico da letra (b), o valor de frequência é limitado em 100. Cada gráfico é dividido em três partes, sendo que na primeira, em verde, é mostrada a distribuição de frequências para o primeiro \textit{terço} das interconexões, ordendadas pelo \textit{slew} de entrada, ou seja, as interconexões com os menores valores de \textit{slew} na saída de seus \textit{drivers}. A segunda parte, em vermelho, mostra a distribuição de frequências para segundo terço das interconexões. E a última parte, em azul, mostra as frequências para o terceiro terço, ou seja, das interconexões com os maiores valores de \textit{slew} na saída de seus \textit{drivers}.
@@ -1223,7 +1197,7 @@ Os mesmos experimentos apresentados nas figuras \ref{fig:pci_bridge32_slew} e \r
 \includegraphics[width=\linewidth]{imagens/experimentos/matrix_mult_slew_zoom.pdf}
 \label{fig:matrix_mult_slew_zoom}
 }
-\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $matrix\_mult$. Na primeira parte, as frequências são das interconexões com os menores valores de \textit{slew} de entrada, na segunda parte, das com \textit{slew} médio e na terceira, das com maiores \textit{slews}.}
+\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $matrix\_mult$. (a) é a apresentação de todas as frequências no histograma e em (b) o eixo das frequências é limitado em 100 ocorrências. Cada gráfico é dividido em três partes: na primeira, as frequências são das interconexões com os menores valores de \textit{slew} de entrada; Na segunda parte, das com \textit{slew} médio. E na terceira, das com maiores \textit{slews}.}
 \label{fig:matrix_mult_slew}
 
 \end{figure}
@@ -1255,7 +1229,7 @@ Analisando os histogramas apresentados nesse experimento, observa-se que na gran
 
 Neste experimento os erros relativos percentuais foram obtidos para os \textit{arrival times} de saída de cada porta lógica dos circuitos $pci\_bridge32$ e $matrix\_mult$, em relação aos \textit{arrival times} reportados pelo \textit{PrimeTime}.
 
-As figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error} mostram os erros distribuídos pelos níveis lógicos nos circuitos $pci\_bridge32$ e $matrix\_mult$, respectivamente. Em azul, estão apresentados os pontos de cada \textit{arrival time} de saída. Na curva em vermelho, são mostrados os erros para os \textit{arrival times} de saída das portas pertencentes ao caminho crítico. Na curva em verde, são mostrados os erros referente às portas pertencentes ao caminho com o maior número de portas.
+As figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error} mostram os erros distribuídos pelos níveis lógicos nos circuitos $pci\_bridge32$ e $matrix\_mult$, respectivamente. Em azul, estão apresentados os pontos de cada \textit{arrival time} de saída. Na curva em vermelho, são mostrados os erros para os \textit{arrival times} de saída das portas pertencentes ao caminho crítico. Na curva em verde, são mostrados os erros referentes às portas pertencentes ao caminho com o maior número de portas.
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
@@ -1278,7 +1252,7 @@ Ao analisar os gráficos das figuras \ref{fig:pci_bridge32_logic-level_x_relative
 
 \section{Variações no Modelo de Atraso Comparadas à Ferramenta Industrial}
 \label{sec:variacoes}
-Nesta seção serão apresentados três experimentos que foram efetuados realizando algumas variações nos modelos de atrasos. Os resultados desses experimentos podem ser conferidos nas tabelas \ref{tab:lump_elmore_slew}, \ref{tab:lump_elmore_no_slew} e \ref{tab:ceff_elmore_no_slew}. A penúltima linha de cada uma das tabelas apresentam a média dos valores de cada uma das colunas, e a última linha apresenta os erros, calculados com a métrica apresentada na seção \ref{sec:erro}, em relação às médias obtidas pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
+Nesta seção serão apresentados três experimentos que foram efetuados realizando algumas variações nos modelos de atrasos. Os resultados desses experimentos podem ser conferidos nas tabelas \ref{tab:lump_elmore_slew}, \ref{tab:lump_elmore_no_slew} e \ref{tab:ceff_elmore_no_slew}. A penúltima linha de cada uma das tabelas apresentam a média dos valores de cada uma das colunas, e a última linha apresenta os erros, calculados com a métrica apresentada na seção \ref{sec:metodologia}, em relação às médias obtidas pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
 
 
 \begin{table}[ht]
@@ -1318,19 +1292,19 @@ Por fim, o experimento da Tabela \ref{tab:ceff_elmore_no_slew} utiliza a abordag
 
 \subsubsection{Conclusão}
 
-É importante ressaltar que as informações globais de \textit{timing} no último experimento são mais precisas que as dos outros, porém, como esta técnica não considera a degradação do \textit{slew} em nenhuma interconexão, as informações temporais dos \textit{timing points} podem apresentar erros altos. Outro motivo para que os erros obtidos nesse experimento não sejam tão grandes, em relação aos outros experimentos, é que como a capacitância efetiva calculada para as interconexões são maiores que as capacitâncias efetivas calculadas pelo \textit{PrimeTime}, os \textit{slews} dos \textit{drivers} acabam sendo estimados com pessimismo, diminuindo o erro causado pela não degradação dos \textit{slews}.
+É importante ressaltar que as informações globais de \textit{timing} no último experimento são mais precisas que as dos outros. Porém, como esta técnica não considera a degradação do \textit{slew} em nenhuma interconexão, as informações temporais dos \textit{timing points} podem apresentar erros altos. Outro motivo para que os erros obtidos nesse experimento não sejam tão grandes, em relação aos outros experimentos, é que como a capacitância efetiva calculada para as interconexões são maiores que as capacitâncias efetivas calculadas pelo \textit{PrimeTime}, os \textit{slews} dos \textit{drivers} acabam sendo estimados com pessimismo, diminuindo o erro causado pela não degradação dos \textit{slews}.
 
 \chapter{Conclusão}
 \label{cap:conclusao}
 
-A consideração do atraso das interconexões no fluxo \textit{standard cell} é muito importante e a avaliação desses atrasos deve ser eficiente e precisa. A abordagem da capacitância efetiva para interconexões reflete no efeito de \textit{resistive shielding}, que impacta na qualidade do cálculo do atraso das interconexões. A ferramenta implementada neste trabalho apresentou ser eficiente, obtendo resultados bons de análise de \textit{timing}, comparados ao \textit{PrimeTime}, com baixo tempo de execução.
+A consideração do atraso das interconexões no fluxo \textit{standard cell} é muito importante e a avaliação desses atrasos deve ser eficiente e precisa. A abordagem da capacitância efetiva para interconexões implica na consideração do efeito de \textit{resistive shielding}, o qual impacta na qualidade do cálculo do atraso das interconexões. A ferramenta implementada neste trabalho apresentou ser eficiente em termos de \textit{runtime}, obtendo resultados bons de análise de \textit{timing}, porém pessimistas comparados ao \textit{PrimeTime}.
 
 \section{Trabalhos Futuros}
 	Possíveis trabalhos futuros podem ser feitos na melhoria da ferramenta de análise de \textit{timing} implementada, entre elas:
 	
 	\begin{itemize}
-		\item A implementação de modelos reduzidos para os \textit{driver};
-		\item A implementação de modelos de ordem reduzida para as interconexões, a fim de comparação;
+		\item A implementação de modelos reduzidos para os \textit{drivers};
+		\item A implementação de modelos de ordem reduzida para as interconexões, a fim de estabelecer comparações;
 		\item Implementação de diferentes técnicas para obtenção da capacitância efetiva;
 		\item Análise da propagação do \textit{slew} e o seu impacto em um contexto de análise de \textit{timing} estática.
 	\end{itemize}
