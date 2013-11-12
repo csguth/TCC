@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portugues, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portuguese, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
 \usepackage{float}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
@@ -54,7 +54,7 @@
 \autor{Chrystian de Sousa Guth}
 \grau{Bacharel em Ciências da Computação}
 \local{Florianópolis - Santa Catarina} % Opcional (Florianópolis é o padrão)
-\data{02}{Julho}{2013}
+\data{09}{Novembro}{2013}
 \orientador[Orientador]{M.Sc. Vinícius dos Santos Livramento}
 \coorientador[Coorientador]{Prof. Dr. José Luís Almada Güntzel}
 \coordenador[Coordenador]{Prof. Dr. Renato Cislaghi}
@@ -116,7 +116,7 @@ O fluxo \textit{standard cell} pode ser subdividido em etapas, e ao decorrer des
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=\linewidth]{imagens/fluxo_standard_cell.pdf}
+\includegraphics[width=0.8\linewidth]{imagens/fluxo_standard_cell.pdf}
 \caption{Fluxo de projeto \textit{Standard Cell}. Adaptado de \citacaoAzul{BhaskerChadha09}.}
 \label{fig:fluxo_standard_cell}
 \end{center}
@@ -224,7 +224,7 @@ As características temporais do circuito são derivadas das características tempo
 
 	\item \textbf{\textit{Delay} (Atraso de Propagação): } é o tempo que o sinal em um pino de saída $o$ leva para atingir um limiar\footnote{Este limiar geralmente é definido nas bibliotecas de célula como sendo 50\% do $Vdd$.} de sua transição total, devido a uma mudança no sinal em um pino de entrada. Se a transição em $o$ for do nível lógico 0 para 1, o atraso é chamado de atraso de subida (\textit{rise delay}), caso o contrário, é chamado de atraso de descida (\textit{fall delay}) (Figura \ref{fig:informacoes_temporais_porta_logica}).
 	
-	\item \textbf{\textit{Slew} (Tempo de Transição): } é o tempo que um sinal leva para transicionar de uma porcentagem do valor de referência ($V_{dd}$) à outra \citacaoAzul{BhaskerChadha09}\footnote{Nas bibliotecas de células, essas porcentagens geralmente são definidas como 10\% e 90\%}. Se a transição for de um valor for de uma porcentagem menor para uma maior, ela é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}) (Figura \ref{fig:informacoes_temporais_porta_logica}).
+	\item \textbf{\textit{Slew} (Tempo de Transição): } é o tempo que um sinal leva para transicionar de uma porcentagem do valor de referência ($V_{dd}$) à outra \citacaoAzul{BhaskerChadha09}\footnote{Nas bibliotecas de células, essas porcentagens geralmente são definidas como 20\% e 80\% ou 10\% e 90\%}. Se a transição for de um valor for de uma porcentagem menor para uma maior, ela é chamada de transição de subida (\textit{rise slew}), caso contrário, transição de descida (\textit{fall slew}) (Figura \ref{fig:informacoes_temporais_porta_logica}).
 	
 	\item \textbf{Propagação do \textit{Slew: }} é a política utilizada para propagação dos \textit{slews} das entradas até as saídas das portas lógicas. A estratégia geralmente adotada é a de propagar o maior tempo de transição dentre os \textit{timing arcs}, para o pino de saída da porta lógica.
 	
@@ -234,8 +234,17 @@ As características temporais do circuito são derivadas das características tempo
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
-\includegraphics[width=\linewidth, trim=1.5cm 8cm 3cm 0, clip=true]{imagens/arco_de_timing_fall_rise_slew_delay.pdf}
-\caption{Acima: Uma porta lógica \textit{CMOS} $u1$, de função \textbf{NAND}, com duas entradas é \textit{driver} da interconexão \textit{n1}. Abaixo: As características temporais (\textit{delay} e \textit{slew}) da porta lógica $u1$.}
+\subfigure[]
+{
+\includegraphics[width=0.5 \linewidth]{imagens/portalogica_e_fio.pdf}
+
+}
+\subfigure[]
+{
+\includegraphics[width=0.9 \linewidth]{imagens/atrasos_nand.pdf}
+
+}
+\caption{(a) Uma porta lógica \textit{CMOS} $u1$, de função \textbf{NAND}, com duas entradas é \textit{driver} da interconexão \textit{n1}. (b) As características temporais (\textit{delay} e \textit{slew}) da porta lógica $u1$.}
 \label{fig:informacoes_temporais_porta_logica}
 \end{center}
 \end{figure}
@@ -425,12 +434,12 @@ Quando se tem as informações de capacitância e resistência totais de uma interco
 \begin{center} % TRIM = L D R U
 \subfigure[]
 {
-\includegraphics[width=0.6 \linewidth, trim=0 16cm 0 0, clip=true]{imagens/modelagem/circuito.pdf} 
+\includegraphics[width=0.6 \linewidth]{imagens/modelagem/circuito.pdf} 
 \label{fig:circuito_exemplo_modelagem_interconnect}
 }
 \subfigure[]
 {
-\includegraphics[width=0.6 \linewidth, trim=0 10cm 0 0, clip=true]{imagens/modelagem/modelagem.pdf} 
+\includegraphics[width=0.6 \linewidth]{imagens/modelagem/modelagem.pdf} 
 \label{fig:circuito_exemplo_modelagem_interconnect2}
 
 }
@@ -467,7 +476,7 @@ A abordagem de ``Capacitância Efetiva'' tenta encontrar um valor de capacitância
 
 
 
-\chapter{Técnica de \citacaoInline{PURI02} para o Cálculo das Características Temporais da Interconexão}
+\chapter{Cálculo das Características Temporais da Interconexão}
 \label{cap:tecnica}
 		
 		Este capítulo tem por objetivo, apresentar uma técnica utilizada para o cálculo das características temporais das interconexões, necessário para a estimativa de \textit{timing} global dos circuitos digitais. Na seção \ref{sec:representacao_interconexoes_puri} será apresentado um modelo computacional para as interconexões. A seção \ref{sec:calculo_elmore} apresentará a técnica de Elmore, que é muito utilizada no cálculo do atraso das interconexões. Finalmente, a técnica utilizada neste trabalho para o cálculo das características temporais das interconexões será apresentada na seção \ref{sec:calculo_ceff_degradacao}.
@@ -507,8 +516,6 @@ A alta complexidade computacional de se obter momentos de maior ordem e a busca 
 \item Provê um limite superior provado para o atraso real de qualquer árvore RC \citacaoAzul{Gupta97};
 \item É aditiva, ou seja, o atraso do nodo A até o nodo C passando pelo nodo B é a soma dos atrasos entre A e B e entre B e C \citacaoAzul{Kashyap00}.
 \end{itemize}
-		
-\subsection{Técnica de Elmore}
 	
 De acordo com \citacaoInline{Rabaey08}, em um nodo $c_i$ da Árvore RC, o atraso de Elmore ($\tau_i$) pode ser facilmente calculado como:
 \begin{equation}
@@ -530,9 +537,7 @@ Na topologia da figura \ref{fig:circuito_exemplo_modelagem_interconnect}, $C0$ é
 \label{eq:delay_4}
 \end{equation}
 
-\subsubsection{Algoritmo Recursivo para o Atraso de Elmore}
-
-A técnica de \citacaoInline{Elmore48}, apresentada anteriormente, pode ser implementada na sua forma recursiva. O algoritmo para cálculo do atraso de Elmore recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais \textit{downstream} ($C_{total_i}$) de cada nodo interno. 
+A técnica de Elmore pode ser implementada também em sua forma recursiva. O algoritmo para cálculo do atraso de Elmore recebe como entrada o grafo $I(C, R)$ da interconexão e é executado após a inicialização das capacitâncias totais \textit{downstream} ($C_{total_i}$) de cada nodo interno. 
 		
 \begin{enumerate}
 
@@ -893,9 +898,8 @@ Um circuito combinacional pode ser representado por um grafo de \textit{timing}.
 
 Um circuito que consiste de células combinacionais e sequenciais (\textit{flip-flops} e \textit{latches}) pode ser representado como um conjunto de blocos combinacionais, divididos pelos \textit{latches} (figura \ref{fig:subcircuitos}), assim, a entrada de uma célula sequencial pode ser tratada como uma saída primária do circuito, e a saída dessa pode ser tratada como uma entrada primária de outro circuito (figura \ref{fig:grafo_refinado}).
 
-Em um contexto de projeto com o fluxo \textit{standard cell}, é interessante que o grafo modele também os \textit{timing arcs} das portas lógicas. Assim, alternativamente, os vértices do grafo de \textit{timing} são os pinos de entrada e saída das portas lógicas, entradas e saídas primárias e as arestas são definidas pelos \textit{timing arcs} e pelas interconexões.
+Em um contexto de projeto com o fluxo \textit{standard cell}, é interessante que o grafo modele também os \textit{timing arcs} das portas lógicas. Assim, alternativamente, os vértices do grafo de \textit{timing} são os pinos de entrada e saída das portas lógicas, entradas e saídas primárias e as arestas são definidas pelos \textit{timing arcs} e pelas interconexões. Um grafo representando o modelo escolhido pode ser visualizado na figura \ref{fig:grafo_timing_points}.
 
-		As entradas primárias e registradores geralmente são mapeados para células presentes na biblioteca \textit{standard cell}, por isso é necessário criar \textit{timing points} também para os pinos de entrada e seus respectivos \textit{timing arcs}. Um grafo representando o modelo escolhido pode ser visualizado na figura \ref{fig:grafo_timing_points}.
 
 		 % Um circuito combinacional pode ser representado como um grafo direcionado $G(V, A)$, onde em $V$, o conjunto de vértices, são encontrados os pinos do circuito, e nas arestas ($E$), a união de dois conjuntos: as interconexões, denotado pela letra $I$, e os arcos de \textit{timing}, neste caso denominado $A$.
 
@@ -1085,7 +1089,7 @@ Os circuitos são compostos por descrições no formato Verilog, capacitâncias para
 	\section{Validação do Modelo de Capacitância Concentrada Perante Ferramenta Industrial}
 	\label{sec:validacao_lumped}
 
-Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. No experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD}. Na Tabela \ref{tab:lumped_capacitance_vs_primetime}, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização, neste contexto, se refere ao tempo de leitura dos arquivos de entrada e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}. Para tanto, utilizou-se um computador \textit{desktop} com processador Intel Core i7, de 4 núcleos, e 4GB de \textit{RAM}.
+Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. No experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo\footnote{Os erros foram obtidos utilizando a equação \ref{eq:erro_relativo} e seus valores absolutos são apresentados na tabela, e.g., um erro de 2\% é menor que um de -3\% porque $|2| < |3|$. } foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD}. Na Tabela \ref{tab:lumped_capacitance_vs_primetime}, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização, neste contexto, se refere ao tempo de leitura dos arquivos de entrada e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}. Para tanto, utilizou-se um computador \textit{desktop} com processador Intel Core i7, de 4 núcleos, e 4GB de \textit{RAM}.
 
 
 
@@ -1100,7 +1104,7 @@ Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolv
 
 Os erros apresentados na tabela \ref{tab:lumped_capacitance_vs_primetime} foram calculados sobre o \textit{arrival time}, \textit{slew} e \textit{slack} para cada \textit{timing point} do circuito, em relação às informações reportadas pelo \textit{PrimeTime}.
 
-Note que na tabela \ref{tab:lumped_capacitance_vs_primetime}, os erros estão muito próximos de $0$, exceto no circuito $cordic$, onde o erro de $12\%$ se justifica por se tratar de valores muito pequenos, quando comparados, podem apresentar um erro relativo muito grande \footnote{No circuito $cordic$, nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando a equação \ref{eq:erro_relativo}, obtém-se $erro = 0.1208169139$. Porém, ao avaliar o erro absoluto, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, sendo uma precisão aceitável neste contexto.}.
+Note que na tabela \ref{tab:lumped_capacitance_vs_primetime}, os erros estão muito próximos de $0$, exceto no circuito $cordic$, onde o erro de $12\%$ se justifica por se tratar de valores muito pequenos, quando comparados, podem apresentar um erro relativo muito grande \footnote{No circuito $cordic$, nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando a equação \ref{eq:erro_relativo}, obtém-se $erro = -0.1208169139$. Porém, ao avaliar o erro absoluto, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, sendo uma precisão aceitável neste contexto.}.
 
 A partir das informações de \textit{runtime} obtidas na tabela \ref{tab:lumped_capacitance_vs_primetime}, observa-se que a média dos \textit{runtimes} da ferramenta desenvolvida é de cerca de 50 vezes menor que a média dos \textit{runtimes} do \textit{PrimeTime}, sendo que no circuito $usb\_phy$, a diferença é de 20 vezes, e no circuito $fft$, a diferença chega a ser de aproximadamente 98 vezes. Essa diferença nos \textit{runtimes} é justificável, já que a ferramenta da \textit{Synopsys} realiza o levantamento de diversas informações, além das abordadas neste trabalho.
 
@@ -1295,7 +1299,7 @@ As figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix
 \end{center}
 \end{figure}
 
-Ao analisar os gráficos das figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error}, observa-se que tanto os erros grandes, quanto os erros pequenos dos primeiros níveis lógicos, ao serem propagados, são estabilizados, em cerca de 20\%, o que se reflete também nos erros dos caminhos críticos e maiores caminhos.
+Ao analisar os gráficos das figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error}, observa-se que tanto os erros grandes, quanto os erros pequenos dos primeiros níveis lógicos, ao serem propagados, são estabilizados, em cerca de -20\%, o que se reflete também nos erros dos caminhos críticos e maiores caminhos.
 
 \section{Variações no Modelo de Atraso Comparadas à Ferramenta Industrial}
 \label{sec:variacoes}
