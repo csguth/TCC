@@ -773,8 +773,6 @@ Onde $slew_j$ é o \textit{slew} na entrada de $v_i$, vindo pelo nodo pai $v_j$ e
 
 Na implementação apresentada neste trabalho, o $\varepsilon$ foi definido como sendo $1\%$. Na maioria dos casos observados, cerca de $5$ iterações são necessárias para realizar o cálculo da capacitância efetiva no nodo fonte da árvore. Como cada iteração do algoritmo se trata de uma passagem na lista de nodos, com complexidade linear, e são necessárias algumas iterações para a convergência, a complexidade do algoritmo é de $O(c . n)$, onde $c$ geralmente é menor que $5$, e $n$ é o número de nodos na árvore RC.
 
-A técnica apresentada calcula a degradação do \textit{slew} e o atraso de propagação em cada ponto de destino da interconexão. Porém, ela apresenta resultados pessimistas em relação ao \textit{PrimeTime}, como mostrado na tabela \ref{tab:ceff_elmore_slew}. A fim de reduzir o erro apresentado no experimento da tabela \ref{tab:ceff_elmore_slew}, neste trabalho é proposto uma modificação à técnica de \citacaoInline{PURI02} para o cálculo de atraso de interconexões. O atraso de Elmore, que é realizado no passo \label{enum:algo_net_timing:1} do algoritmo passa a ser multiplicado por $ln(2)$ nos \textit{fanouts} da interconexões. Os resultados obtidos podem ser observador na tabela \ref{tab:puri_ln2}
-
 		
 %\section{Proposta de Modificação da Técnica de \citacaoInline{PURI02}}
 %\label{sec:modificacao}
@@ -1180,19 +1178,9 @@ Esta seção tem por objetivo comparar a qualidade das informaçoes de \textit{timi
 \end{center}
 \end{table}
 
-\begin{table}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth]{imagens/comparacoes/puri_ln2.pdf}
-\caption{Valores obtidos pela ferramenta implementada neste trabalho, utilizando o fator de \textit{scaling} no atraso de Elmore, nos circuitos da competição de \textit{sizing} do ISPD.}
-\label{tab:puri_ln2}
-\end{center}
-\end{table}
+A tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos sete circuitos da competição de \textit{sizing} do ISPD. A penúltima linha apresenta a média dos valores de cada coluna, e a última linha apresenta a média dos erros em relação aos valores reportados pelo \textit{PrimeTime}, apresentados na tabela \ref{tab:comparacoes_primetime}.
 
-A tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos sete circuitos da competição de \textit{sizing} do ISPD. A penúltima linha apresenta a média dos valores de cada coluna, e a última linha apresenta a média dos erros em relação aos valores reportados pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
-
-Observa-se que os valores obtidos para \textit{TNS} e \textit{critical path}, neste experimento, são muito pessimistas em relação ao \textit{PrimeTime} ($49.34\%$ e $25.73\%$ respectivamente) e portanto, foi proposta uma modificação na técnica de cálculo do atraso das interconexões, utilizando um fator de \textit{scaling} para o atraso de Elmore. As informações obtidas pela técnica modificada podem ser visualizadas na tabela \ref{tab:puri_ln2}. Desta vez, os erros em relação ao \textit{PrimeTime} são bem menores (cerca de $4\%$), porém, subestimando o valor real.
-
-A análise de \textit{timing} do \textit{PrimeTime} realiza outras avaliações além das abordadas neste trabalho. Isso justifica o alto valor de \textit{runtime} do \textit{PrimeTime} em relação ao da ferramenta implementada.
+Com esse experimento, conclui-se que a ferramenta desenvolvida neste trabalho fornece informações de \textit{timing} próximas às reportadas pelo \textit{PrimeTime}, com um tempo de execução cerca de 8 vezes menor. Porém, a análise de \textit{timing} na ferramenta desenvolvida é pessimista em relação ao \textit{PrimeTime},  de acordo com os valores negativos de erro para \textit{TNS}, e \textit{Critical Path}.
 
 \subsection{Relação entre $C_{eff}$ e $C_{total}$}
 
@@ -1299,11 +1287,12 @@ As figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix
 \end{center}
 \end{figure}
 
-Ao analisar os gráficos das figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error}, observa-se que tanto os erros grandes, quanto os erros pequenos dos primeiros níveis lógicos, ao serem propagados, são estabilizados, em cerca de -20\%, o que se reflete também nos erros dos caminhos críticos e maiores caminhos.
+
+Ao analisar os gráficos das figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error}, observa-se que tanto os erros grandes, quanto os erros pequenos dos primeiros níveis lógicos, ao serem propagados, são estabilizados, convergindo para um número próximo de -7\%, o que se reflete também nos erros dos caminhos críticos e maiores caminhos.
 
 \section{Variações no Modelo de Atraso Comparadas à Ferramenta Industrial}
 \label{sec:variacoes}
-Nesta seção serão apresentados dois experimentos que foram efetuados realizando algumas variações nos modelos de atrasos. Os resultados desses experimentos podem ser conferidos nas tabelas \ref{tab:lump_elmore_slew} e \ref{tab:ceff_elmore_no_slew}. A penúltima linha de cada uma das tabelas apresentam a média dos valores de cada uma das colunas, e a última linha apresenta os erros, calculados com a métrica apresentada na seção \ref{sec:metodologia}, em relação às médias obtidas pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
+Nesta seção serão apresentados dois experimentos que foram efetuados realizando algumas variações nos modelos de atrasos. Os resultados desses experimentos podem ser conferidos nas tabelas \ref{tab:lump_elmore_slew} e \ref{tab:ceff_elmore_no_slew}. A penúltima linha de cada uma das tabelas apresentam a média dos valores de cada uma das colunas, e a última linha apresenta a média dos erros calculados com a métrica apresentada na seção \ref{sec:metodologia}, em relação às médias obtidas pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
 
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
@@ -1314,7 +1303,7 @@ Nesta seção serão apresentados dois experimentos que foram efetuados realizando 
 \end{table}
 
 
-No experimento mostrado na Tabela \ref{tab:lump_elmore_slew}, o modelo de capacitância concentrada foi utilizado para modelar a carga vista pelo \textit{driver}. Para o atraso das interconexões, a técnica de Elmore foi utilizada. E para a degradação do \textit{slew}, foi utilizada a técnica descrita no capítulo \ref{cap:tecnica}. Como esperado, os erros neste experimento são maiores que os erros do experimento original, mostrado na seção \ref{sec:validacao_ceff}, já que neste experimento, os \textit{drivers} vêem a capacitância total das interconexões em suas saídas, reportando resultados pessimistas para os atrasos de seus \textit{timing arcs}.
+No experimento mostrado na tabela \ref{tab:lump_elmore_slew}, o modelo de capacitância concentrada foi utilizado para modelar a carga vista pelo \textit{driver}. Para o atraso das interconexões, a técnica de Elmore foi utilizada. E para a degradação do \textit{slew}, foi utilizada a técnica descrita no capítulo \ref{cap:tecnica}. Como esperado, os modelos utilizados neste experimento refletem em uma aproximação pessimista para o atraso do circuito, já que a técnica de Elmore pura\footnote{Sem utilizar a abordagem de capacitância efetiva.} foi aplicada no cálculo dos atrasos das interconexões.
 
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
@@ -1324,12 +1313,13 @@ No experimento mostrado na Tabela \ref{tab:lump_elmore_slew}, o modelo de capaci
 \end{center}
 \end{table}
 
-Por fim, o experimento da tabela \ref{tab:ceff_elmore_no_slew} utiliza a abordagem de capacitância efetiva, como apresentada no capítulo \ref{cap:tecnica}, porém, sem considerar a degradação do \textit{slew}. Os erros globais parecem ser razoáveis (\textit{TNS:} 7.24\% e \textit{Critical Path: } 5.15\%), porém é necessário uma análise com detalhe das informações locais das portas lógicas. Como a degradação do \textit{slew} não é considerada, as informações locais podem conter erros.
+Por fim, o experimento da tabela \ref{tab:ceff_elmore_no_slew} utiliza a abordagem de capacitância efetiva, como apresentada no capítulo \ref{cap:tecnica}, porém, sem considerar a degradação do \textit{slew}. Os erros obtidos neste experimento (-33.11\% para TNS e 19.99\% para critical path) mostram resultados muito otimistas em relação ao \textit{PrimeTime}, destacando a importância de se considerar a degradação do \textit{slew} nas interconexões.
+
 
 \chapter{Conclusão}
 \label{cap:conclusao}
 
-A consideração do atraso das interconexões no fluxo \textit{standard cell} é muito importante e a avaliação desses atrasos deve ser eficiente e precisa. A abordagem da capacitância efetiva para interconexões implica na consideração do efeito de \textit{resistive shielding}, o qual impacta na qualidade do cálculo do atraso do circuito. A ferramenta de análise de \textit{timing} desenvolvida neste trabalho implementa a técnica de \citacaoInline{PURI02} utilizando $ln(2)$ como fator de \textit{scaling} no atraso de Elmore. Tal ferramenta apresentou ser eficiente em termos de \textit{runtime}, obtendo resultados bons\footnote{Quando comparados ao \textit{PrimeTime}.} na análise de \textit{timing}.
+A consideração do atraso das interconexões no fluxo \textit{standard cell} é muito importante e a avaliação desses atrasos deve ser eficiente e precisa. A abordagem da capacitância efetiva para interconexões implica na consideração do efeito de \textit{resistive shielding}, o qual impacta na qualidade do cálculo do atraso do circuito. A ferramenta de análise de \textit{timing} desenvolvida neste trabalho implementa a técnica de \citacaoInline{PURI02} para o cálculo da capacitância efetiva, cálculo do atraso das interconexões e degradação do \textit{slew}. Tal ferramenta apresentou ser eficiente em termos de \textit{runtime}, obtendo resultados bons\footnote{Quando comparados ao \textit{PrimeTime}.} na análise de \textit{timing}.
 
 \section{Trabalhos Futuros}
 	Possíveis trabalhos futuros podem ser feitos na melhoria da ferramenta de análise de \textit{timing} implementada, entre elas:
