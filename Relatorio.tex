@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portuguese, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portugues, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
 \usepackage{float}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
@@ -1040,7 +1040,7 @@ No procedimento $atualiza\_timing$, do algoritmo \ref{algo:sta}, os \textit{slew
 \chapter{Experimentos}
 \label{cap:experimentos}
 
-Esse capítulo tem por objetivo descrever os experimentos realizados e apresentar os resultados obtidos. Na seção \ref{sec:metodologia}, será apresentada a metodologia utilizada para realização dos experimentos. Na seção  \ref{sec:validacao_lumped}, é apresentado o primeiro experimento, que trata da validação da ferramenta perante o \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada. Na seção \ref{sec:sta_industrial} será apresentada a maneira como o \textit{PrimeTime} modela o circuito, e como as informações de \textit{timing} são calculadas. A seção \ref{sec:validacao_ceff} tem por objetivo mostrar os resultados obtidos com a técnica de cálculo de capacitância efetiva e degradação do \textit{slew} implementadas neste trabalho. E por fim, serão apresentados os resultados obtidos utilizando algumas variações nos modelos de atraso, na seção \ref{sec:variacoes}.
+Esse capítulo tem por objetivo descrever os experimentos realizados neste trabalho e apresentar os resultados obtidos. Na seção \ref{sec:metodologia}, será apresentada a metodologia utilizada para realização dos experimentos. Na seção  \ref{sec:validacao_lumped}, é apresentado o primeiro experimento, que trata da validação da ferramenta perante o \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada. Na seção \ref{sec:sta_industrial} será apresentada a maneira como o \textit{PrimeTime} modela o circuito, e como as informações de \textit{timing} são calculadas. E por fim, a seção \ref{sec:validacao_ceff} tem por objetivo mostrar os resultados obtidos com a técnica de cálculo de capacitância efetiva e degradação do \textit{slew} implementadas neste trabalho.
 
 \section{Metodologia Experimental}
 \label{sec:metodologia}
@@ -1144,6 +1144,15 @@ Não foi possível identificar o algoritmo para o cálculo do atraso das interconex
 
 \subsection{Resultados Obtidos}
 
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{imagens/comparacoes/primetime.pdf}
+\caption{Valores obtidos pelo \textit{PrimeTime} nos circuitos da competição de \textit{sizing} do ISPD.}
+\label{tab:comparacoes_primetime}
+\end{center}
+\end{table}
+
 A tabela \ref{tab:comparacoes_primetime} mostra os valores obtidos pelo \textit{PrimeTime}, para cada um dos seis circuitos da competição de \textit{sizing} do ISPD. As informações obtidas no experimento foram:
 \begin{itemize}
 \item \textbf{\textit{TNS (Total Negative Slack)}: } O somatório de \textit{slack} negativo nas saídas primárias.
@@ -1157,13 +1166,6 @@ A tabela \ref{tab:comparacoes_primetime} mostra os valores obtidos pelo \textit{
 
 A última linha apresenta a média dos valores calculados para cada coluna da tabela. Esses valores de média serão comparados em experimentos futuros.
 
-\begin{table}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth]{imagens/comparacoes/primetime.pdf}
-\caption{Valores obtidos pelo \textit{PrimeTime} nos circuitos da competição de \textit{sizing} do ISPD.}
-\label{tab:comparacoes_primetime}
-\end{center}
-\end{table}
 
 \section{Validação da Técnica Implementada Perante Ferramenta Industrial}
 \label{sec:validacao_ceff}
@@ -1178,32 +1180,58 @@ Esta seção tem por objetivo comparar a qualidade das informaçoes de \textit{timi
 \end{center}
 \end{table}
 
-A tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos sete circuitos da competição de \textit{sizing} do ISPD. A penúltima linha apresenta a média dos valores de cada coluna, e a última linha apresenta a média dos erros em relação aos valores reportados pelo \textit{PrimeTime}, apresentados na tabela \ref{tab:comparacoes_primetime}.
+A tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos sete circuitos da competição de \textit{sizing} do ISPD. A penúltima linha apresenta a média dos valores de cada coluna, e a última linha apresenta a média dos erros em relação aos valores reportados pelo \textit{PrimeTime}, apresentados na tabela \ref{tab:comparacoes_primetime}. Com esse experimento, conclui-se que a ferramenta desenvolvida neste trabalho fornece informações de \textit{timing} próximas às reportadas pelo \textit{PrimeTime}, com um tempo de execução cerca de 8 vezes menor. Porém, a análise de \textit{timing} na ferramenta desenvolvida é otimista em relação ao \textit{PrimeTime}, de acordo com os valores negativos de erro para \textit{TNS}, e \textit{Critical Path}.
 
-Com esse experimento, conclui-se que a ferramenta desenvolvida neste trabalho fornece informações de \textit{timing} próximas às reportadas pelo \textit{PrimeTime}, com um tempo de execução cerca de 8 vezes menor. Porém, a análise de \textit{timing} na ferramenta desenvolvida é pessimista em relação ao \textit{PrimeTime},  de acordo com os valores negativos de erro para \textit{TNS}, e \textit{Critical Path}.
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{imagens/comparacoes/lump_elmore_slew.pdf}
+\caption{Experimentos utilizando o modelo capacitância concentrada para carga de saída dos \textit{drivers}, técnica de Elmore para computar os atrasos das interconexões, e degradação do \textit{slew} conforme apresentado no capítulo \ref{cap:tecnica}.}
+\label{tab:lump_elmore_slew}
+\end{center}
+\end{table}
+
+
+No experimento mostrado na tabela \ref{tab:lump_elmore_slew}, o modelo de capacitância concentrada foi utilizado para modelar a carga vista pelo \textit{driver}. Para o atraso das interconexões, a técnica de Elmore foi utilizada. E para a degradação do \textit{slew}, foi utilizada a técnica descrita no capítulo \ref{cap:tecnica}. Como esperado, os modelos utilizados neste experimento refletem em uma aproximação pessimista para o atraso do circuito, já que a técnica de Elmore pura\footnote{Sem utilizar a abordagem de capacitância efetiva.} foi aplicada no cálculo dos atrasos das interconexões.
+
+
+
+
+
+\begin{table}[h!]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
+\caption{Experimentos utilizando o modelo capacitância efetiva para carga de saída dos \textit{drivers}, técnica de Elmore utilizando as capacitâcias efetivas de cada nodo interno das interconexões, para computar seus atrasos. Neste experimento, a degradação do \textit{slew} não foi considerada.}
+\label{tab:ceff_elmore_no_slew}
+\end{center}
+\end{table}
+
+
+A importância do cálculo da degradação do \textit{slew} pode ser visualizado na tabela \ref{tab:ceff_elmore_no_slew}. Os erros obtidos neste experimento (-33.11\% para TNS e 19.99\% para critical path) mostram resultados muito otimistas em relação ao \textit{PrimeTime},  quando a técnica apresentada no capítulo \ref{cap:tecnica} é aplicada, sem considerar a degradação do \textit{slew} nos destinos das interconexões.
+
+
+
+
 
 \subsection{Relação entre $C_{eff}$ e $C_{total}$}
 
-Neste experimento, foram obtidas as relações $C_{eff}/C_{total}$ para todas as interconexões dos circuitos $pci\_bridge32$ e $matrix\_mult$ e os histogramas com as distribuições de frequências para estas relações são apresentados nas figuras \ref{fig:pci_bridge32_resistance} e \ref{fig:matrix_mult_resistance}.
+\begin{table}[h]
+%\begin{center}% TRIM = L D R U
+\includegraphics[width=\linewidth]{imagens/ceff_ratio/ceff_ctotal_todos.pdf}
+\caption{Relação $C_{eff} / C_{total}$ média por circuito.}
+\label{tab:ceff_ctotal_todos}
+\end{table}
 
-%
-%\begin{figure}[ht]
-%%\begin{center}% TRIM = L D R U
-%\subfigure[]
-%{
-%\includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_slew_full.pdf}
-%\label{fig:pci_bridge32_slew_full}
-%}
-%\subfigure[]
-%{
-%\includegraphics[width=\linewidth]{imagens/experimentos/pci_bridge32_slew_zoom.pdf}
-%\label{fig:pci_bridge32_slew_zoom}
-%}
-%
-%\caption{Distribuição das frequências das relações $C_{eff}/C_{total}$ das interconexões do circuito $pci\_bridge32$. (a) é a apresentação de todas as frequências no histograma e em (b) o eixo das frequências é limitado em 100 ocorrências. Cada gráfico é dividido em três partes: na primeira, as frequências são das interconexões com os menores valores de \textit{slew} de entrada; Na segunda parte, das com \textit{slew} médio. E na terceira, das com maiores \textit{slews}.}
-%\end{figure}
-%
-%A figura \ref{fig:pci_bridge32_slew} mostra a distribuição das frequências da relação $C_{eff}/C_{total}$ de cada interconexão no circuito $pci\_bridge32$. Os dois gráficos representam o mesmo conjunto de dados, sendo que no gráfico da letra (a) todos os valores de frequência são mostrados, e no gráfico da letra (b), o valor de frequência é limitado em 100. Cada gráfico é dividido em três partes, sendo que na primeira, em verde, é mostrada a distribuição de frequências para o primeiro \textit{terço} das interconexões, ordendadas pelo \textit{slew} de entrada, ou seja, as interconexões com os menores valores de \textit{slew} na saída de seus \textit{drivers}. A segunda parte, em vermelho, mostra a distribuição de frequências para segundo terço das interconexões. E a última parte, em azul, mostra as frequências para o terceiro terço, ou seja, das interconexões com os maiores valores de \textit{slew} na saída de seus \textit{drivers}.
+O experimento apresentado na tabela \ref{tab:ceff_ctotal_todos} mostra que nos circuitos da competição de \textit{sizing} do ISPD, o valor de $C_{eff}$ médio é muito próximo do valor de $C_{total}$. Este experimento explica o baixo erro obtido ao utilizar-se o modelo de capacitância concentrada para estimar o valor da capacitância vista pelo \textit{driver} (tabela \ref{tab:lump_elmore_slew}). A tabela \ref{tab:ceff_ctotal_todos} mostra as relações $C_{eff}/C_{total}$ médias para todos os circuitos, os considerando em três configurações diferentes:
+	\begin{itemize}
+		\item \textbf{Min.: } configuração de menor consumo de \textit{leakage};
+		\item \textbf{Normal: } configuração padrão da descrição \textit{verilog};
+		\item \textbf{Max.: } configuração de maior consumo de \textit{leakage};
+	\end{itemize}
+
+
+
+Foram obtidas também as relações $C_{eff}/C_{total}$ para todas as interconexões dos circuitos $pci\_bridge32$ e $matrix\_mult$ e os histogramas com as distribuições de frequências para estas relações são apresentados nas figuras \ref{fig:pci_bridge32_resistance} e \ref{fig:matrix_mult_resistance}. No experimento apresentado na  figura \ref{fig:pci_bridge32_resistance} são mostradas a relações $C_{eff}/C_{total}$ nas interconexões do circuito $pci\_bridge32$, divididas em três partes. Na primeira em verde, se encontram as frequências das relações $C_{eff}/C_{total}$ nas interconexões com menor valor de resistência; a segunda parte, em vermelho, mostra a distribuição das frequências nas interconexões com valor médio de resistência; e a última parte, em azul, mostra as frequências para a última parte das interconexões, ou seja, as com maior valor de resistência total. Note que na figura \ref{fig:pci_bridge32_resistance_full} todos os valores de frequência são mostrados, e na figura \ref{fig:pci_bridge32_resistance_zoom}, apenas os valores de frequência menores que 200 são mostrados. Este mesmo experimento foi também realizado para o circuito $matrix\_mult$ e seu resultado pode ser visualizado na figura \ref{fig:matrix_mult_resistance}.
 
 
 \begin{figure}[ht]
@@ -1223,9 +1251,7 @@ Neste experimento, foram obtidas as relações $C_{eff}/C_{total}$ para todas as i
 
 \end{figure}
 
-O experimento apresentado na  figura \ref{fig:pci_bridge32_resistance} mostra a relação $C_{eff}/C_{total}$ nas interconexões do circuito $pci\_bridge32$ e é dividido em três partes. A primeira em verde, apresenta as frequências das relações $C_{eff}/C_{total}$ nas interconexões com menor valor de resistência; a segunda parte, em vermelho, mostra a distribuição das frequências nas interconexões com valor médio de resistência; e a última parte, em azul, mostra as frequências para a última parte das interconexões, ou seja, as com maior valor de resistência total. Note que na figura \ref{fig:pci_bridge32_resistance_full} todos os valores de frequência são mostrados, e na figura \ref{fig:pci_bridge32_resistance_zoom}, apenas os valores de frequência menores que 200 são mostrados.
 
-Os mesmo experimento apresentado na figura \ref{fig:pci_bridge32_resistance} foi também realizado para o circuito $matrix\_mult$ e seu resultado pode ser visualizado na figuras \ref{fig:matrix_mult_resistance}.
 %
 %\begin{figure}[ht]
 %%\begin{center}% TRIM = L D R U
@@ -1261,9 +1287,19 @@ Os mesmo experimento apresentado na figura \ref{fig:pci_bridge32_resistance} foi
 
 \end{figure}
 
-Analisando os histogramas apresentados nesse experimento, observa-se que na grande maioria das interconexões, a relação $C_{eff}/C_{total}$ é próxima de $1$. Isso se dá pelo fato de que a maioria das interconexões ou são pequenas, ou não possuem muitas resistências, já que a relação $C_{eff}/C_{total}$ é inversamente proporcional ao efeito de \textit{resistive shielding}, o que pode ser melhor visualizado nos histogramas das figuras \ref{fig:pci_bridge32_resistance} e \ref{fig:matrix_mult_resistance}. 
+Analisando os histogramas apresentados nas figuras \ref{fig:pci_bridge32_resistance} e \ref{fig:matrix_mult_resistance}, observa-se o impacto do efeito de \textit{resistive shielding}. Nas interconexões com menor valor resistivo, o valor de $C_{ceff}$ é mais próximo de $C_{total}$ na maioria dos casos. Quanto maior for o valor de resistências das interconexões, maior o efeito de \textit{resistive shielding}, fazendo com que as relações $C_{ceff}/C_{total}$ assumam mais valores menores que $1$.
 
-%\afazer{CONCLUSÃO EM RELAÇÃO AO SLEW}
+\subsection{Erro de \textit{Arrival Times} nas Saídas Primárias}
+
+\begin{figure}[ht]
+%\begin{center}% TRIM = L D R U
+\includegraphics[width=\linewidth]{imagens/arrival_error/matrix_mult_puri.pdf}
+\caption{Distribuição das frequências dos erros percentuais calculados nas saídas primárias do circuito $matrix\_mult$. Na primeira parte os erros foram calculados considerando a configuração de menor consumo de \textit{leakage}. Na segunda parte, considerando a configuração padrão. E na terceira, considerando a configuração de maior consumo de \textit{leakage}. $\mu$ e $\sigma$ representam a média e desvio padrão, respectivamente.}
+\label{fig:matrix_mult_arrival_error}
+\end{figure}
+
+Neste experimento, os er
+
 
 \subsection{Nível Lógico \textit{versus} Erro Relativo}
 
@@ -1289,32 +1325,6 @@ As figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix
 
 
 Ao analisar os gráficos das figuras \ref{fig:pci_bridge32_logic-level_x_relative-error} e \ref{fig:matrix_mult_logic-level_x_relative-error}, observa-se que tanto os erros grandes, quanto os erros pequenos dos primeiros níveis lógicos, ao serem propagados, são estabilizados, convergindo para um número próximo de -7\%, o que se reflete também nos erros dos caminhos críticos e maiores caminhos.
-
-\section{Variações no Modelo de Atraso Comparadas à Ferramenta Industrial}
-\label{sec:variacoes}
-Nesta seção serão apresentados dois experimentos que foram efetuados realizando algumas variações nos modelos de atrasos. Os resultados desses experimentos podem ser conferidos nas tabelas \ref{tab:lump_elmore_slew} e \ref{tab:ceff_elmore_no_slew}. A penúltima linha de cada uma das tabelas apresentam a média dos valores de cada uma das colunas, e a última linha apresenta a média dos erros calculados com a métrica apresentada na seção \ref{sec:metodologia}, em relação às médias obtidas pelo \textit{PrimeTime}, apresentadas na tabela \ref{tab:comparacoes_primetime}.
-
-\begin{table}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth]{imagens/comparacoes/lump_elmore_slew.pdf}
-\caption{Experimentos utilizando o modelo capacitância concentrada para carga de saída dos \textit{drivers}, técnica de Elmore para computar os atrasos das interconexões, e degradação do \textit{slew} conforme apresentado no capítulo \ref{cap:tecnica}.}
-\label{tab:lump_elmore_slew}
-\end{center}
-\end{table}
-
-
-No experimento mostrado na tabela \ref{tab:lump_elmore_slew}, o modelo de capacitância concentrada foi utilizado para modelar a carga vista pelo \textit{driver}. Para o atraso das interconexões, a técnica de Elmore foi utilizada. E para a degradação do \textit{slew}, foi utilizada a técnica descrita no capítulo \ref{cap:tecnica}. Como esperado, os modelos utilizados neste experimento refletem em uma aproximação pessimista para o atraso do circuito, já que a técnica de Elmore pura\footnote{Sem utilizar a abordagem de capacitância efetiva.} foi aplicada no cálculo dos atrasos das interconexões.
-
-\begin{table}[ht]
-\begin{center}% TRIM = L D R U
-\includegraphics[width=\textwidth]{imagens/comparacoes/ceff_elmore_no_slew.pdf}
-\caption{Experimentos utilizando o modelo capacitância efetiva para carga de saída dos \textit{drivers}, técnica de Elmore utilizando as capacitâcias efetivas de cada nodo interno das interconexões, para computar seus atrasos. Neste experimento, a degradação do \textit{slew} não foi considerada.}
-\label{tab:ceff_elmore_no_slew}
-\end{center}
-\end{table}
-
-Por fim, o experimento da tabela \ref{tab:ceff_elmore_no_slew} utiliza a abordagem de capacitância efetiva, como apresentada no capítulo \ref{cap:tecnica}, porém, sem considerar a degradação do \textit{slew}. Os erros obtidos neste experimento (-33.11\% para TNS e 19.99\% para critical path) mostram resultados muito otimistas em relação ao \textit{PrimeTime}, destacando a importância de se considerar a degradação do \textit{slew} nas interconexões.
-
 
 \chapter{Conclusão}
 \label{cap:conclusao}
