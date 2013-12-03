@@ -18,7 +18,7 @@
 \usepackage[labelsep=endash]{caption}
 \usepackage{mathtools}
 \usepackage{listings}
-\usepackage[portugues, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
+\usepackage[portuguese, lined, linesnumbered, boxed,ruled,commentsnumbered]{algorithm2e}
 \usepackage{float}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
@@ -1082,31 +1082,32 @@ Esse capítulo tem por objetivo descrever os experimentos realizados neste trabal
 
 Para realizar a avaliação das técnicas abordadas neste trabalho, uma ferramenta para análise de \textit{timing} na linguagem de programação C++ foi implementada. A ferramenta realiza a análise de \textit{timing} e considera dois possíveis modelos de interconexão: o modelo da capacitância concentrada e o modelo RC concentrado.
 
-Como parte dos experimentos é realizada comparando as informações calculadas pela ferramenta implementada com as informações reportadas pelo \textit{PrimeTime}, o erro relativo (Equação \ref{eq:erro_relativo}) foi adotado como métrica para a qualidade das informações de \textit{timing} reportadas pela ferramenta implementada neste trabalho (Figura \ref{fig:fluxo_validacao}).
+Como parte dos experimentos é realizada comparando as informações calculadas pela ferramenta implementada com as informações reportadas pelo \textit{PrimeTime}, o erro percentual ($EP_t$) e o erro médio percentual absoluto ($EMPA$) (Equações \ref{eq:ep} e \ref{eq:empa}) foram adotados como métricas para estimar a qualidade das informações de \textit{timing} reportadas pela ferramenta implementada neste trabalho (Figura \ref{fig:fluxo_validacao}).
 
 \begin{equation}
-\label{eq:erro_relativo}
-Erro\ Relativo(a, b) = \frac{a - b}{b}
+\label{eq:ep}
+EP_t = \frac{(A_t - P_t)}{A_t} \times 100
 \end{equation}
 
-Neste trabalho, esta métrica foi utilizada para comparar diretamente dois valores $a$ e $b$, em ponto flutuante, sendo $a$ a informação de \textit{timing} calculada pela ferramenta apresentada neste trabalho e $b$, a informação de \textit{timing} reportada pelo \textit{PrimeTime}, para cada \textit{timing point} do circuito. Por exemplo, supondo que o valor aproximado $a = 3.12534$ e o valor real $b = 3.12566$. Aplicando a Equação \ref{eq:erro_relativo} obtemos $Erro\ Relativo(a, b) = -0.000102378$, ou $-0.010237838\%$. O valor negativo indica que o valor aproximado $a$ é otimista em relação ao valor real $b$ em $0.01\%$. Analogamente, o valor real $b$ é pessimista em relação ao valor aproximado $a$.
+\begin{equation}
+\label{eq:empa}
+EMPA = \frac{\sum_{t=1}^n |EP_t|}{n}
+\end{equation}
 
-A validação da ferramenta perante o \textit{PrimeTime} será realizada comparando as seguintes informações:
+O erro percentual é calculado para cada uma das informações comparadas com o \textit{PrimeTime} utilizando a equação \ref{eq:ep}, sendo que $A_t$ é a informação obtida pelo \textit{PrimeTime} e $P_t$ é a informação calculada pela ferramenta implementada. Tais informações usadas para fim de validação da ferramenta foram:
 \begin{itemize}
 \item \textbf{\textit{TNS (Total Negative Slack)}: } O somatório de \textit{slack} negativo nas saídas primárias.
 
 \item \textbf{\textit{Violating POs: }} Número de saídas primárias violando a restrição de desempenho mínimo.
 
-\item \textbf{\textit{Runtime (s): }} Tempo de execução, em segundos, para realizar uma análise de \textit{timing} em um circuito.
+\item \textbf{\textit{Runtime (s): }} Tempo de execução, em segundos, para realizar uma análise de \textit{timing} em um circuito, desconsiderando o tempo constante de inicialização da ferramenta.
 
 \item \textbf{\textit{Critical Path: }} Valor do caminho crítico do circuito.
 \end{itemize}
 
-Os resultados dos futuros experimentos serão apresentados posteriormente por meio de gráficos, tabelas e histogramas.
-	
+Os resultados dos experimentos serão apresentados posteriormente por meio de gráficos, tabelas e histogramas.
 
-
-Este trabalho utilizará como base a infraestrutura disponibilizada pela competição de \textit{gate sizing} discreto do ISPD de 2013, a qual fornece:
+Este trabalho utilizou como base a infraestrutura disponibilizada pela competição de \textit{gate sizing} discreto do ISPD de 2013, a qual fornece:
 
 \begin{itemize}
 
@@ -1132,7 +1133,7 @@ Os circuitos são compostos por descrições no formato Verilog, capacitâncias para
 	\section{Validação do Modelo de Capacitância Concentrada Perante Ferramenta Industrial}
 	\label{sec:validacao_lumped}
 
-Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. No experimento, os valores de tempo de execução (\textit{runtime}), erro médio, erro mínimo e erro máximo\footnote{Os erros foram obtidos utilizando a Equação \ref{eq:erro_relativo} e seus valores absolutos são apresentados na tabela, e.g., um erro de 2\% é menor que um de -3\% porque $|2| < |3|$. } foram obtidos para os 7 circuitos da competição de \textit{sizing} do \textit{ISPD}. Na Tabela \ref{tab:lumped_capacitance_vs_primetime}, a informação de \textit{runtime} se refere ao tempo gasto para se realizar uma análise de \textit{timing} estática, desconsiderando os tempos de inicialização das ferramentas comparadas \footnote{O tempo  de inicialização, neste contexto, se refere ao tempo de leitura dos arquivos de entrada e inicialização das estruturas de dados necessárias para a análise de \textit{timing} estática.}. Para tanto, utilizou-se um computador \textit{desktop} com processador Intel Core i7, de 4 núcleos, e 4GB de \textit{RAM}.
+Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. Para uma comparação justa, a ferramenta industrial foi também configurada para utilizar este modelo. Para tanto, utilizou-se um computador \textit{desktop} com processador Intel Core i7, de 4 núcleos, e 4GB de \textit{RAM}, e os resultados deste experimento são apresentados na Tabela \ref{tab:lumped_capacitance_vs_primetime}.
 
 
 
@@ -1144,15 +1145,10 @@ Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolv
 \end{center}
 \end{table}
 
+As células marcadas correspondem aos valores que são menores que os obtidos na ferramenta comercial. A penúltima linha apresenta a média dos valores calculados para cada coluna da tabela. A última linha mostra o $EMPA$ para cada uma das informações mostradas nas colunas. Os valores de $EMPA$ valendo $0,00\%$ indicam que a ferramenta calcula os mesmos valores que a ferramenta industrial para as informações comparadas. A média de \textit{runtime} obtida é $6,92$ vezes menor que a média da ferramenta industrial, sendo $50,05$ vezes menor para os 7 primeiros circuitos (excluindo o $netcard$). No circuito $usb\_phy$, a diferença de \textit{runtime} é de $20$ vezes e nos outros circuitos (exceto o $netcard$) a diferença tem valor médio de $52.71$ vezes com baixo desvio padrão ($6,48$).
 
-Os erros apresentados na Tabela \ref{tab:lumped_capacitance_vs_primetime} foram calculados sobre o \textit{arrival time}, \textit{slew} e \textit{slack} para cada \textit{timing point} do circuito, em relação às informações reportadas pelo \textit{PrimeTime}.
-
-Note que na Tabela \ref{tab:lumped_capacitance_vs_primetime}, os erros estão muito próximos de $0$, exceto no circuito $cordic$, onde o erro de $12\%$ se justifica por se tratar de valores muito pequenos, quando comparados, podem apresentar um erro relativo muito grande \footnote{No circuito $cordic$, nos pinos $g744540:a$, $g744569:o$, $g744569:a$, $g744621:o$ e $g744621:b$, a ferramenta reporta $0.00397127$ para \textit{slack} contra $0.004517$ do \textit{PrimeTime}. Aplicando a Equação \ref{eq:erro_relativo}, obtém-se $erro = -0.1208169139$. Porém, ao avaliar o erro absoluto, conclui-se que as duas ferramentas fornecem valores iguais até a $3^{\underline{a}}$ casa decimal, sendo uma precisão aceitável neste contexto.}.
-
-A partir das informações de \textit{runtime} obtidas na Tabela \ref{tab:lumped_capacitance_vs_primetime}, observa-se que a média dos \textit{runtimes} da ferramenta desenvolvida é de cerca de 50 vezes menor que a média dos \textit{runtimes} do \textit{PrimeTime}, sendo que no circuito $usb\_phy$, a diferença é de 20 vezes, e no circuito $fft$, a diferença chega a ser de aproximadamente 98 vezes. Essa diferença nos \textit{runtimes} é justificável, já que a ferramenta da \textit{Synopsys} realiza o levantamento de diversas informações, além das abordadas neste trabalho.
-
-	\section{Análise de \textit{Timing} Estática em Ferramenta Industrial}
-	\label{sec:sta_industrial}
+\section{Análise de \textit{Timing} Estática em Ferramenta Industrial}
+\label{sec:sta_industrial}
 	
 Esta seção tem por objetivo apresentar o modelo (Figura \ref{fig:modelagem_primetime}) utilizado para cálculo do desempenho na ferramenta industrial \textit{PrimeTime} e apresentar algumas informações de \textit{timing} relevantes, obtidas para cada circuito da competição de \textit{sizing} do ISPD.
 
@@ -1197,12 +1193,12 @@ Não foi possível identificar o algoritmo para o cálculo do atraso das interconex
 \end{center}
 \end{table}
 
-A Tabela \ref{tab:comparacoes_primetime} mostra os valores obtidos pelo \textit{PrimeTime}, para cada um dos sete circuitos da competição de \textit{sizing} do ISPD. A última linha apresenta a média dos valores calculados para cada coluna da tabela. Tais médias serão utilizadas em futuras comparações.
+A Tabela \ref{tab:comparacoes_primetime} mostra os valores obtidos pelo \textit{PrimeTime}, para cada um dos circuitos da competição de \textit{sizing} do ISPD. A última linha da tabela mostra as médias para cada informação obtida.
 
 \section{Validação da Técnica Implementada Perante Ferramenta Industrial}
 \label{sec:validacao_ceff}
 	
-Esta seção tem por objetivo comparar a qualidade das informações de \textit{timing} obtidas pela ferramenta de análise de \textit{timing} implementada neste trabalho com  as informações reportadas pelo \textit{PrimeTime}. Utilizando as técnicas apresentadas na Seção \ref{sec:calculo_ceff_degradacao}, a análise de \textit{timing} estática foi aplicada nos sete circuitos da competição de \textit{sizing} do ISPD e suas soluções foram comparadas com o \textit{PrimeTime}, utilizando a métrica apresentada na Seção \ref{sec:metodologia}.
+Esta seção tem por objetivo comparar a qualidade das informações de \textit{timing} obtidas pela ferramenta de análise de \textit{timing} implementada neste trabalho com  as informações reportadas pelo \textit{PrimeTime}. Utilizando as técnicas apresentadas na Seção \ref{sec:calculo_ceff_degradacao}, a análise de \textit{timing} estática foi aplicada nos circuitos da competição de \textit{sizing} do ISPD e suas soluções foram comparadas com o \textit{PrimeTime}, utilizando a métrica apresentada na Seção \ref{sec:metodologia}. Os resultados deste experimento podem ser vistos na Tabela \ref{tab:ceff_elmore_slew}.
 
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
@@ -1212,9 +1208,13 @@ Esta seção tem por objetivo comparar a qualidade das informações de \textit{timi
 \end{center}
 \end{table}
 
-A Tabela \ref{tab:ceff_elmore_slew} mostra os valores obtidos pela ferramenta implementada neste trabalho, para cada um dos sete circuitos da competição de \textit{sizing} do ISPD. A penúltima linha apresenta a média dos valores de cada coluna e a última linha apresenta a média dos erros em relação aos valores reportados pelo \textit{PrimeTime}, que foram apresentados na Tabela \ref{tab:comparacoes_primetime}. Com esse experimento, conclui-se que a ferramenta desenvolvida neste trabalho fornece informações de \textit{timing} próximas às reportadas pelo \textit{PrimeTime}\footnote{Média dos erros = $-7.35\%$ e $-4.28\%$ para \textit{TNS} e \textit{critical path}, respectivamente.}, com um tempo de execução cerca de 8 vezes menor. O erro de menor valor absoluto para o \textit{TNS} é de $0.59\%$ e o de maior é $-10.06\%$ nos circuitos $pci\_bridge32$ e $matrix\_mult$, respectivamente, sendo que no segundo, o erro reflete em uma aproximação otimista, e no primeiro, pessimista.
+A penúltima linha apresenta a média dos valores de cada coluna e a última linha apresenta o $EMPA$ para cada uma das informações em relação ao \textit{PrimeTime}, que foram apresentados na Tabela \ref{tab:comparacoes_primetime}. Com esse experimento, conclui-se que a ferramenta desenvolvida neste trabalho fornece informações de \textit{timing} próximas às reportadas pelo \textit{PrimeTime}\footnote{$EMPA = 8.21$ e $4.48$ para \textit{TNS} e \textit{critical path}, respectivamente.}, com um tempo de execução $17,02$ vezes menor.
 
-Na média, a análise de \textit{timing} na ferramenta desenvolvida é otimista em relação ao \textit{PrimeTime}, de acordo com os valores negativos de erro para \textit{TNS}, e \textit{critical path}. É possível observar também que os maiores erros são obtidos nos maiores circuitos e os menores erros, nos circuitos.
+As células marcadas apresentam os valores que são otimistas em relação do \textit{PrimeTime} (i. e., que são menores que os obtidos pelo \textit{PrimeTime}), correspondendo a 29 dos 32 valores obtidos. As células não marcadas indicam que o valor obtido é maior ou igual ao calculado pela ferramenta industrial.
+
+O erro de menor valor absoluto para o \textit{TNS} é de $1.34\%$ e o de maior é $16.7\%$ nos circuitos $usb\_phy$ e $netcard$, respectivamente, sendo que no segundo, o erro reflete em uma aproximação otimista, e no primeiro, pessimista. 
+
+Na média, a análise de \textit{timing} na ferramenta desenvolvida é otimista em relação ao \textit{PrimeTime}, de acordo com o grande número de células marcadas. É possível observar também que os maiores erros são obtidos nos maiores circuitos e os menores erros, nos menores circuitos.
 
 \begin{table}[ht]
 \begin{center}% TRIM = L D R U
