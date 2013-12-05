@@ -312,7 +312,7 @@ Esta seção tem por objetivo, apresentar alguns modelos de representação de inter
 
 	\subsection{Modelo RC Distribuído (\textit{Distributed RC Model})}
 
-Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}): a linha de comprimento $L$ é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um valor de resistência $r$ e um valor de capacitância $c$. Assim, a resistência e a capacitância total da linha são $r \times L$ e $c \times L$, respectivamente. O cálculo dos atrasos em um modelo RC distribuído implica na resolução de equações diferenciais, que por sua vez, não possuem fórmula fechada. Uma solução numérica seria realista, a qual resulta em um custo computacional muito elevado, não tornando viável sua adoção em fluxo \textit{standard cell}. Para tal objetivo, utilizam-se modelos de interconexão simplificados.
+Uma interconexão pode ser representada idealmente como uma linha distribuída (Figura \ref{fig:distributed_rc}): a linha de comprimento $L$ é dividida em segmentos de tamanho $\Delta L$, com $\Delta L \to 0$, e cada segmento é representado por um valor de resistência $r$ e um valor de capacitância $c$. Assim, a resistência e a capacitância total da linha são $r \times L$ e $c \times L$, respectivamente. O cálculo dos atrasos no modelo RC distribuído implica na resolução de equações diferenciais, as quais possuem soluções complexas. Uma solução numérica seria realista, porém resulta em um custo computacional muito elevado, tornando inviável sua adoção em fluxo \textit{standard cell}. Para tal objetivo, utilizam-se modelos de interconexão simplificados.
 
 \begin{figure}[ht]
 \begin{center}
@@ -475,7 +475,7 @@ A Figura \ref{fig:circuito_exemplo_modelagem_interconnect_inteira} ilustra as tr
 \chapter{Cálculo das Características Temporais da Interconexão}
 \label{cap:tecnica}
 		
-		Este capítulo tem por objetivo apresentar uma técnica utilizada para o cálculo das características temporais das interconexões, necessário para a estimativa de \textit{timing} global dos circuitos digitais. Na Seção \ref{sec:representacao_interconexoes_puri} será apresentado um modelo computacional para as interconexões. A Seção \ref{sec:calculo_elmore} apresentará a técnica de Elmore, que é muito utilizada no cálculo do atraso das interconexões. Finalmente, a técnica utilizada neste trabalho para o cálculo das características temporais das interconexões será apresentada na Seção \ref{sec:calculo_ceff_degradacao}.
+		Este capítulo tem por objetivo apresentar uma técnica utilizada para o cálculo das características temporais das interconexões, necessário para a estimativa de \textit{timing} global dos circuitos digitais. Na Seção \ref{sec:representacao_interconexoes_puri} será apresentado um modelo computacional para as interconexões. A Seção \ref{sec:calculo_elmore} apresentará uma revisão bibliográfica mostrando algumas técnicas para cálculo do atraso das interconexões, bem como a técnica de Elmore e a técnica escolhida para ser implementada no presente trabalho, que será detalhada na Seção \ref{sec:calculo_ceff_degradacao}.
 	
 \section{Representação das Interconexões}
 \label{sec:representacao_interconexoes_puri}
@@ -499,12 +499,10 @@ A Figura \ref{fig:circuito_exemplo_modelagem_interconnect_inteira} ilustra as tr
 		\end{figure}
 
 
-		\section{Cálculo do Atraso das Interconexões} 
-		\label{sec:calculo_elmore}
+\section{Cálculo do Atraso das Interconexões} 
+\label{sec:calculo_elmore}
 		
 Diversas técnicas são empregadas no cálculo do atraso das interconexões. Uma vez que o cálculo real dos atrasos das interconexões possui custo muito elevado para ser realizado para milhares de interconexões em centenas de vezes, modelos aproximados geralmente são utilizados no fluxo \textit{standard cell}. A avaliação assintótica da forma de onda (\textit{AWE: Asymptotic Waveform Evaluation}) \citacaoAzul{AWE} é uma técnica amplamente utilizada para geração de modelos de ordem reduzida, realizando uma aproximação na função de transferência via aproximação de Padé. Outras técnicas como PRIMA \citacaoAzul{Odabasioglu1997} possuem uma alta complexidade computacional, sendo muito lentas para serem utilizadas no contexto de uma técnica de otimização, como \textit{gate sizing} \citacaoAzul{Markov13}.
-
-Apesar da alta precisão das técnicas baseadas em momentos de alta ordem, como o \textit{AWE}, o custo computacional ainda é elevado, fazendo com que técnicas de momentos de ordem menor sejam utilizados.
 
 A técnica de \citacaoInline{Elmore48} é uma técnica baseada no primeiro momento da resposta ao impulso amplamente utilizada no cálculo dos atrasos das interconexões. A popularidade da técnica de Elmore deve-se aos fatores que seguem:
 		
@@ -539,7 +537,6 @@ A técnica de Elmore pode ser implementada também em sua forma recursiva. O algor
 		
 \begin{enumerate}
 
-
 \item \textbf{Inicialização das capacitâncias totais \textit{downstream}:} Os nodos internos são numerados de $1$ até $n$ em ordem topológica, sendo $n$ o tamanho do conjunto de vértices. Assim, o passo de inicialização de cada $c_i \in C$ acontece em ordem topológica reversa, seguindo a Equação \ref{eq:inicializacao_elmore};
 		
 \begin{equation}
@@ -558,21 +555,11 @@ Sendo que $C_i$ é o valor de capacitância do nodo $c_i$. O conjunto $filhos(i)$ 
 
 \end{enumerate}
 
-A função $R(i, j)$ retorna o valor da resistência que liga dois capacitores $c_i$ e $c_j \in C$. O atributo $C_{total_i}$ é a capacitância total \textit{downstream} de um nodo $c_i$.
+A função $R(i, j)$ retorna o valor da resistência que liga dois capacitores $c_i$ e $c_j \in C$. O atributo $C_{total_i}$ é a capacitância total \textit{downstream} de um nodo $c_i$. Assim, o cálculo do atraso em cada nodo da interconexão compõe o atraso da interconexão partindo do \textit{driver} até cada pino de destino.
 
-Assim, o cálculo do atraso em cada nodo da interconexão reflete no atraso da interconexão partindo do \textit{driver} até cada pino de destino.
+A técnica de Elmore para atraso de interconexões fornece boas aproximações quando o efeito conhecido como \textit{resistive shielding} não é tão alto. Este efeito acontece devido ao fato de que as resistências alteram o tempo que as capacitâncias levam para serem carregadas ou descarregadas. O efeito de \textit{resistive shielding} faz com que o atraso do \textit{driver} de uma interconexão seja menor que o atraso dele considerando a capacitância concentrada da interconexão. Similarmente, o efeito faz com que o atraso da interconexão seja menor que o atraso de Elmore utilizando o valor de capacitância total para cada segmento. Considere a interconexão da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, no caso extremo em que $R4 = \infty$, o capacitor $C4$ nunca seria carregado, e portanto, o atraso da interconexão não deveria levar em consideração o valor do capacitor $C4$.
 
-
-A técnica de Elmore para atraso de interconexões fornece boas aproximações quando o efeito conhecido como \textit{resistive shielding} não é tão alto. Este efeito acontece devido ao fato de que as resistências alteram o tempo que as capacitâncias levam para serem carregadas ou descarregadas. Considerando a interconexão da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, no caso extremo em que $R4 = \infty$, o capacitor $C4$ nunca seria carregado, e portanto, o atraso da interconexão não deveria levar em consideração o valor do capacitor $C4$.
-
-Algumas adaptações na técnica de Elmore foram propostas para que o cálculo do atraso das interconexões capturem também o efeito do \textit{resistive shielding} utilizando a abordagem da capacitância efetiva em cada nodo da interconexão. Algumas dessas técnicas serão apresentadas na Seção \ref{sec:calculo_ceff_degradacao}.
-		
-\section{Técnica de \citacaoInline{PURI02} para o Cálculo da Capacitância Efetiva e Degradação do \textit{Slew}}
-\label{sec:calculo_ceff_degradacao}
-%\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citacaoInline{PURI02}, que será implementado neste trabalho.}	
-A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que a característica resistiva das interconexões altera o tempo em que suas capacitâncias são carregadas ou descarregadas. Esse efeito, mais conhecido como \textit{resistive shielding}, faz com que o atraso do \textit{driver} de uma interconexão seja menor que o atraso dele considerando a capacitância total da interconexão.
-
-
+Algumas adaptações na técnica de Elmore foram propostas para que o cálculo do atraso das interconexões capturem também o efeito do \textit{resistive shielding} utilizando a abordagem da capacitância efetiva em cada nodo da interconexão. Na Figura \ref{fig:effective_capacitance_vs_actual_vs_total}, as transições na saída de um \textit{driver} são comparadas ao se utilizar a abordagem de capacitância efetiva (linha pontilhada) e de capacitância concentrada (linha contínua). Pode-se observar que para o valor escolhido de capacitância efetiva, o sinal leva o mesmo tempo para atingir o ponto médio da curva (\textit{$V_{dd} = 50\%$}) que quando o \textit{driver} está conectado diretamente à carga real da árvore RC (linha tracejada). Note a diferença neste ponto em relação à curva de capacitância concentrada, mostrando a imprecisão de se utilizar este modelo em certos casos.
 
 \begin{figure}[ht]
 \begin{center} % TRIM = L D R U
@@ -582,15 +569,23 @@ A necessidade de uma abordagem de capacitância efetiva se dá pelo fato de que a 
 \end{center}
 \end{figure}
 
-Na Figura \ref{fig:effective_capacitance_vs_actual_vs_total}, as transições na saída de um \textit{driver} são comparadas ao se utilizar a abordagem de capacitância efetiva (linha pontilhada) e de capacitância concentrada (linha contínua). Pode-se observar que para o valor escolhido de capacitância efetiva, o sinal leva o mesmo tempo para atingir o ponto médio da curva (\textit{$V_{dd} = 50\%$}) que quando o \textit{driver} está conectado diretamente à carga real da árvore RC (linha tracejada). Note a diferença neste ponto em relação à curva de capacitância concentrada, mostrando a imprecisão de se utilizar este modelo em certos casos.
-
 Como a abordagem de capacitância efetiva está relacionada à consideração do efeito de \textit{resistive shielding}, ao utilizá-la em cada segmento da interconexão, é possível obter-se um atraso na interconexão mais preciso do que o atraso de Elmore, mesmo sem considerar momentos de maior ordem da resposta ao impulso.
 
-%Diversas técnicas são utilizadas para cálculo da capacitância efetiva. Em \citacaoAzul{Kashyap00}, o método proposto trata de calcular o valor de $C_{eff}$ da interconexão, aproximando o \textit{slew} na entrada da árvore RC, de modo a obter a capacitância efetiva. Porém, nos circuitos digitais, os \textit{drivers} das interconexões são portas lógicas \textit{CMOS} com função de \textit{slew} de saída conhecidas, e seus valores são dependentes do valor da capacitância efetiva, que por sua vez, depende do \textit{slew} aplicado na entrada. Para contornar o problema encontrado na técnica de \citacaoInline{Kashyap00}, em \citacaoAzul{PURI02} foi proposta uma técnica que calcula o \textit{slew} e a $C_{eff}$ iterativamente, até que seus valores convirjam, dado uma precisão estipulada. Esta técnica será apresentada no Capítulo \ref{cap:tecnica} e será implementada na ferramenta abordada neste trabalho.
+\citacaoInline{Kashyap00} propuseram uma técnica para calcular o atraso da interconexão levando em conta o efeito de \textit{resistive shielding}. Com a mesma complexidade da técnica de Elmore, a técnica proposta para cálculo de atraso em uma árvore RC calcula também o valor de capacitância efetiva. Porém, \citacaoInline{Kashyap00} não consideravam o \textit{driver} da interconexão como sendo uma porta lógica \textit{CMOS}. Como consequência, sua aproximação para o \textit{slew} na entrada da árvore RC era imprecisa. Como o cálculo da capacitância efetiva de uma árvore depende do \textit{slew} que incide nesta, e o \textit{slew} depende da capacitância vista pelo \textit{driver}, \citacaoInline{PURI02} propuseram uma técnica que leva em consideração o impacto da capacitância no \textit{slew} do driver, e também, do \textit{slew} no cálculo da capacitância efetiva. Esta técnica será apresentada na Seção \ref{sec:calculo_ceff_degradacao} e foi a técnica implementada neste trabalho.
+		
+\section{Técnica de \citacaoInline{PURI02} para o Cálculo da Capacitância Efetiva e Degradação do \textit{Slew}}
+\label{sec:calculo_ceff_degradacao}
+%\afazer{Aqui, será descrito em forma de Algoritmo ou Fluxograma, o algoritmo utilizado para cálculo do atraso, na abordagem de Capacitância Efetiva \citacaoInline{PURI02}, que será implementado neste trabalho.}	
 
-\citacaoInline{Kashyap00} propuseram uma técnica para calcular o atraso da interconexão levando em conta o efeito de \textit{resistive shielding}. Com a mesma complexidade da técnica de Elmore, a técnica proposta para cálculo de atraso em uma árvore RC calcula também o valor de capacitância efetiva. Porém, \citacaoInline{Kashyap00} não consideravam o \textit{driver} da interconexão como sendo uma porta lógica \textit{CMOS}. Como consequência, sua aproximação para o \textit{slew} na entrada da árvore RC era imprecisa. Como o cálculo da capacitância efetiva de uma árvore depende do \textit{slew} que incide nesta, e o \textit{slew} depende da capacitância vista pelo \textit{driver}, \citacaoInline{PURI02} propuseram uma técnica que leva em consideração o impacto da capacitância no \textit{slew} do driver, e também, do \textit{slew} no cálculo da capacitância efetiva. Para simular a interdependência entre o \textit{slew} e a capacitância efetiva, o \textit{slew} no nodo fonte da árvore RC é refinado iterativamente (Figura \ref{fig:imagem_puri}), a fim de obter com precisão os dois valores. Esta técnica será apresentada a seguir.
+O objetivo desta seção é apresentar a técnica para cálculo das informações referentes às características temporais das interconexões que foi escolhida para ser implementada neste trabalho.
+
+Devido ao fato de que o valor de capacitância efetiva de uma interconexão depende do \textit{slew} incidente nesta, que por sua vez, depende do valor de capacitância efetiva, \citacaoInline{PURI02} propuseram uma técnica iterativa para simular esta interdependência. A técnica em questão obtém o atraso de Elmore com capacitância efetiva para a interconexão, bem como a degradação do \textit{slew} e o valor de capacitância utilizado no cálculo do \textit{delay} e \textit{slew} do \textit{driver}.
+
+A seguir serão apresentadas as técnicas para cálculo da capacitância efetiva e degradação do \textit{slew}, bem como o algoritmo implementado para realização desses cálculos.
 
 \subsection{Cálculo da Capacitância Efetiva}
+
+
 
 \begin{figure}[ht]
 \begin{center}
@@ -607,10 +602,6 @@ Como a abordagem de capacitância efetiva está relacionada à consideração do efei
 \label{fig:effective_ramp}
 \end{center}
 \end{figure}
-
-
-
-
 
 Considere uma rede $\pi$ $C_1 - R - C_2$ alimentada por uma fonte de tensão $V(t)$, como a ilustrada na Figura \ref{fig:effective_ramp}. Seja $I(t)$ a corrente total fornecida pela fonte de tensão $V(t)$, $I_1(t)$ a corrente através de $C_1$ e $I_2(t)$ a corrente através de $R - C_2$. De acordo com \citacaoInline{PURI02}, realizando uma análise no domínio da frequência, obtemos que:
 
@@ -833,7 +824,10 @@ Na implementação apresentada neste trabalho, o $\varepsilon$ foi definido como s
 
 \chapter{Análise de \textit{Timing} Estática}
 \label{cap:sta}
-Análise de \textit{timing} estática, ou \textit{static timing analysis} \citacaoAzul{Guntzel00} \citacaoAzul{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar o atraso crítico de circuitos digitais. A análise de \textit{timing} é chamada de estática (\textit{STA: Static Timing Analysis}) quando ela não realiza simulação e portanto, independe de estímulos de entrada, considerando apenas a topologia do circuito. É um processo completo e exaustivo \citacaoAzul{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
+
+O objetivo deste capítulo é apresentar a análise de \textit{timing} estática (\textit{STA: Static Timing Analysis}), bem como os conceitos importantes referentes à esta técnica, juntamente com o algoritmo de STA.
+
+Análise de \textit{timing} estática, ou \textit{static timing analysis} \citacaoAzul{Guntzel00} \citacaoAzul{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar o atraso crítico de circuitos digitais. A análise de \textit{timing} é chamada de estática quando ela não realiza simulação e portanto, independe de estímulos de entrada, considerando apenas a topologia do circuito. É um processo completo e exaustivo \citacaoAzul{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
 
 \begin{figure}[ht]
 \begin{center}% TRIM = L D R U
