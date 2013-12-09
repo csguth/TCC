@@ -1,0 +1,374 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage[brazil]{babel}   
+%\usepackage[latin1]{inputenc}  
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{subfigure}
+
+     
+\sloppy
+
+\title{Análise de \textit{Timing} Estática e a Avaliação do Impacto do Atraso das Interconexões em Circuitos Digitais}
+
+\author{Chrystian de Sousa Guth\inst{1}}
+
+
+\address{Departamento de Informática e Estatística\\Universidade Federal de Santa Catarina
+  (UFSC)\\
+  Campus Universitário -- Trindade -- Florianópolis -- SC -- Brasil
+  \email{csguth@inf.ufsc.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+Static timing analysis is the most used technique to estimate the delay in digital circuits during the Standard Cell flow. As the circuits must be represented in two different parts (the logic gates and interconnects), an efficient technique must be implemented to calculate the interconnect delay. The STA tool implemented in this work do the interconnect delay calculation getting the results that are, in average 4.28\% optimistics than those that are obtained by a industrial tool, with a 8 times inferior runtime.\end{abstract}
+    
+\begin{resumo} 
+Análise de \textit{timing} estática (\textit{STA: Static Timing Analysis}) é a técnica mais utilizada para estimar o atraso de circuitos digitais durante o fluxo de síntese física. Como os circuitos devem ser modelados em duas partes (portas lógicas e interconexões), uma técnica eficiente deve ser implementada para se estimar os atrasos das interconexões. A ferramenta de STA implementada neste trabalho realiza o cálculo dos atrasos das interconexões gerando resultados que são, em média, 4,28\% mais otimistas do que aqueles gerados pela ferramenta \textit{Synopsys PrimeTime}, porém com tempo de execução cerca de 8 vezes menor.
+\end{resumo}
+
+
+\section{Introdução}
+\label{sec:introducao}
+
+
+O crescimento da complexidade dos circuitos digitais contemporâneos\footnote{Um processador para \textit{desktop} desenvolvido no ano de 2008 tem cerca de 731 milhões de transistores, excluindo a área de memória \cite{Intel08}.} e a necessidade de um \textit{time-to-market} (tempo de entrega ao mercado) curto faz com que o projeto de tais circuitos adote o fluxo \textit{standard cell} (Figura \ref{fig:fluxo_standard_cell}).
+
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.9\linewidth]{../imagens/fluxo_standard_cell.pdf}
+\caption{Fluxo de projeto \textit{Standard Cell}. Adaptado de \cite{BhaskerChadha09}.}
+\label{fig:fluxo_standard_cell}
+\end{center}
+\end{figure}
+
+No fluxo \textit{standard cell} as portas lógicas são caracterizadas e validadas previamente em uma dada tecnologia, originando as chamadas ``células''. Essas células \footnote{Célula é a instância de \textit{layout} para a implementação física de uma porta lógica.} são catalogadas com suas diversas características elétricas em uma biblioteca, podendo ser reutilizadas em diversos projetos que usem a mesma tecnologia. O reuso amortiza o custo dos projetos inseridos neste nodo tecnológico e possibilita um \textit{time-to-market} mais curto.
+
+Diversas otimizações são realizadas no decorrer do fluxo de projeto \textit{standard cell} e o uso de ferramentas para a automação de projeto eletrônico (\textit{EDA: Electronic design automation}) é indispensável em suas diferentes etapas. A inexistência de ferramentas de análise de \textit{timing} estática precisas de domínio público e a restrição no acesso à ferramentas industriais (devido ao alto custo de suas licenças) resultam em um problema de infraestrutura de pesquisa. Assim, este trabalho tem como resultado uma alternativa de ferramenta de análise de \textit{timing} para projetistas de circuitos digitais, bem como uma infraestrutura realista e precisa para desenvolvedores de ferramentas, que necessitam da análise de \textit{timing} em alguma etapa do fluxo de projeto \textit{standard cell}.
+
+Este artigo se organiza da seguinte maneira: Na Seção \ref{sec:conceitos} serão apresentados alguns conceitos básico para entendimento das técnicas que serão apresentadas posteriormente. A seguir, na Seção \ref{sec:tecnica} será apresentada a técnica utilizada neste trabalho para cálculo das informações temporais dos circuitos digitais. Na Seção \ref{sec:sta} será apresentada a análise de \textit{timing} estática, bem como algumas particularidades no seu algoritmo. Finalmente, nas Seções \ref{sec:resultados} e \ref{sec:conclusoes} serão apresentados alguns resultados obtidos nos experimentos realizados e as conclusões finais, respectivamente.
+
+\section{Conceitos}
+\label{sec:conceitos}
+As características temporais do circuito são derivadas das características temporais de suas partes, quais sejam, as portas lógicas e as interconexões que o compõem. O atraso das portas lógicas são obtidos das pré-caracterizações presentes nas bibliotecas de células. No que se refere às interconexões, elas geralmente são modeladas como árvores RC (Figura \ref{fig:rc_tree}). Segundo \cite{Rabaey08}, uma árvore RC possui três características: não possui \textit{loops} resistivos; cada nodo possui uma capacitância com o \textit{ground}; cada nodo possui um resistor que o conecta com o seu nodo pai.
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.7 \linewidth]{../imagens/rc_tree.jpg}
+% \includegraphics{sta.png}
+\caption{Uma árvore RC. Obtida de \cite{Rabaey08}.}
+\label{fig:rc_tree}
+\end{center}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+\begin{center} % TRIM = L D R U
+\subfigure[]
+{
+\includegraphics[width=0.6 \linewidth]{../imagens/modelagem/circuito.pdf} 
+\label{fig:circuito_exemplo_modelagem_interconnect}
+}
+\subfigure[]
+{
+\includegraphics[width=0.6 \linewidth]{../imagens/modelagem/modelagem.pdf} 
+\label{fig:circuito_exemplo_modelagem_interconnect2}
+
+}
+\caption{(a) Um circuito composto por três portas lógicas ($u1$, $u2$ e $u3$), uma célula sequencial ($f1$) e uma interconexão em forma de árvore RC, que liga a saída de $u1$ às entradas de $u2$, $u3$ e $f1$; (b) São apresentadas as modelagens para os \textit{timing arcs} da porta lógica $u1$; O modelo da interconexão é abstraído, recebendo um valor de capacitância efetiva. As setas indicam que a interconexão oferece um atraso e uma degradação no \textit{slew}. Cada destino da interconexão é representado como um valor de capacitância de seus pinos de entrada. }
+\label{fig:circuito_exemplo_modelagem_interconnect_inteira}
+\end{center}
+\end{figure}
+
+A Figura \ref{fig:circuito_exemplo_modelagem_interconnect_inteira} ilustra as três principais contribuições das interconexões, sobre o atraso do circuito:
+\begin{itemize}
+	\item \textbf{Capacitância Vista Pelo \textit{Driver}: } É necessário modelar a carga capacitiva a ser carregada pelo \textit{driver} da interconexão com o objetivo de se obter a informação de \textit{load}, a qual é utilizada no cálculo do \textit{delay} e \textit{slew} dos \textit{timing arcs} das portas lógicas, como visto anteriormente. Nesta capacitância é incluído também o impacto causado pelos pinos de destino da interconexão \footnote{Um pino de destino de uma interconexão é um pino que se liga na interconexão, que não é o pino \textit{driver}. Por exemplo, na Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, os pinos de destino da interconexão são o segundo pino de entrada da porta $u2$, o pino de entrada da porta $u3$ e o pino $d$ do \textit{flip-flop} $f1$.}. Na fase \textit{pré-layout}, essa estimativa é realizada somando a capacitância total da interconexão com a capacitância de cada pino de destino dela. Porém, ao se tratar de interconexões com característica resistiva, o uso da abordagem de capacitância concentrada é impreciso. Para que os modelos de atraso não-lineares, que dependem do valor de capacitância de saída, sejam utilizados para os \textit{drivers} diretamente, é necessário o uso de uma abordagem conhecida como \textbf{Capacitância Efetiva ($C_{eff}$)}. Tal abordagem tenta encontrar um valor de capacitância que pode ser utilizado como carga equivalente, em termos de \textit{timing}, para a saída do \textit{driver} \cite{BhaskerChadha09}.
+
+	\item \textbf{Atraso da Interconexão: } Além do impacto local nos \textit{delays} e \textit{slews} de seus \textit{drivers}, as interconexões exercem impacto global no circuito, com seu próprio atraso de propagação (Figura \ref{fig:circuito_exemplo_modelagem_interconnect2}), devido a sua característica resistiva. Com a alta frequência de operação dos circuitos digitais atuais e o dimensionamento dos transistores para escalas nanométricas, os atrasos das interconexões, que antes não eram significativos, hoje chegam consumir de 50\% a 70\% do ciclo do relógio, e esta porcentagem tende a aumentar na medida que os transistores diminuem \cite{Cong96}. Uma das métricas mais populares para se calcular o atraso em interconexões é o atraso de Elmore (\textit{Elmore Delay}) \cite{Elmore48}, pela simplicidade e razoável correlação com os atrasos reais.
+	
+	\item \textbf{Degradação do \textit{Slew}: } O cálculo do \textit{slew} é crucial para determinar a precisão de uma avaliação de \textit{timing} em um circuito digital \cite{Zhou2007}. Os \textit{delays} dos \textit{timing arcs} dependem do \textit{slew} de entrada e do \textit{slew} de saída. Quando um sinal se propaga por uma interconexão, seu \textit{slew} (i.e., sua declividade) sofre uma degradação devido ao efeito resistivo da mesma (Figura \ref{fig:circuito_exemplo_modelagem_interconnect2}). A não-modelagem desta degradação pela interconexão, acarreta em erros de até 50\% \cite{Sheehan2002}. A abordagem para degradação do \textit{slew} utilizada neste trabalho será apresentada na Seção \ref{sec:tecnica}.
+\end{itemize}
+
+\section{Cálculo das Características Temporais da Interconexão}
+\label{sec:tecnica}
+Para que o atraso de uma interconexão seja estimado com precisão, um modelo de grafo (Figura \ref{fig:grafo_interconexao}) pode ser utilizado para representar o fio em termos de capacitâncias e resistências.
+
+		No modelo de grafo $I(C, R)$ utilizado, o conjunto dos vértices é composto pelos nodos internos da interconexão, que representam cada capacitor. As arestas do grafo modelam os resistores, e cada resistor conecta um par de capacitores. Sendo assim:
+		\begin{itemize}
+		\item \textbf{C} = \{$c | c$ é um capacitor da rede RC\}
+		\item \textbf{R} = \{$(c, d) |$ existe um resistor que conecta os capacitores $c$ e $d$\}
+		\end{itemize}
+	
+		\begin{figure}[ht]
+		\begin{center}% TRIM = L D R U
+		\includegraphics[width=0.5 \linewidth, trim=0cm 12cm 0 0, clip=true]{../imagens/grafo_interconexao/grafo.pdf}
+		\caption{O grafo correspondente à interconexão da Figura \ref{fig:circuito_exemplo_modelagem_interconnect}, com cinco vértices e quatro arestas.}
+		\label{fig:grafo_interconexao}
+		\end{center}
+		\end{figure}
+		
+		A técnica de \cite{Elmore48} é uma técnica baseada no primeiro momento da resposta ao impulso amplamente utilizada no cálculo dos atrasos das interconexões. De acordo com \cite{Rabaey08}, em um nodo $c_i$ da árvore RC, o atraso de Elmore ($\tau_i$) pode ser facilmente calculado como:
+\begin{equation}
+\tau_i = \sum_{k=1}^{N} C_k R_{ik}
+\label{eq:elmore}
+\end{equation}
+		
+Dado o grafo de uma árvore RC\footnote{Com os nodos numerados de $1$ a $n$ em ordem topológica, onde $n$ é o tamanho do conjunto de vértices e o nodo $c_1$ é o nodo fonte da árvore RC.}, o algoritmo apresentado nessa seção calcula os valores de capacitância efetiva e \textit{slew} em cada nodo interno da interconexão. Para o atraso da interconexão, o método implementa a técnica de Elmore utilizando os valores de capacitância efetiva, ao invés dos valores de capacitância total \textit{downstream}, simulando o efeito de \textit{resistive shielding}.
+		
+		A capacitância efetiva é denotada em cada nodo $c_i$ por $C_{eff_i}$ e o \textit{slew} por $slew_i$. O valor do \textit{slew} aplicado no nodo fonte da árvore RC, denotado por $slew_1$, é exatamente o valor do \textit{slew} na saída do \textit{driver} desta interconexão, o qual é função do \textit{slew} na entrada da porta lógica \textit{driver} e da capacitância efetiva vista na saída. Este valor de \textit{slew} será refinado iterativamente para se estimar o valor de capacitância efetiva da interconexão.
+		
+		O algoritmo para cálculo iterativo da capacitância efetiva de uma interconexão, bem como seu atraso e a degradação no \textit{slew}, conforme \cite{PURI02}, ocorre em cinco passos:
+
+		\begin{enumerate}
+
+			\item \textbf{Inicialização:}
+
+				\begin{enumerate}
+
+					\item A capacitância efetiva $C_{eff_i}$ de cada nodo $c_i$ da Árvore RC é inicializada com o valor de capacitância total \textit{downstream} de $c_i$, ou seja $C_{eff_i} = C_{total_i}$;
+					
+					\item O \textit{slew} no nodo fonte da árvore RC $slew_1$ é calculado utilizando o modelo de atraso da porta lógica \textit{driver}, considerando a capacitância concentrada da árvore RC (i.e., $\sum_{i=1}^N C_i$): $slew_1 = f(C_{total_1})$.
+
+				\end{enumerate}
+
+			\item \textbf{Atualização dos \textit{slews} em ordem topológica:}  \label{enum:algo_net_timing:1}
+
+				\begin{enumerate}
+
+					\item Atraso $\tau_i$ do nodo fonte $c_1$ para cada nodo $c_i$ da árvore é calculado utilizando a técnica de Elmore (Equação \ref{eq:elmore}), substituindo $C_{eff_i}$ por $C_{total_i}$, para simular o efeito de \textit{resistive shielding};
+
+
+					\item A degradação do \textit{slew} em cada nodo $c_i$ é calculada utilizando a Equação \ref{eq:degradacao_slew}.
+					
+\begin{equation}
+slew_i = \frac{slew_j}{1-\frac{R_i\ C_{eff_i}}{slew_j} (1-e^{-\frac{slew_j}{R_i\ C_{eff_i}}})}
+\label{eq:degradacao_slew}
+\end{equation}
+					
+				\end{enumerate}
+
+			\item \textbf{Atualização das capacitâncias efetivas em ordem topológica reversa:}
+				\begin{enumerate}
+
+					\item A capacitância efetiva ($C_{eff_i}$) de cada nodo $c_i$ é calculada como a soma da capacitância do nodo $c_i$ e todas as capacitâncias dos nodos filhos:
+
+					\begin{equation}
+						C_{eff_i}=C_i + \sum_{j \in filhos(i)}\ K_j \times C_{tot_j}
+					\end{equation}
+
+					Onde $K_j$ é o fator de \textit{shielding}, definido por:
+
+					\begin{equation}
+						K_j=1-\frac{2R_jC_{eff_j}}{slew_i}(1-e^{-\frac{slew_i}{2R_jC_{eff_j}}})
+					\end{equation}
+					
+					Onde $R_j$ é o valor da resistência que conecta o nodo $c_j$ ao seu pai, no caso, $c_i$.
+
+				\end{enumerate}
+
+
+			\item \textbf{Atualização do \textit{Slew} do \textit{Driver}:} O \textit{slew} no nodo fonte $slew_1$ é calculado diretamente, utilizando o $C_{eff_1}$ atual  \label{enum:algo_net_timing:2};
+
+			\item \textbf{Iteração:} Os passos de \ref{enum:algo_net_timing:1} até \ref{enum:algo_net_timing:2} são repetidos até que $slew_1$ convirja, dada uma precisão $\varepsilon$ .
+
+		\end{enumerate}
+
+Na implementação apresentada neste trabalho, o $\varepsilon$ foi definido como sendo $1\%$ e na maioria dos casos observados, cerca de $5$ iterações são necessárias para realizar o cálculo da capacitância efetiva \cite{PURI02}. Como cada iteração do algoritmo percorre a lista em ordem topológica (direta e reversa), a complexidade assintótica de pior caso de cada iteração do algoritmo é de $O(n)$ onde n é o número de nodos da árvore, ao passo que a complexidade do algoritmo é $O(c.n)$, onde $c$ é o número de iterações. Entretanto, como o número de iterações é na grande maioria dos casos menor que $5$ (E portanto $c$ é muito menor que $n$), assume-se que o crescimento no tempo de execução tem comportamento linear.		
+		
+		
+		
+\section{Análise de \textit{Timing} Estática}
+\label{sec:sta}
+
+O objetivo desta seção é apresentar a análise de \textit{timing} estática (\textit{STA: Static Timing Analysis}), bem como os conceitos importantes referentes à esta técnica, juntamente com o algoritmo de STA.
+
+Análise de \textit{timing} estática, ou \textit{static timing analysis} \cite{Guntzel00} \cite{BhaskerChadha09}, é uma das técnicas utilizadas para se estimar o atraso crítico de circuitos digitais. A análise de \textit{timing} é chamada de estática quando ela não realiza simulação e portanto, independe de estímulos de entrada, considerando apenas a topologia do circuito. É um processo completo e exaustivo \cite{BhaskerChadha09} que verifica as mais diversas informações de \textit{timing} em um circuito, como os \textit{delays}, \textit{slews}, \textit{slacks} (folgas), \textit{required times} (tempos requeridos) e diversas violações de restrições de projeto.
+
+
+Dada a descrição do projeto usando alguma linguagem de descrição de hardware (\textit{HDL: Hardware Description Language}), restrições de projeto e uma biblioteca de células, o objetivo da análise de \textit{timing} é apresentar informações temporais em todos os pontos do circuito e apontar as possíveis violações. Essas informações são utilizadas para avaliar se o projeto sob verificação pode operar na velocidade estipulada, ou seja, se o circuito final poderá funcionar com segurança na frequência de relógio escolhida, sem que existam violações nas restrições de projeto.
+
+O fluxo básico de uma ferramenta de análise de \textit{timing} é:
+
+\begin{enumerate}
+\item \textbf{Leitura dos arquivos de entrada:} Nesta etapa, os arquivos referentes às bibliotecas de célula, descrição do circuito juntamente com as restrições do projeto são lidos e suas informações são armazenadas em estruturas de dados, que serão consultadas na geração do modelo de grafo e na atualização das informações temporais;
+
+\item \textbf{Geração do grafo de \textit{timing}:} Responsável por implementar o modelo de grafo de \textit{timing}. As estruturas de dados utilizadas na implementação do modelo de grafo têm impacto direto no desempenho da ferramenta de \textit{timing}.
+
+\item \label{enum:etapa_sta} \textbf{Atualização de informações temporais: } Etapa onde a propagação dos atrasos através dos \textit{timing arcs}, bem como a avaliação do cumprimento ou não das restrições de desempenho são realizados. 
+\end{enumerate}
+
+Na STA, o circuito pode ser representado como um grafo direcionado acíclico (\textit{DAG: Directed Acyclic Graph}), onde o conjunto dos vértices representa os pinos de saída e entrada das portas lógicas e o conjunto das arestas representa as interconexões e os \textit{timing arcs}. Para melhorar a eficiência da ferramenta de STA, os vértices são armazenados em listas ordenadas topologicamente.
+
+
+As estruturas de dados utilizadas para armazenar os elementos do grafo são essencialmente listas ordenadas topologicamente. Em uma lista ordenada topologicamente, dado um elemento $i$, à esquerda necessariamente se encontram os elementos de mesmo ou menor nível lógico, e à direita, de nível igual ou maior, como mostrado na Figura \ref{fig:grafo_lista_nivel_logico}. Da mesma maneira, os \textit{timing arcs} e as interconexões também são ordenados topologicamente, em suas respectivas listas. Com essa escolha, o algoritmo de análise de \textit{timing} estática passa a ser apenas de uma varredura em ordem, na lista de \textit{timing points}, atualizando a informação de \textit{timing} acumulada para cada vértice do grafo.
+
+
+\begin{figure}[ht]
+	\begin{center}
+		\subfigure[]
+		{
+			\includegraphics[width=\linewidth]{../imagens/exemplo_circuito_simple.pdf}
+			\label{fig:exemplo_circuito_simple}
+		}
+		\subfigure[]
+		{
+			\includegraphics[width=\textwidth]{../imagens/grafo_lista_nivel_logico.pdf}
+			\label{fig:grafo_lista_nivel_logico}
+		}
+		\caption{(a) Circuito \textit{simple} retirado do banco de \textit{benchmarks} da competição de \textit{sizing} do ISPD; (b) Grafo correspondente ao circuito da letra (a).}
+		\label{fig:exemplo_simple_circuito_grafo}
+	\end{center}
+\end{figure}
+
+\section{Resultados}
+\label{sec:resultados}
+Essa seção tem por objetivo descrever os experimentos realizados neste trabalho e apresentar os resultados obtidos.
+
+Como parte dos experimentos é realizada comparando as informações calculadas pela ferramenta implementada com as informações reportadas pelo \textit{PrimeTime}, o erro percentual ($EP_t$) e o erro médio percentual absoluto ($EMPA$) (Equações \ref{eq:ep} e \ref{eq:empa}) foram adotados como métricas para estimar a qualidade das informações de \textit{timing} reportadas pela ferramenta implementada neste trabalho.
+
+\begin{equation}
+\label{eq:ep}
+EP_t = \frac{(A_t - P_t)}{A_t} \times 100
+\end{equation}
+
+\begin{equation}
+\label{eq:empa}
+EMPA = \frac{\sum_{t=1}^n |EP_t|}{n}
+\end{equation}
+
+O erro percentual é calculado para cada uma das informações comparadas com o \textit{PrimeTime} utilizando a equação \ref{eq:ep}, sendo que $A_t$ é a informação obtida pelo \textit{PrimeTime} e $P_t$ é a informação calculada pela ferramenta implementada. Tais informações usadas para fim de validação da ferramenta foram:
+\begin{itemize}
+\item \textbf{\textit{TNS (Total Negative Slack)}: } O somatório de \textit{slack} negativo nas saídas primárias.
+
+\item \textbf{\textit{Violating POs: }} Número de saídas primárias violando a restrição de desempenho mínimo.
+
+\item \textbf{\textit{Runtime (s): }} Tempo de execução, em segundos, para realizar uma análise de \textit{timing} em um circuito, desconsiderando o tempo constante de inicialização da ferramenta.
+
+\item \textbf{\textit{Critical Path: }} Valor do caminho crítico do circuito.
+\end{itemize}
+
+Os resultados dos experimentos serão apresentados posteriormente por meio de gráficos, tabelas e histogramas.
+
+Este trabalho utilizou como base a infraestrutura disponibilizada pela competição de \textit{gate sizing} discreto do ISPD de 2013, a qual fornece:
+
+\begin{itemize}
+
+\item Um conjunto de 8 circuitos da competição do ISPD de 2013:
+	\begin{enumerate}
+	\item \textbf{$usb\_phy$}: com 511 células combinacionais, 98 células sequenciais, 15 entradas e 19 saídas primárias;
+	\item \textbf{$pci\_bridge32$}: com 27316 células combinacionais, 3359 células sequenciais, 160 entradas e 201 saídas primárias;
+	\item \textbf{$fft$}: com 30297 células combinacionais, 1984 células sequenciais, 1026 entradas e 1026 saídas primárias;
+	\item \textbf{$cordic$}: com 40371 células combinacionais, 1230 células sequenciais, 34 entradas e 64 saídas primárias;
+	\item \textbf{$des\_perf$}: com 103842 células combinacionais, 8802 células sequenciais, 234 entradas e 201 saídas primárias;
+	\item \textbf{$edit\_dist$}: com 125000 células combinacionais, 5661 células sequenciais, 2562 entradas e 12 saídas primárias;
+	\item \textbf{$matrix\_mult$}: com 30297 células combinacionais, 1984 células sequenciais, 3202 entradas e 1600 saídas primárias;
+	\item \textbf{$netcard$}: com 884427 células combinacionais, 97831 células sequenciais, 1836 entradas e 10 saídas primárias.
+	\end{enumerate}
+
+\item Uma biblioteca \textit{standard cell} realista, composta por onze células combinacionais de diversas funções lógicas e um célula sequencial;
+
+\item Uma ferramenta de análise de \textit{timing} estática PrimeTime \textregistered \ da empresa \cite{PrimeTime12}  para comparação de resultados;
+\end{itemize}
+
+Os circuitos são compostos por descrições no formato Verilog, capacitâncias parasitas e resistências descritas no formato IEEE SPEF (\textit{Standard Parasitic Exchange Format}) \cite{IEEE99}, e restrições de \textit{timing} descritas no formato SDC (\textit{Synopsys Design Constraints}).
+
+\subsection{Validação do Modelo de Capacitância Concentrada Perante Ferramenta Industrial}
+
+Este experimento tem por objetivo validar a ferramenta de \textit{STA} desenvolvida perante a ferramenta industrial \textit{PrimeTime}, utilizando a abordagem de capacitância concentrada para modelar as interconexões. Para uma comparação justa, a ferramenta industrial foi também configurada para utilizar este modelo. Para tanto, utilizou-se um computador \textit{desktop} com processador \textit{Intel Core i7}, de 4 núcleos, e 4GB de \textit{RAM}, e os resultados deste experimento são apresentados na Tabela \ref{tab:lumped_capacitance_vs_primetime}.
+
+
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{../imagens/comparacoes/lumped_capacitance_vs_primetime.pdf}
+\caption{Comparação das informações de \textit{timing} calculadas pela ferramenta implementada \textit{versus} informações fornecidas pelo \textit{PrimeTime}, utilizando o modelo de interconexões de capacitância concentrada.}
+\label{tab:lumped_capacitance_vs_primetime}
+\end{center}
+\end{table}
+
+As células marcadas correspondem aos valores que são menores que os obtidos na ferramenta comercial. A penúltima linha apresenta a média dos valores calculados para cada coluna da tabela. A última linha mostra o $EMPA$ para cada uma das informações mostradas nas colunas. Os valores de $EMPA$ valendo $0,00\%$ indicam que a ferramenta calcula os mesmos valores que a ferramenta industrial para as informações comparadas. A média de \textit{runtime} obtida é $6,92$ vezes menor que a média da ferramenta industrial, sendo $50,05$ vezes menor para os 7 primeiros circuitos (excluindo o $netcard$). No circuito $usb\_phy$, a diferença de \textit{runtime} é de $20$ vezes e nos outros circuitos (exceto o $netcard$) a diferença tem valor médio de $52,71$ vezes com baixo desvio padrão ($6,48$).
+
+\subsection{Validação da Técnica Implementada Perante Ferramenta Industrial}
+\label{sec:validacao_ceff}
+	
+Esta seção tem por objetivo comparar a qualidade das informações de \textit{timing} obtidas pela ferramenta de análise de \textit{timing} implementada neste trabalho com  as informações reportadas pelo \textit{PrimeTime}. Utilizando as técnicas apresentadas na Seção \ref{sec:tecnica} (i. e., capacitância efetiva, atraso de interconexões e degradação de \textit{slew}), a análise de \textit{timing} estática foi aplicada nos circuitos de teste e suas soluções foram comparadas com as fornecidas pela ferramenta industrial. Tal comparação foi realizada com base nas métricas apresentada na Seção \ref{sec:resultados}. Os resultados deste experimento podem ser vistos na Tabela \ref{tab:ceff_elmore_slew}.
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{../imagens/comparacoes/ceff_elmore_slew.pdf}
+\caption{Valores obtidos pela ferramenta implementada neste trabalho nos circuitos da competição de \textit{sizing} do ISPD.}
+\label{tab:ceff_elmore_slew}
+\end{center}
+\end{table}
+
+A penúltima linha apresenta a média dos valores de cada coluna e a última linha apresenta o $EMPA$ para cada uma das informações em relação ao \textit{PrimeTime}. Com esse experimento, conclui-se que a ferramenta desenvolvida neste trabalho fornece informações de \textit{timing} próximas às reportadas pelo \textit{PrimeTime}\footnote{$EMPA = 8,21$ e $4,48$ para \textit{TNS} e \textit{critical path}, respectivamente.}, com um tempo de execução $17,02$ vezes menor.
+
+As células marcadas apresentam os valores que são otimistas em relação do \textit{PrimeTime} (i. e., que são menores que os obtidos pelo \textit{PrimeTime}), correspondendo a 29 dos 36 valores obtidos.
+
+O erro de menor valor absoluto para o \textit{TNS} é de $1,34\%$ e o de maior é $16,7\%$ nos circuitos $usb\_phy$ e $netcard$, respectivamente, sendo que no segundo, o erro reflete em uma aproximação otimista, e no primeiro, pessimista. 
+
+Na média, a análise de \textit{timing} na ferramenta desenvolvida é otimista em relação ao \textit{PrimeTime}, de acordo com o grande número de células marcadas. É possível observar também que os maiores erros são obtidos nos maiores circuitos e os menores erros, nos menores circuitos.
+
+\begin{table}[ht]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{../imagens/comparacoes/lump_elmore_slew.pdf}
+\caption{Experimentos utilizando o modelo capacitância concentrada para carga de saída dos \textit{drivers}, técnica de Elmore para computar os atrasos das interconexões, e degradação do \textit{slew} conforme apresentado na Seção \ref{sec:tecnica}.}
+\label{tab:lump_elmore_slew}
+\end{center}
+\end{table}
+
+No experimento mostrado na Tabela \ref{tab:lump_elmore_slew}, o modelo de capacitância concentrada foi utilizado para modelar a carga vista pelo \textit{driver}. Para o atraso das interconexões, a técnica de Elmore com capacitância concentrada foi utilizada. Já para a degradação do \textit{slew}, foi utilizada a técnica descrita na Seção \ref{sec:tecnica}. Como esperado, os modelos utilizados neste experimento refletem em uma aproximação pessimista para o atraso do circuito\footnote{Informação obtida do baixo número de células marcadas (total de 4, com exceção das células de \textit{runtime}).}, já que a técnica de Elmore pura\footnote{Sem utilizar a abordagem de capacitância efetiva.} foi aplicada no cálculo dos atrasos das interconexões. A técnica obteve $0,13\%$ e $311,79\%$ de erro para TNS nos circuitos $matrix\_mult$ e $netcard$, respectivamente. Já para \textit{critical path}, os erros obtidos vão de $1,94\%$ até $13,85\%$, nos circuitos $des\_perf$ e $usb\_phy$, respectivamente. 
+
+\begin{table}[h!]
+\begin{center}% TRIM = L D R U
+\includegraphics[width=\textwidth]{../imagens/comparacoes/ceff_elmore_no_slew.pdf}
+\caption{Experimentos utilizando o modelo capacitância efetiva para carga de saída dos \textit{drivers}, técnica de Elmore utilizando as capacitâcias efetivas de cada nodo interno das interconexões, para computar seus atrasos. Neste experimento, a degradação do \textit{slew} não foi considerada.}
+\label{tab:ceff_elmore_no_slew}
+\end{center}
+\end{table}
+
+
+A importância do cálculo da degradação do \textit{slew} pode ser visualizado na Tabela \ref{tab:ceff_elmore_no_slew}. Os erros obtidos neste experimento ($40,80\%$ para TNS e $21,21\%$ para critical path) mostram resultados muito otimistas em relação ao \textit{PrimeTime},  quando a técnica apresentada na Seção \ref{sec:tecnica} é aplicada, sem considerar a degradação do \textit{slew} nos destinos das interconexões.
+
+
+\section{Conclusões}
+\label{sec:conclusoes}
+
+
+Foram avaliados os impactos das interconexões no contexto da análise de \textit{timing} estática utilizando uma infraestrutura experimental realista.
+
+A consideração do atraso das interconexões no fluxo \textit{standard cell} é de muita importância e a avaliação desses atrasos deve ser eficiente e precisa. Neste trabalho foi possível observar a importância da avaliação dos atrasos das interconexões e também, que a desconsideração da degradação do \textit{slew} através das interconexões pode obter atrasos muito otimistas para o circuito, acarretando erros de cerca de $20\%$ no valor do caminho crítico para os circuitos da competição de \textit{sizing} do ISPD.
+
+A abordagem da capacitância efetiva para interconexões implica na consideração do efeito de \textit{resistive shielding}, o qual impacta na qualidade do cálculo do atraso do circuito. A ferramenta de análise de \textit{timing} desenvolvida neste trabalho implementa a técnica de \cite{PURI02} para o cálculo da capacitância efetiva, atraso das interconexões e degradação do \textit{slew}. Tal ferramenta apresentou ser cerca de \textbf{17,02 vezes mais rápida} que o \textit{PrimeTime}, obtendo resultados para \textit{TNS} e \textit{critical path} que subestimam em cerca de $8,85\%$ e $4,48\%$ respectivamente, os reportados pela ferramenta industrial.
+
+A relação $C_{eff}/C_{total}$ nos circuitos da competição de \textit{sizing} do ISPD de 2013 mostrou-se na média, próxima de 1. A partir dessa informação, o modelo de capacitância concentrada para calcular o atraso dos \textit{drivers}, juntamente com a técnica de Elmore com $C_{total}$ e a técnica de \cite{PURI02} para degradação do \textit{slew} foi avaliada, apresentando estimativas pessimistas em $10,76\%$ para \textit{TNS} nos circuitos testados (exceto o $netcard$) e $6,48\%$ para \textit{critical path}, sendo que o tempo de execução é cerca de \textbf{3 vezes menor} que o da técnica considerando a $C_{eff}$.
+
+
+
+\subsection{Trabalhos Futuros}
+Diversos trabalhos futuros podem ser realizados a fim de complementar a ferramenta avaliada neste trabalho, tais como:
+	
+	\begin{itemize}
+		\item Investigação detalhada dos erros obtidos pela técnica implementada neste trabalho, quando comparada à ferramenta industrial;
+		
+		\item Avaliação da eficiência da técnica implementada no contexto de uma técnica de otimização de fluxo \textit{standard cell}, como por exemplo, \textit{gate sizing};
+		
+		\item Avaliação da técnica implementada utilizando bibliotecas \textit{standard cell} e circuitos comerciais.
+	\end{itemize}
+
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}

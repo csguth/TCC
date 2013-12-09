@@ -1,0 +1,65 @@
+\begin{thebibliography}{}
+
+\bibitem[Bhasker and Chadha 2009]{BhaskerChadha09}
+Bhasker, J. and Chadha, R. (2009).
+\newblock {\em Static Timing Analysis for Nanometer Designs: A Pratical
+  Approach}.
+\newblock Springer, 1 edition.
+
+\bibitem[Cong et~al. 1996]{Cong96}
+Cong, J., He, L., Koh, C.-K., and Madden, P.~H. (1996).
+\newblock Performance optimization of vlsi interconnect layout.
+\newblock {\em Integr. VLSI J.}, 21(1-2):1--94.
+
+\bibitem[Elmore 1948]{Elmore48}
+Elmore, W.~C. (1948).
+\newblock The transient response of damped linear networks with particular
+  regard to wideband amplifiers.
+\newblock {\em Journal of Applied Physics}, 19(1):55--63.
+
+\bibitem[Guntzel 2000]{Guntzel00}
+Guntzel, J. L.~A. (2000).
+\newblock {\em Functional Timing Analysis of VLSI Circuits Containing Complex
+  Gates}.
+\newblock PhD thesis, Universidade Federal do Rio Grande do Sul, RS-Brazil.
+
+\bibitem[IEEE 1999]{IEEE99}
+IEEE (1999).
+\newblock Ieee standard for integrated circuit (ic) delay and power calculation
+  system.
+\newblock {\em IEEE Std 1481-1999}, pages i--390.
+
+\bibitem[Intel 2008]{Intel08}
+Intel (2008).
+\newblock Intel(r) core(tm) i7-920 processor specifications.
+
+\bibitem[Puri et~al. 2002]{PURI02}
+Puri, R., Kung, D.~S., and Drumm, A.~D. (2002).
+\newblock Fast and accurate wire delay estimation for physical synthesis of
+  large asics.
+\newblock In {\em Proceedings of the 12th ACM Great Lakes symposium on VLSI},
+  GLSVLSI '02, pages 30--36, New York, NY, USA. ACM.
+
+\bibitem[Rabaey et~al. 2008]{Rabaey08}
+Rabaey, J.~M., Chandrakasan, A., and Nikolic, B. (2008).
+\newblock {\em Digital Integrated Circuits}.
+\newblock Prentice Hall Press, Upper Saddle River, NJ, USA, 3rd edition.
+
+\bibitem[Sheehan 2002]{Sheehan2002}
+Sheehan, B.~N. (2002).
+\newblock Osculating thevenin model for predicting delay and slew of
+  capacitively characterized cells.
+\newblock In {\em Proceedings of the 39th annual Design Automation Conference},
+  pages 866--869. ACM.
+
+\bibitem[Synopsys 2012]{PrimeTime12}
+Synopsys (2012).
+\newblock Synopsys primetime user's manual.
+
+\bibitem[Zhou et~al. 2007]{Zhou2007}
+Zhou, Y., Li, Z., Kanj, R., Papa, D., Nassif, S., and Shi, W. (2007).
+\newblock A more effective ceff for slew estimation.
+\newblock In {\em Integrated Circuit Design and Technology, 2007. ICICDT'07.
+  IEEE International Conference on}, pages 1--4. IEEE.
+
+\end{thebibliography}
