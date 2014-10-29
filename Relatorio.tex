@@ -36,7 +36,37 @@
 \everydisplay{\color{green!20!black}}
 \DeclareTextFontCommand{\emph}{\ttfamily}
 
-
+% Define cores em RGB
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+ 
+% Configuração para exibir código e C++
+\lstset{
+language = C++, % Linguagem de programação
+basicstyle = \footnotesize, % Tamanho da fonte do código
+numbers = left, % Posição da numeração das linhas
+numberstyle = \tiny\color{blue}, % Estilo da numeração de linhas
+stepnumber = 1, % Numeração das linhas ocorre a cada quantas linhas?
+numbersep = 10pt, % Distância entre a numeração das linhas e o código
+backgroundcolor = \color{white}, % Cor de fundo
+showspaces = false, % Exibe espaços com um sublinhado
+showstringspaces = false, % Sublinha espaços em Strings
+showtabs = false, % Exibe tabulação com um sublinhado
+frame = trBL, % Envolve o código com uma moldura, pode ser single ou trBL
+rulecolor = \color{black}, % Cor da moldura
+tabsize = 2, % Configura tabulação em x espaços
+captionpos = b, % Posição do título pode ser t (top) ou b (bottom)
+breaklines = true, % Configura quebra de linha automática
+breakatwhitespace= false, % Configura quebra de linha
+title = \lstname, % Exibe o nome do arquivo incluido
+%caption = \lstname, % Também é possível usar caption no lugar de title
+keywordstyle = \color{blue}, % Estilo das palavras chaves
+commentstyle = \color{dkgreen}, % Estilo dos Comentários
+stringstyle = \color{mauve}, % Estilo de Strings
+escapeinside = {\%*}{*)}, % Permite adicionar comandos LaTeX dentro do seu código
+morekeywords     ={*,...} % Se quiser adicionar mais palavras-chave
+}
 
 %----------------------------------------------------------------------
 % Comandos criados pelo usuário
@@ -1485,18 +1515,59 @@ Diversos trabalhos futuros podem ser realizados a fim de complementar a ferramen
 	\end{itemize}
 
  
- 
- 
-% 	\section{Código Fonte em C++ da Ferramenta Desenvolvida}
-%
-% 		\lstinputlisting[label=timing_analysis.cpp,caption=timing\_analysis.cpp]{../implementacao/TimingAnalysis/src/timing_analysis.cpp}
-
-
 %--------------------------------------------------------
 % Elementos pós-textuais
 \bibliography{Relatorio}
 
-% \includepdf[pages=-]{artigo/sbc-template.pdf}
+
+
+\anexo
+\chapter{Artigo sobre o TCC}
+\includepdf[pages=-]{artigo/sbc-template.pdf}
+
+\chapter{Código fonte da ferramenta em C++}
+
+\lstinputlisting[language=C, label=l17,caption=ceff\_ratio\_experiment.h]{../implementacao/TimingAnalysis/src/include/ceff_ratio_experiment.h}
+\lstinputlisting[language=C, label=l18,caption=circuit\_netlist.h]{../implementacao/TimingAnalysis/src/include/circuit_netlist.h}
+\lstinputlisting[language=C, label=l19,caption=configuration.h]{../implementacao/TimingAnalysis/src/include/configuration.h}
+\lstinputlisting[language=C, label=l20,caption=design\_constraints.h]{../implementacao/TimingAnalysis/src/include/design_constraints.h}
+\lstinputlisting[language=C, label=l21,caption=edge.h]{../implementacao/TimingAnalysis/src/include/edge.h}
+\lstinputlisting[language=C, label=l22,caption=liberty\_library.h]{../implementacao/TimingAnalysis/src/include/liberty_library.h}
+\lstinputlisting[language=C, label=l23,caption=multi\_fanout\_edge.h]{../implementacao/TimingAnalysis/src/include/multi_fanout_edge.h}
+\lstinputlisting[language=C, label=l24,caption=parser.h]{../implementacao/TimingAnalysis/src/include/parser.h}
+\lstinputlisting[language=C, label=l25,caption=single\_fanout\_edge.h]{../implementacao/TimingAnalysis/src/include/single_fanout_edge.h}
+\lstinputlisting[language=C, label=l26,caption=slew\_degradation\_experiment.h]{../implementacao/TimingAnalysis/src/include/slew_degradation_experiment.h}
+\lstinputlisting[language=C, label=l27,caption=spef\_net.h]{../implementacao/TimingAnalysis/src/include/spef_net.h}
+\lstinputlisting[language=C, label=l28,caption=timer.h]{../implementacao/TimingAnalysis/src/include/timer.h}
+\lstinputlisting[language=C, label=l29,caption=timer\_interface.h]{../implementacao/TimingAnalysis/src/include/timer_interface.h}
+\lstinputlisting[language=C, label=l30,caption=timing\_analysis.h]{../implementacao/TimingAnalysis/src/include/timing_analysis.h}
+\lstinputlisting[language=C, label=l31,caption=timing\_arc.h]{../implementacao/TimingAnalysis/src/include/timing_arc.h}
+\lstinputlisting[language=C, label=l32,caption=timing\_net.h]{../implementacao/TimingAnalysis/src/include/timing_net.h}
+\lstinputlisting[language=C, label=l33,caption=timing\_point.h]{../implementacao/TimingAnalysis/src/include/timing_point.h}
+\lstinputlisting[language=C, label=l34,caption=transitions.h]{../implementacao/TimingAnalysis/src/include/transitions.h}
+\lstinputlisting[language=C, label=l35,caption=wire\_delay\_model.h]{../implementacao/TimingAnalysis/src/include/wire_delay_model.h}
+
+\lstinputlisting[language=C, label=l1,caption=ceff\_ratio\_experiment.cpp]{../implementacao/TimingAnalysis/src/ceff_ratio_experiment.cpp}
+\lstinputlisting[language=C, label=l2,caption=circuit\_netlist.cpp]{../implementacao/TimingAnalysis/src/circuit_netlist.cpp}
+\lstinputlisting[language=C, label=l3,caption=configuration.cpp]{../implementacao/TimingAnalysis/src/configuration.cpp}
+\lstinputlisting[language=C, label=l4,caption=design\_constraints.cpp]{../implementacao/TimingAnalysis/src/design_constraints.cpp}
+\lstinputlisting[language=C, label=l5,caption=liberty\_library.cpp]{../implementacao/TimingAnalysis/src/liberty_library.cpp}
+\lstinputlisting[language=C, label=l6,caption=main.cpp]{../implementacao/TimingAnalysis/src/main.cpp}
+\lstinputlisting[language=C, label=l7,caption=parser.cpp]{../implementacao/TimingAnalysis/src/parser.cpp}
+\lstinputlisting[language=C, label=l8,caption=slew\_degradation\_experiment.cpp]{../implementacao/TimingAnalysis/src/slew_degradation_experiment.cpp}
+\lstinputlisting[language=C, label=l9,caption=spef\_net.cpp]{../implementacao/TimingAnalysis/src/spef_net.cpp}
+\lstinputlisting[language=C, label=l10,caption=timer.cpp]{../implementacao/TimingAnalysis/src/timer.cpp}
+\lstinputlisting[language=C, label=l11,caption=timer\_interface.cpp]{../implementacao/TimingAnalysis/src/timer_interface.cpp}
+\lstinputlisting[language=C, label=l12,caption=timing\_analysis.cpp]{../implementacao/TimingAnalysis/src/timing_analysis.cpp}
+\lstinputlisting[language=C, label=l13,caption=timing\_arc.cpp]{../implementacao/TimingAnalysis/src/timing_arc.cpp}
+\lstinputlisting[language=C, label=l14,caption=timing\_net.cpp]{../implementacao/TimingAnalysis/src/timing_net.cpp}
+\lstinputlisting[language=C, label=l15,caption=timing\_point.cpp]{../implementacao/TimingAnalysis/src/timing_point.cpp}
+\lstinputlisting[language=C, label=l16,caption=wire\_delay\_model.cpp]{../implementacao/TimingAnalysis/src/wire_delay_model.cpp}
+
+
+
+
+
 
 
 \end{document}
